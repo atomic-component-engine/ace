@@ -63,27 +63,27 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
   app: function () {
     this.dirs = {
-      jadeModDir: "src/jade/mixins/" + this.componentType + "s/" + this.id,
-      jadePgDir:  "src/jade/" + this.componentType + "s/" + this.id,
-      jsDir: "src/js/" + this.componentType + "s/",
-      jsModDir: "src/js/" + this.componentType + "s/" + this.id,
-      sassDir: "src/sass/" + this.componentType + "s/_" + this.id,
-      sassDemoDir: "src/sass/pages/"
+      jadeModDir: "src/jade/mixins/" + this.componentType + '_' + this.id + '.jade',
+      jadePgDir:  "src/jade/demo_" + this.id  + '.jade',
+      jsDemoDir: "src/js/demo_" + this.id + '.js' ,
+      jsModDir: "src/js/" + this.componentType + "s/" + this.id  + '.js',
+      sassDir: "src/sass/" + this.componentType + "s/_" + this.id  + '.scss',
+      sassDemoDir: "src/sass/pages/"  + '_' + this.id + '_demo.scss'
     };
     // this.mkdir('app');
     // this.mkdir('app/templates');
     //Create Sass File
-    this.template('_.scss', this.dirs.sassDir + '.scss');
+    this.template('_.scss', this.dirs.sassDir); //Correct
     //Create Sass Demo File
-    this.template('_demo.scss', this.dirs.sassDemoDir + '_' + this.id + '_demo.scss');
+    this.template('_demo.scss', this.dirs.sassDemoDir); //Correct
     //Create JS Module File
-    this.template('_.js', this.dirs.jsModDir + '.js');
+    this.template('_.js', this.dirs.jsModDir); //Correct
     //Create JS Demo File
-    this.template('_demo.js', this.dirs.jsDir + '_demo.js');
+    this.template('_demo.js', this.dirs.jsDemoDir);
     //Create Jade Module File
-    this.template('_.jade', this.dirs.jadeModDir + '_.jade');
+    this.template('_.jade', this.dirs.jadeModDir);
     //Create Jade Page File
-    this.template('_demo.jade', this.dirs.jadePgDir + '_demo.jade');
+    this.template('_demo.jade', this.dirs.jadePgDir);
   },
 
   projectfiles: function () {
