@@ -65,8 +65,9 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     this.dirs = {
       jadeModDir: "src/jade/mixins/" + this.componentType + "s/" + this.id,
       jadePgDir:  "src/jade/" + this.componentType + "s/" + this.id,
-      jsDir: "src/js/" + this.componentType + "s/" + this.id,
-      sassDir: "src/sass/" + this.componentType + "s/" + this.id,
+      jsDir: "src/js/" + this.componentType + "s/",
+      jsModDir: "src/js/" + this.componentType + "s/" + this.id,
+      sassDir: "src/sass/" + this.componentType + "s/_" + this.id,
       sassDemoDir: "src/sass/pages/"
     };
     // this.mkdir('app');
@@ -74,13 +75,13 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     //Create Sass File
     this.template('_.scss', this.dirs.sassDir + '.scss');
     //Create Sass Demo File
-    this.template('_demo.scss', 'demo_' + this.id + this.dirs.sassDemoDir + '.scss');
+    this.template('_demo.scss', this.dirs.sassDemoDir + '_' + this.id + '_demo.scss');
     //Create JS Module File
-    this.template('_.js', this.dirs.jsDir + '.js');
+    this.template('_.js', this.dirs.jsModDir + '.js');
     //Create JS Demo File
-    this.template('_demo.js', 'demo_' + this.id + this.dirs.jsDir + '.js');
+    this.template('_demo.js', this.dirs.jsDir + '_demo.js');
     //Create Jade Module File
-    this.template('_.jade', this.dirs.jadeModDir + '.jade');
+    this.template('_.jade', this.dirs.jadeModDir + '_.jade');
     //Create Jade Page File
     this.template('_demo.jade', this.dirs.jadePgDir + '_demo.jade');
   },
