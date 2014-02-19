@@ -63,7 +63,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
   app: function () {
     this.dirs = {
-      jadeModDir: "src/jade/mixins/" + this.componentType + 's/' + this.id + '.jade',
+      jadeModDir: "src/jade/mixins/" + this.componentType + 's/_' + this.id + '.jade',
       jadePgDir:  "src/jade/demo_" + this.id  + '.jade',
       jsDemoDir: "src/js/demo_" + this.id + '.js' ,
       jsModDir: "src/js/" + this.componentType + "s/" + this.id  + '.js',
