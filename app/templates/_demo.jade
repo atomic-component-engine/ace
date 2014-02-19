@@ -14,8 +14,8 @@ extends page_templates/_factory
 block page_vars
 	- var page = {}
 	- page.id = "<%= id %>"
-	- page.title = "<%= componentName %>"
-	- page.mainScript = "<%= dirs.jsDemoDir %>"
+	- page.title = "<%= id %>"
+	- page.mainScript = "<%= id %>.js"
 
 
 //- Content block
