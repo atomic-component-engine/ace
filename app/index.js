@@ -30,7 +30,8 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       choices: [
       'Atom',
       'Molecule',
-      'Organism'
+      'Organism',
+      'Template'
       ],
       filter: function( val ) { return val.toLowerCase(); }
     },
