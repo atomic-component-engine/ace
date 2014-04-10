@@ -4,6 +4,44 @@ var path = require('path');
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 
+
+var getGitInfo = {
+    parseConfig: function(file){
+
+        var regex = {
+          section: /^\s*\[\s*([^\]]*)\s*\]\s*$/,
+          param: /^\s*([\w\.\-\_]+)\s*=\s*(.*?)\s*$/,
+          comment: /^\s*;.*$/
+        };
+
+
+        var value = {};
+        var lines = file.split(/\r\n|\r|\n/);
+        var section = null;
+        lines.forEach(function(line){
+          if(regex.comment.test(line)){
+            return;
+          }else if(regex.param.test(line)){
+            var match = line.match(regex.param);
+            if(section){
+              value[section][match[1]] = match[2];
+            }else{
+              value[match[1]] = match[2];
+            }
+          }else if(regex.section.test(line)){
+            var match = line.match(regex.section);
+            value[match[1]] = {};
+            section = match[1];
+          }else if(line.length == 0 && section){
+            section = null;
+          };
+        });
+
+        return value[ 'remote "origin"' ].url;
+    }
+};
+
+
 var ComponentsGenerator = yeoman.generators.Base.extend({
   init: function () {
 
@@ -20,8 +58,17 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     // have Yeoman greet the user
     console.log(this.yeoman);
 
+    var path = ".git/config";
+    var file = this.readFileAsString(path);
+
     // replace it with a short and sweet description of your generator
     console.log(chalk.magenta('You\'re using the fantastic Components generator.'));
+
+    if(getGitInfo.parseConfig(file)){
+      console.log(chalk.green("Git remote:" + getGitInfo.parseConfig(file)));
+    }else{
+      console.log(chalk.red("No git remote spicified"));
+    }
 
     var prompts = [{
       type: 'list',
@@ -100,3 +147,4 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 });
 
 module.exports = ComponentsGenerator;
+

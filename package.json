@@ -4,7 +4,7 @@
   "description": "Yeoman generator",
   "license": "MIT",
   "main": "app/index.js",
-  "repository": "coyledesign/generator-components",
+  "repository": "pjhauser/components-generator",
   "author": {
     "name": "Phil Hauser",
     "email": "phil.hsr@gmail.com",
