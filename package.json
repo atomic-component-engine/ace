@@ -1,14 +1,14 @@
 {
   "name": "generator-components",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Yeoman generator",
   "license": "MIT",
   "main": "app/index.js",
   "repository": "coyledesign/generator-components",
   "author": {
-    "name": "Kevin Coyle",
-    "email": "kevin.coyle@drutek.co.uk",
-    "url": "https://github.com/coyledesign"
+    "name": "Phil Hauser",
+    "email": "phil.hsr@gmail.com",
+    "url": "https://github.com/pjhauser"
   },
   "engines": {
     "node": ">=0.10.0"

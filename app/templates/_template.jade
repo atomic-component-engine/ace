@@ -1,0 +1,54 @@
+//-
+	@file Defines the default page template
+
+//- Template dependencies
+
+//- Default vars
+- var page = {id: "<%= id %>", title: "Default Boilerplate Page"};
+
+
+//- Import variables from calling page
+block page_vars
+
+//- Build body class
+- var bodyClass = "page-"+page.id
+
+!!! 5
+//if lt IE 7
+	<html class="lt-ie9 lt-ie8 lt-ie7">
+//if IE 7
+	<html class="lt-ie9 lt-ie8">
+//if IE 8
+	<html class="lt-ie9">
+//if IE 9
+	<html class="lt-ie10">
+// [if gt IE 9] <!
+html(lang="en")
+	// <![endif]
+	head
+		title #{page.title}
+		meta(charset="utf-8")
+		meta(name="description", content=page.description)
+		meta(name="keywords", content=page.keywords)
+		meta(name="viewport", content="width=device-width")
+		meta(name="format-detection", content="telephone=no")
+		link(rel="stylesheet", href="css/main.css")
+		script(src="js/ie/html5shiv.js")
+
+		// if lt IE 9
+			script(src="js/ie/eventlistener.js")
+			script(src="js/ie/selectivizr-min.js")
+			script(src="js/ie/respond.min.js")
+
+	body(class=bodyClass, data-page=page.id)
+
+
+		if (env == "dev")
+			script(src="js/vendor/jquery.js")
+			script(src="js/vendor/elementQuery.js")
+			script(data-main="js/main", src="js/vendor/require.js")
+		else
+			script(src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false&libraries=places")
+			script(src="js/"+pkg.name+".min.js")
+
+	
