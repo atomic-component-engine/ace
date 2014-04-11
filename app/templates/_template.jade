@@ -32,23 +32,22 @@ html(lang="en")
 		meta(name="keywords", content=page.keywords)
 		meta(name="viewport", content="width=device-width")
 		meta(name="format-detection", content="telephone=no")
-		link(rel="stylesheet", href="css/main.css")
-		script(src="js/ie/html5shiv.js")
+		link(rel="stylesheet", href=acsConfig.baseURL + "css/main.css")
+		script(src=acsConfig.baseURL + "js/ie/html5shiv.js")
 
 		// if lt IE 9
-			script(src="js/ie/eventlistener.js")
-			script(src="js/ie/selectivizr-min.js")
-			script(src="js/ie/respond.min.js")
+			script(src=acsConfig.baseURL + "js/ie/eventlistener.js")
+			script(src=acsConfig.baseURL + "js/ie/selectivizr-min.js")
+			script(src=acsConfig.baseURL + "js/ie/respond.min.js")
 
 	body(class=bodyClass, data-page=page.id)
 
 
 		if (env == "dev")
-			script(src="js/vendor/jquery.js")
-			script(src="js/vendor/elementQuery.js")
-			script(data-main="js/main", src="js/vendor/require.js")
+			script(src= acsConfig.baseURL + "js/vendor/jquery.js")
+			script(src= acsConfig.baseURL + "js/vendor/elementQuery.js")
+			script(data-main="js/main", src= acsConfig.baseURL + "js/vendor/require.js")
 		else
-			script(src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false&libraries=places")
 			script(src="js/"+pkg.name+".min.js")
 
 	
