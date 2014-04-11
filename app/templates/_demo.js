@@ -4,7 +4,7 @@
  */
 
 requirejs.config({
-	'baseUrl': typeof Drupal != 'undefined' ? Drupal.settings.basePath + 'js' : 'js',
+	'baseUrl': 'js',
 
 	'paths': {
 		'base':			'vendor/Base',
