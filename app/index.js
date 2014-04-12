@@ -58,17 +58,28 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     // have Yeoman greet the user
     console.log(this.yeoman);
 
-    var path = ".git/config";
-    var file = this.readFileAsString(path);
-
     // replace it with a short and sweet description of your generator
     console.log(chalk.magenta('You\'re using the fantastic Components generator.'));
 
-    if(getGitInfo.parseConfig(file)){
-      console.log(chalk.green("Git remote:" + getGitInfo.parseConfig(file)));
-    }else{
+    var gitConfig = ".git/config";
+    var acsConfig = "acs_config.json";
+    var file = false;
+
+    try{
+      var file = this.readFileAsString(acsConfig);
+    }catch (e){
+      console.log(chalk.red(e));
+    }
+
+    try{
+      var gitConfigSrting = this.readFileAsString(gitConfig);
+      console.log(chalk.green("Git remote:" + getGitInfo.parseConfig(gitConfigSrting)));
+
+    }catch (e){
       console.log(chalk.red("No git remote spicified"));
     }
+
+
 
     var prompts = [{
       type: 'list',
