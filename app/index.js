@@ -37,7 +37,7 @@ var getGitInfo = {
           };
         });
 
-        return value[ 'remote "origin"' ].url;
+        return value;
     }
 };
 
@@ -71,53 +71,90 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       console.log(chalk.red(e));
     }
 
-    try{
-      var gitConfigSrting = this.readFileAsString(gitConfig);
-      console.log(chalk.green("Git remote:" + getGitInfo.parseConfig(gitConfigSrting)));
+    var home_dir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+    var config_file = home_dir+'/.gitconfig';
+    var gitConfigStr = this.readFileAsString(config_file);
 
-    }catch (e){
-      console.log(chalk.red("No git remote spicified"));
+    if (gitConfigStr) {
+      console.log("Getting some information from the git configuration...");
+      var gitGlobalConfigFile = getGitInfo.parseConfig(gitConfigStr);
     }
+    else {
+      console.log(chalk.red("Git configuration file does not exist, this is used in template headers..."));
+    };
 
 
+    if(gitGlobalConfigFile){
 
-    var prompts = [{
-      type: 'list',
-      name: 'componentType',
-      message: 'What type would you like to generate?',
-      choices: [
-      'Atom',
-      'Molecule',
-      'Organism',
-      'Template'
-      ],
-      filter: function( val ) { return val.toLowerCase(); }
-    },
-    {
-      type: 'item',
-      name: 'componentName',
-      message: 'What would you like to call the component?'
-    },
-    {
-      type: 'item',
-      name: 'userName',
-      message: 'What is your name?'
-    },
-    {
-      type: 'item',
-      name: 'userEmail',
-      message: 'What is your email address?'
+      var prompts = [{
+        type: 'list',
+        name: 'componentType',
+        message: 'What type would you like to generate?',
+        choices: [
+        'Atom',
+        'Molecule',
+        'Organism',
+        'Template'
+        ],
+        filter: function( val ) { return val.toLowerCase(); }
+      },
+      {
+        type: 'item',
+        name: 'componentName',
+        message: 'What would you like to call the component?'
+      }
+      ];
+
+      this.prompt(prompts, function (props) {
+        this.componentType = props.componentType;
+        this.componentName = props.componentName;
+        this.name = gitGlobalConfigFile['user'].name;
+        this.email = gitGlobalConfigFile['user'].email
+        this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        done();
+      }.bind(this));
+
+    }else{
+
+      var prompts = [{
+        type: 'list',
+        name: 'componentType',
+        message: 'What type would you like to generate?',
+        choices: [
+        'Atom',
+        'Molecule',
+        'Organism',
+        'Template'
+        ],
+        filter: function( val ) { return val.toLowerCase(); }
+      },
+      {
+        type: 'item',
+        name: 'componentName',
+        message: 'What would you like to call the component?'
+      },
+      {
+        type: 'item',
+        name: 'userName',
+        message: 'What is your name?'
+      },
+      {
+        type: 'item',
+        name: 'userEmail',
+        message: 'What is your email address?'
+      }
+      ];
+
+      this.prompt(prompts, function (props) {
+        this.componentType = props.componentType;
+        this.componentName = props.componentName;
+        this.name = props.userName;
+        this.email = props.userEmail
+        this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        done();
+      }.bind(this));
+
     }
-    ];
-
-    this.prompt(prompts, function (props) {
-      this.componentType = props.componentType;
-      this.componentName = props.componentName;
-      this.name = props.userName;
-      this.email = props.userEmail
-      this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-      done();
-    }.bind(this));
   },
 
   app: function () {
