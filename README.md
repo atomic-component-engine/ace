@@ -1,4 +1,25 @@
-##Getting Started##
+atomic-component-system v0.1.0
+=======================
+
+
+* [Quick Start](#quick)
+	* [Getting Started](#getting-started)
+ 	* [ACS Init](#acs-init)
+* [Object Oriebted Frontend](#object-orientation-in-the-frontend)
+* [Nitty Gritty](#nitty)
+	* [Boilerplate](#boilerplate)
+	* [Component factory](#component-factory)
+	* [File structure](#file-structure)
+* [Todos](#todos)
+
+ACS is a system for creating and maintaining Frontend projects. It builds on the ideas forwarded by [Brad Frost](http://bradfrostweb.com/blog/post/atomic-web-design/) where instead of designing pages, we design and develop a system of components. 
+
+This system has 2 main elements. [The boilerplate](https://github.com/pjhauser/front-end-boilerplate), which consists of a Grunt based project, and a [component generator](https://github.com/pjhauser/component-generator) both of which are managed by Yeoman. 
+
+
+###Quick Start
+
+#### Getting Started
 
 1. Clone the repo.
 2. Run `npm install -g`
@@ -7,21 +28,24 @@
 5. Run `yo acs init`
 
 
-atomic-component-system v0.1.0
-=======================
+#### ACS Init
+This task initialises the directory with the main boilerplate. You will be asked just 3 questions:
 
-* [Object Oriebted Frontend](#object-orientation-in-the-frontend)
-* [Nitty Gritty](#nitty)
-	* [Boilerplate](#boilerplate)
-	* [Component factory](#component-factory)
-	* [File structure](#file-structure)
-* [Todos](#todos)
+1. Do you want to init this directory with ACS (Y/n)
+2. What is the base URL of the directory? *This is for the script and css paths of the template*
+3. Are you using Git? *This will add the base gitignore*
 
-ACS is a system to creating and maintaining Frontend projects. It builds on the ideas forwarded by [Brad Frost](http://bradfrostweb.com/blog/post/atomic-web-design/) where instead of designing pages, we design and develop a system of components. 
+Now your directory has the base boilerplate you'll want to start creating components. 
 
-This system has 2 main elements. [The boilerplate](https://github.com/pjhauser/front-end-boilerplate), which consists of a Grunt based project, and a [component generator](https://github.com/pjhauser/component-generator) which is based on Yeoman. 
 
-The ultimate goal is to merge these two into a single Yeoman dependency. One to initialise and one to maintain. 
+#### Component generation
+
+You can use the same yeoman generator to create components. Just type:
+
+1. yo acs
+2. Select component type
+3. Name component
+
 
 ### Object orientation in the Frontend
 Atomic design is an Object Oriented methodology for frontend development. It focuses on creating a set of base components, and inheriting them into parent component groups. 
