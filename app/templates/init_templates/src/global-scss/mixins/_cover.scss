@@ -1,0 +1,14 @@
+/**
+ * @file Provides a mixin to position a child over its offset parent using absolute positioning
+ */
+
+/**
+ * @param {CSS Length} offset from sides of parent
+ */
+@mixin cover($offset: 0) {
+	position: absolute;
+	top: $offset;
+	left: $offset;
+	bottom: $offset;
+	right: $offset;
+}

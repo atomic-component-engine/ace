@@ -1,6 +1,5 @@
 /**
  * @file Sets up RequireJS config and bootstraps the website
- * @author Tom Jenkins tom.jenkins@kp360group.com
  */
 
 requirejs.config({
