@@ -1,14 +1,14 @@
 {
   "name": "generator-acs",
-  "version": "0.0.9",
-  "description": "Yeoman acs generator",
+  "version": "0.1.1",
+  "description": "Atomic Component System generator",
   "license": "MIT",
   "main": "app/index.js",
-  "repository": "pjhauser/components-generator",
+  "repository": "https://github.com/pjhauser/atomic-component-system",
   "author": {
     "name": "Phil Hauser",
     "email": "phil.hsr@gmail.com",
-    "url": "https://github.com/pjhauser"
+    "url": "https://pjhauser.github.io/"
   },
   "engines": {
     "node": ">=0.10.0"

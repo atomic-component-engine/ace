@@ -41,6 +41,37 @@ var getGitInfo = {
     }
 };
 
+// This object contains common questions
+var questions = {
+    componentType: {
+      type: 'list',
+      name: 'componentType',
+      message: 'What type would you like to generate?',
+      choices: [
+      'Atom',
+      'Molecule',
+      'Organism',
+      'Template'
+      ],
+      filter: function( val ) { return val.toLowerCase(); }
+    },
+    componentName: {
+      type: 'item',
+      name: 'componentName',
+      message: 'What would you like to call the component?'
+    },
+    userName: {
+      type: 'item',
+      name: 'userName',
+      message: 'What is your name?'
+    },
+    userEmail: {
+      type: 'item',
+      name: 'userEmail',
+      message: 'What is your email address?'
+    }
+}
+
 
 var ComponentsGenerator = yeoman.generators.Base.extend({
   init: function (arg) {
@@ -53,6 +84,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     var done = this.async();
     var self = this;
 
+    // if you are running the init
     if(this.acsInit){
 
       console.log(chalk.green('You\'re using the fantastic Atomic Componenet System'));
@@ -74,12 +106,21 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         name: 'isGit',
         type: 'confirm',
         message: 'Are you using Git?'
+      }, {
+        when: function (response) {
+          return response.isGit;
+        },
+        name: 'nameInHeader',
+        type: 'confirm',
+        message: 'Do you want your name and email to be placed in the header \nof all of the compoenents you create (This is useful in teams \nand acs will read these details from your gitconfig)?'
       }], function (response) {
+          self.nameInHeader = response.nameInHeader;
           self.baseUrl = response.baseUrl;
           self.isGit = response.isGit;
           done();
       });
 
+    // if you are running the compoenent generator
     }else{
 
       var gitConfig = ".git/config";
@@ -89,16 +130,19 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       try{
         var file = this.readFileAsString(acsConfig);
         this.isInit = true;
+        var identifiedComponents = JSON.parse(file).identifiedComponents;
       }catch (e){
         console.log(chalk.red('acs_config.json not found. You either needs to init the project with "yo acs init" or add the config file back in'));
       }
 
+      // if the init file exists
       if(this.isInit){
 
           var home_dir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
           var config_file = home_dir+'/.gitconfig';
           var gitConfigStr = this.readFileAsString(config_file);
 
+          // if gitconfig exists
           if (gitConfigStr) {
             console.log("Getting some information from the git configuration...");
             var gitGlobalConfigFile = getGitInfo.parseConfig(gitConfigStr);
@@ -107,67 +151,34 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
             console.log(chalk.red("Git configuration file does not exist, this is used in template headers..."));
           };
 
+          if((gitGlobalConfigFile) && (identifiedComponents)){
 
-          if(gitGlobalConfigFile){
-
-            var prompts = [{
-              type: 'list',
-              name: 'componentType',
-              message: 'What type would you like to generate?',
-              choices: [
-              'Atom',
-              'Molecule',
-              'Organism',
-              'Template'
-              ],
-              filter: function( val ) { return val.toLowerCase(); }
-            },
-            {
-              type: 'item',
-              name: 'componentName',
-              message: 'What would you like to call the component?'
-            }
-            ];
+            var prompts = [questions.componentType,questions.componentName];
 
             this.prompt(prompts, function (props) {
               this.componentType = props.componentType;
               this.componentName = props.componentName;
               this.name = gitGlobalConfigFile['user'].name;
-              this.email = gitGlobalConfigFile['user'].email
+              this.email = gitGlobalConfigFile['user'].email;
               this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
               done();
             }.bind(this));
 
-          }else{
+          }else if(!identifiedComponents){
 
-            var prompts = [{
-              type: 'list',
-              name: 'componentType',
-              message: 'What type would you like to generate?',
-              choices: [
-              'Atom',
-              'Molecule',
-              'Organism',
-              'Template'
-              ],
-              filter: function( val ) { return val.toLowerCase(); }
-            },
-            {
-              type: 'item',
-              name: 'componentName',
-              message: 'What would you like to call the component?'
-            },
-            {
-              type: 'item',
-              name: 'userName',
-              message: 'What is your name?'
-            },
-            {
-              type: 'item',
-              name: 'userEmail',
-              message: 'What is your email address?'
-            }
-            ];
+            var prompts = [questions.componentType,questions.componentName];
+
+            this.prompt(prompts, function (props) {
+              this.componentType = props.componentType;
+              this.componentName = props.componentName;
+              this.name = " ";
+              this.email = " ";
+              this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+              done();
+            }.bind(this));
+        }else if(identifiedComponents){
+
+            var prompts = [questions.componentType,questions.componentName,questions.userName,questions.userEmail];
 
             this.prompt(prompts, function (props) {
               this.componentType = props.componentType;
@@ -177,6 +188,8 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
               this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
               done();
             }.bind(this));
+        }else{
+            console.log(chalk.red("Error"));
         }
 
       }
