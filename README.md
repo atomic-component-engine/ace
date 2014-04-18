@@ -7,7 +7,7 @@
 5. Run `yo acs init`
 
 
-atomic-component-system v0.0.1
+atomic-component-system v0.1.0
 =======================
 
 * [Object Oriebted Frontend](#object-orientation-in-the-frontend)
