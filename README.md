@@ -65,5 +65,4 @@ Now you'll have the generator installed and ready to use.
 
 
 ### Todos 
-* Merge the two projects into a single yeoman project. 
 * Create an example webpage using this generator. 
