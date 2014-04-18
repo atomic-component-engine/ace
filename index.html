@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Atomic-component-system by pjhauser</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Atomic-component-system</h1>
+        <p>This is a yeoman generator for an atomic design system</p>
+
+        <p class="view"><a href="https://github.com/pjhauser/atomic-component-system">View the Project on GitHub <small>pjhauser/atomic-component-system</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/pjhauser/atomic-component-system/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/pjhauser/atomic-component-system/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/pjhauser/atomic-component-system">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h2>
+<a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h2>
+
+<ol>
+<li>Clone the repo.</li>
+<li>Run <code>npm install -g</code>
+</li>
+<li>Run <code>npm link</code>
+</li>
+<li>cd into the working directory of your project</li>
+<li>Run <code>yo acs init</code>
+</li>
+</ol><h1>
+<a name="atomic-component-system-v010" class="anchor" href="#atomic-component-system-v010"><span class="octicon octicon-link"></span></a>atomic-component-system v0.1.0</h1>
+
+<ul>
+<li><a href="#object-orientation-in-the-frontend">Object Oriebted Frontend</a></li>
+<li>
+<a href="#nitty">Nitty Gritty</a>
+
+<ul>
+<li><a href="#boilerplate">Boilerplate</a></li>
+<li><a href="#component-factory">Component factory</a></li>
+<li><a href="#file-structure">File structure</a></li>
+</ul>
+</li>
+<li><a href="#todos">Todos</a></li>
+</ul><p>ACS is a system to creating and maintaining Frontend projects. It builds on the ideas forwarded by <a href="http://bradfrostweb.com/blog/post/atomic-web-design/">Brad Frost</a> where instead of designing pages, we design and develop a system of components. </p>
+
+<p>This system has 2 main elements. <a href="https://github.com/pjhauser/front-end-boilerplate">The boilerplate</a>, which consists of a Grunt based project, and a <a href="https://github.com/pjhauser/component-generator">component generator</a> which is based on Yeoman. </p>
+
+<p>The ultimate goal is to merge these two into a single Yeoman dependency. One to initialise and one to maintain. </p>
+
+<h3>
+<a name="object-orientation-in-the-frontend" class="anchor" href="#object-orientation-in-the-frontend"><span class="octicon octicon-link"></span></a>Object orientation in the Frontend</h3>
+
+<p>Atomic design is an Object Oriented methodology for frontend development. It focuses on creating a set of base components, and inheriting them into parent component groups. </p>
+
+<p><img src="http://bradfrostweb.com/wp-content/uploads/2013/06/atomic-design.png" alt="Atomic Design Diagram"></p>
+
+<p>This this method of inheritance is not yet possible with HTML and CSS. We need an abstraction layer and build process. This is where we introduce three fundamental aspects of ACS. </p>
+
+<ul>
+<li><a href="https://github.com/visionmedia/jade">Jade</a></li>
+<li><a href="https://github.com/nex3/sass">SASS</a></li>
+<li><a href="https://github.com/gruntjs/grunt">Grunt</a></li>
+</ul><p>Jade and SASS form our abstraction layers, and Grunt forms our build process. </p>
+
+<p>Jade offers a flexible templating engine that allows for mixins and includes. The flexibility of the engine and it's compatibility with Grunt. </p>
+
+<h3>
+<a name="nitty-gritty" class="anchor" href="#nitty-gritty"><span class="octicon octicon-link"></span></a>Nitty Gritty</h3>
+
+<h4>
+<a name="boilerplate" class="anchor" href="#boilerplate"><span class="octicon octicon-link"></span></a>Boilerplate</h4>
+
+<p>If you clone the <a href="https://github.com/pjhauser/front-end-boilerplate">main boilerplate project</a> this gives you the project scaffolding and Gruntfile. Eventually this can be moved into a Yeoman generator but for now just clone the project and rename the directory to you're respective component factory. </p>
+
+<h4>
+<a name="component-factory" class="anchor" href="#component-factory"><span class="octicon octicon-link"></span></a>Component factory</h4>
+
+<p>Once you have the boilerplate in you'll need to install the Yeoman component generator. This is the day-to-day generator. <a href="https://github.com/pjhauser/component-generator">Grab the project</a> and <code>cd</code> into the directory. Once in you'll want to <code>npm install -g</code> which will install the generator, and then <code>npm link</code>. </p>
+
+<p>Now you'll have the generator installed and ready to use. </p>
+
+<h4>
+<a name="file-structure" class="anchor" href="#file-structure"><span class="octicon octicon-link"></span></a>File structure</h4>
+
+<pre><code>src
+  | --&gt; /atoms
+           |--&gt; /atom_name
+                  | --&gt; atom_name.jade
+                  | --&gt; atom_name.js
+                  | --&gt; atom_name.sass
+                  | --&gt; demo_atom_name.jade
+
+  | --&gt; /molecules
+  | --&gt; /organisms
+  | --&gt; /templates
+  | --&gt; /global-js
+  | --&gt; /global-sass
+</code></pre>
+
+<h3>
+<a name="todos" class="anchor" href="#todos"><span class="octicon octicon-link"></span></a>Todos</h3>
+
+<ul>
+<li>Merge the two projects into a single yeoman project. </li>
+<li>Create an example webpage using this generator. </li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/pjhauser">pjhauser</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
