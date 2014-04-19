@@ -115,7 +115,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         message: 'Do you want your name and email to be placed in the header \nof all of the compoenents you create (This is useful in teams \nand acs will read these details from your gitconfig)?'
       }], function (response) {
           self.nameInHeader = response.nameInHeader;
-          self.baseUrl = response.baseUrl + "/dev/";
+          self.baseUrl = response.baseUrl.replace(/\/+$/, "");;
           self.isGit = response.isGit;
           done();
       });
@@ -227,7 +227,6 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     }else{
         this.directory('init_templates/src', 'src');
         this.template('init_templates/_acs_config.tmpl.json', 'acs_config.json');
-        // this.template('init_templates/src/global-js/main.js', 'src/global-js/main.js');
         this.copy('init_templates/Gruntfile.js', 'Gruntfile.js');
         this.copy('init_templates/package.json', 'package.json');
         this.copy('init_templates/README.md', 'README.md');

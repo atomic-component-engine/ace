@@ -3,7 +3,6 @@
  */
 
 requirejs.config({
-	'baseUrl': '<%= baseUrl %>js',
 	
 	'paths': {
 		'base':				'vendor/Base',
