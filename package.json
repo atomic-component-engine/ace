@@ -1,6 +1,6 @@
 {
   "name": "generator-acs",
-  "version": "0.1.1",
+  "version": "0.1.5",
   "description": "Atomic Component System generator",
   "license": "MIT",
   "main": "app/index.js",

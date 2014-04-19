@@ -46,7 +46,7 @@ module.exports = function(grunt) {
 			},
 			ignores: [
 				'src/global-js/r.js',
-				'src/global-js/vendor/*.js',
+				'src/global-js/vendor/**/*.js',
 				'src/global-js/ie/*.js'
 			]
 		}

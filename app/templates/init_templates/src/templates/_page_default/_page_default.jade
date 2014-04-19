@@ -44,8 +44,6 @@ html(lang="en")
 		block content
 
 		if (env == "dev")
-			script(src= acsConfig.baseURL + "js/vendor/jquery.js")
-			script(src= acsConfig.baseURL + "js/vendor/elementQuery.js")
 			script(data-main=acsConfig.baseURL + "js/main", src= acsConfig.baseURL + "js/vendor/require.js")
 		else
 			script(src="js/"+pkg.name+".min.js")

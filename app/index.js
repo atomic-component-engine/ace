@@ -115,7 +115,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         message: 'Do you want your name and email to be placed in the header \nof all of the compoenents you create (This is useful in teams \nand acs will read these details from your gitconfig)?'
       }], function (response) {
           self.nameInHeader = response.nameInHeader;
-          self.baseUrl = response.baseUrl;
+          self.baseUrl = response.baseUrl + "/dev/";
           self.isGit = response.isGit;
           done();
       });
@@ -132,7 +132,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         this.isInit = true;
         var identifiedComponents = JSON.parse(file).identifiedComponents;
       }catch (e){
-        console.log(chalk.red('acs_config.json not found. You either needs to init the project with "yo acs init" or add the config file back in'));
+        console.log(chalk.red('acs_config.json not found. You either needs to init the project with ') + '"yo acs init"' + chalk.red(' or add the config file back in'));
       }
 
       // if the init file exists
@@ -204,9 +204,8 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       jadeModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.jade',
       jadeDemoDir:  "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.jade',
 
-      // this is where we define our js and js demo paths
+      // this is where we define our js path
       jsModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.js',
-      jsDemoDir: "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.js',
 
       // this is where we define our sass and sass demo paths
       sassDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.scss',
@@ -224,11 +223,11 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         this.template('_.scss', this.dirs.sassDir);
         this.template('_demo.scss', this.dirs.sassDemoDir);
         this.template('_.js', this.dirs.jsModDir);
-        this.template('_demo.js', this.dirs.jsDemoDir);
       }
     }else{
         this.directory('init_templates/src', 'src');
         this.template('init_templates/_acs_config.tmpl.json', 'acs_config.json');
+        // this.template('init_templates/src/global-js/main.js', 'src/global-js/main.js');
         this.copy('init_templates/Gruntfile.js', 'Gruntfile.js');
         this.copy('init_templates/package.json', 'package.json');
         this.copy('init_templates/README.md', 'README.md');
