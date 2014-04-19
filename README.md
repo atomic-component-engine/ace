@@ -5,7 +5,7 @@ atomic-component-system v0.1.0
 * [Quick Start](#quick)
 	* [Getting Started](#getting-started)
  	* [ACS Init](#acs-init)
-* [Object Oriebted Frontend](#object-orientation-in-the-frontend)
+* [Object Oriented Frontend](#object-orientation-in-the-frontend)
 * [Nitty Gritty](#nitty)
 	* [Boilerplate](#boilerplate)
 	* [Component factory](#component-factory)
