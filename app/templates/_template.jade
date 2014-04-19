@@ -32,22 +32,21 @@ html(lang="en")
 		meta(name="keywords", content=page.keywords)
 		meta(name="viewport", content="width=device-width")
 		meta(name="format-detection", content="telephone=no")
-		link(rel="stylesheet", href=acsConfig.baseURL + "css/main.css")
-		script(src=acsConfig.baseURL + "js/ie/html5shiv.js")
+		link(rel="stylesheet", href=acsConfig.baseURL + "/" + env + "/css/main.css")
+		script(src=acsConfig.baseURL + "/" + env + "/js/ie/html5shiv.js")
 
 		// if lt IE 9
-			script(src=acsConfig.baseURL + "js/ie/eventlistener.js")
-			script(src=acsConfig.baseURL + "js/ie/selectivizr-min.js")
-			script(src=acsConfig.baseURL + "js/ie/respond.min.js")
+			script(src=acsConfig.baseURL  + "/" + env + "/js/ie/eventlistener.js")
+			script(src=acsConfig.baseURL  + "/" + env + "/js/ie/selectivizr-min.js")
+			script(src=acsConfig.baseURL  + "/" + env + "/js/ie/respond.min.js")
 
 	body(class=bodyClass, data-page=page.id)
 		block content
 
+
 		if (env == "dev")
-			script(src= acsConfig.baseURL + "js/vendor/jquery.js")
-			script(src= acsConfig.baseURL + "js/vendor/elementQuery.js")
-			script(data-main=acsConfig.baseURL + "js/main", src= acsConfig.baseURL + "js/vendor/require.js")
+			script(data-main=acsConfig.baseURL + "/" + env + "/js/main", src= acsConfig.baseURL + "/" + env + "/js/vendor/require.js")
 		else
 			script(src="js/"+pkg.name+".min.js")
 
-	
+
