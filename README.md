@@ -1,4 +1,4 @@
-atomic-component-system v0.1.7 - *PRE-RELEASE*
+Atomic Component System v0.1.7 - *PRE-RELEASE*
 =======================
 
 
@@ -23,11 +23,12 @@ This system has 2 main elements. The boilerplate, which consists of a Grunt base
 
 #### Getting Started
 
-1. Clone the repo.
-2. Run `npm install -g`
-3. Run `npm link`
-4. cd into the working directory of your project
-5. Run `yo acs init` and follow the instructions
+1. Download the zip.
+2. `cd` into the yeoman directory
+3. Run `npm install -g`
+4. Run `npm link`
+5. cd into the working directory of your project
+6. Run `yo acs init` and follow the instructions
 
 
 #### ACS Init
@@ -83,10 +84,55 @@ Jade offers a flexible templating engine that allows for mixins and includes. Th
 
 ### Nitty Gritty
 #### Boilerplate
-If you clone the [main boilerplate project](https://github.com/pjhauser/front-end-boilerplate) this gives you the project scaffolding and Gruntfile. Eventually this can be moved into a Yeoman generator but for now just clone the project and rename the directory to you're respective component factory. 
+The boilerplate consists of 
+
+	|-- Gruntfile.js
+	|-- README.md
+	|-- _acs_config.tmpl.json
+	|-- gitignore
+	|-- package.json
+	`-- src
+    	|-- fonts
+    	|-- global-js
+	    |   |-- ie
+    	|   |   |-- boxsizing.htc
+	    |   |   |-- elementQuery.js
+    	|   |   `-- html5shiv.js
+    	|   |-- main.js
+    	|   |-- r.js
+    	|   `-- vendor
+    	|       |-- Base.js
+    	|       |-- almond.js
+	    |       |-- console.js
+	    |       |-- elementQuery.js
+	    |       |-- jquery.js
+	    |       |-- modernizr
+	    |       |   |-- modernizr.js
+	    |       |   |-- modernizrpolys.js
+	    |       |   `-- polyfills
+	    |       |       `-- simple-placeholder.js
+	    |       |-- require-text.js
+	    |       `-- require.js
+	    |-- global-scss
+	    |   |-- _debug.scss
+	    |   |-- _normalise.scss
+	    |   |-- _settings.scss
+	    |   |-- main.scss
+	    |   `-- mixins
+	    |       |-- _circle.scss
+	    |       |-- _cover.scss
+	    |       |-- _element_query.scss
+	    |       `-- _offscreen.scss
+	    |-- img
+	    `-- templates
+	        `-- _page_default
+	            |-- _page_default.jade
+	            |-- _page_default.js
+	            `-- _page_default.scss
+
 
 #### Component factory
-Once you have the boilerplate in you'll need to install the Yeoman component generator. This is the day-to-day generator. [Grab the project](https://github.com/pjhauser/component-generator) and `cd` into the directory. Once in you'll want to `npm install -g` which will install the generator, and then `npm link`. 
+Once you have the boilerplate in you'll need to install the Yeoman component generator. This is the day-to-day generator. `cd` into the directory. Once in you'll want to `npm install -g` which will install the generator, and then `npm link`. 
 
 Now you'll have the generator installed and ready to use. 
 
