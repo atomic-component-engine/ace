@@ -109,7 +109,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     // if you are running the init
     if(this.acsNeedsInit){
 
-      console.log(chalk.green('You\'re using the fantastic Atomic Componenet System'));
+      console.log(chalk.green('You\'re using the fantastic Atomic Componenet System /n more info: http://pjhauser.github.io/atomic-component-system/'));
 
       this.prompt([{
         name: 'confirmInit',
