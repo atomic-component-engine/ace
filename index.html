@@ -29,7 +29,7 @@
       </header>
       <section>
         <h1>
-<a name="atomic-component-system-v017---pre-release" class="anchor" href="#atomic-component-system-v017---pre-release"><span class="octicon octicon-link"></span></a>atomic-component-system v0.1.7 - <em>PRE-RELEASE</em>
+<a name="atomic-component-system-v017---pre-release" class="anchor" href="#atomic-component-system-v017---pre-release"><span class="octicon octicon-link"></span></a>Atomic Component System v0.1.7 - <em>PRE-RELEASE</em>
 </h1>
 
 <ul>
@@ -65,7 +65,9 @@
 <a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h4>
 
 <ol>
-<li>Clone the repo.</li>
+<li>Download the zip.</li>
+<li>
+<code>cd</code> into the yeoman directory</li>
 <li>Run <code>npm install -g</code>
 </li>
 <li>Run <code>npm link</code>
@@ -132,12 +134,57 @@
 <h4>
 <a name="boilerplate" class="anchor" href="#boilerplate"><span class="octicon octicon-link"></span></a>Boilerplate</h4>
 
-<p>If you clone the <a href="https://github.com/pjhauser/front-end-boilerplate">main boilerplate project</a> this gives you the project scaffolding and Gruntfile. Eventually this can be moved into a Yeoman generator but for now just clone the project and rename the directory to you're respective component factory. </p>
+<p>The boilerplate consists of </p>
+
+<pre><code>|-- Gruntfile.js
+|-- README.md
+|-- _acs_config.tmpl.json
+|-- gitignore
+|-- package.json
+`-- src
+    |-- fonts
+    |-- global-js
+    |   |-- ie
+    |   |   |-- boxsizing.htc
+    |   |   |-- elementQuery.js
+    |   |   `-- html5shiv.js
+    |   |-- main.js
+    |   |-- r.js
+    |   `-- vendor
+    |       |-- Base.js
+    |       |-- almond.js
+    |       |-- console.js
+    |       |-- elementQuery.js
+    |       |-- jquery.js
+    |       |-- modernizr
+    |       |   |-- modernizr.js
+    |       |   |-- modernizrpolys.js
+    |       |   `-- polyfills
+    |       |       `-- simple-placeholder.js
+    |       |-- require-text.js
+    |       `-- require.js
+    |-- global-scss
+    |   |-- _debug.scss
+    |   |-- _normalise.scss
+    |   |-- _settings.scss
+    |   |-- main.scss
+    |   `-- mixins
+    |       |-- _circle.scss
+    |       |-- _cover.scss
+    |       |-- _element_query.scss
+    |       `-- _offscreen.scss
+    |-- img
+    `-- templates
+        `-- _page_default
+            |-- _page_default.jade
+            |-- _page_default.js
+            `-- _page_default.scss
+</code></pre>
 
 <h4>
 <a name="component-factory" class="anchor" href="#component-factory"><span class="octicon octicon-link"></span></a>Component factory</h4>
 
-<p>Once you have the boilerplate in you'll need to install the Yeoman component generator. This is the day-to-day generator. <a href="https://github.com/pjhauser/component-generator">Grab the project</a> and <code>cd</code> into the directory. Once in you'll want to <code>npm install -g</code> which will install the generator, and then <code>npm link</code>. </p>
+<p>Once you have the boilerplate in you'll need to install the Yeoman component generator. This is the day-to-day generator. <code>cd</code> into the directory. Once in you'll want to <code>npm install -g</code> which will install the generator, and then <code>npm link</code>. </p>
 
 <p>Now you'll have the generator installed and ready to use. </p>
 
