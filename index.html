@@ -29,7 +29,8 @@
       </header>
       <section>
         <h1>
-<a name="atomic-component-system-v010" class="anchor" href="#atomic-component-system-v010"><span class="octicon octicon-link"></span></a>atomic-component-system v0.1.0</h1>
+<a name="atomic-component-system-v017---pre-release" class="anchor" href="#atomic-component-system-v017---pre-release"><span class="octicon octicon-link"></span></a>atomic-component-system v0.1.7 - <em>PRE-RELEASE</em>
+</h1>
 
 <ul>
 <li>
@@ -38,9 +39,11 @@
 <ul>
 <li><a href="#getting-started">Getting Started</a></li>
 <li><a href="#acs-init">ACS Init</a></li>
+<li><a href="#component-generation">Component generation</a></li>
+<li><a href="#page-generation">Page generation</a></li>
 </ul>
 </li>
-<li><a href="#object-orientation-in-the-frontend">Object Oriebted Frontend</a></li>
+<li><a href="#object-orientation-in-the-frontend">Object Oriented Frontend</a></li>
 <li>
 <a href="#nitty">Nitty Gritty</a>
 
@@ -53,7 +56,7 @@
 <li><a href="#todos">Todos</a></li>
 </ul><p>ACS is a system for creating and maintaining Frontend projects. It builds on the ideas forwarded by <a href="http://bradfrostweb.com/blog/post/atomic-web-design/">Brad Frost</a> where instead of designing pages, we design and develop a system of components. </p>
 
-<p>This system has 2 main elements. <a href="https://github.com/pjhauser/front-end-boilerplate">The boilerplate</a>, which consists of a Grunt based project, and a <a href="https://github.com/pjhauser/component-generator">component generator</a> both of which are managed by Yeoman. </p>
+<p>This system has 2 main elements. The boilerplate, which consists of a Grunt based project, and a component generator, both of which are managed by Yeoman. </p>
 
 <h3>
 <a name="quick-start" class="anchor" href="#quick-start"><span class="octicon octicon-link"></span></a>Quick Start</h3>
@@ -68,18 +71,19 @@
 <li>Run <code>npm link</code>
 </li>
 <li>cd into the working directory of your project</li>
-<li>Run <code>yo acs init</code>
-</li>
+<li>Run <code>yo acs init</code> and follow the instructions</li>
 </ol><h4>
 <a name="acs-init" class="anchor" href="#acs-init"><span class="octicon octicon-link"></span></a>ACS Init</h4>
 
-<p>This task initialises the directory with the main boilerplate. You will be asked just 3 questions:</p>
+<p>This task initialises the directory with the main boilerplate. You will be asked 4 questions:</p>
 
 <ol>
 <li>Do you want to init this directory with ACS (Y/n)</li>
 <li>What is the base URL of the directory? <em>This is for the script and css paths of the template</em>
 </li>
 <li>Are you using Git? <em>This will add the base gitignore</em>
+</li>
+<li>Do you want your name and email to be placed in the header of all of the compoenents you create? <em>This is useful in teams and acs will read these details from your gitconfig if present</em>
 </li>
 </ol><p>Now your directory has the base boilerplate you'll want to start creating components. </p>
 
@@ -92,7 +96,20 @@
 <li>yo acs</li>
 <li>Select component type</li>
 <li>Name component</li>
-</ol><h3>
+<li>
+<em>(optional)</em> Type name</li>
+<li>
+<em>(optional)</em> Enter email</li>
+</ol><h4>
+<a name="page-generation" class="anchor" href="#page-generation"><span class="octicon octicon-link"></span></a>Page generation</h4>
+
+<p>Pages are a little different to compoenents, ideally these should have minimal CSS and JS, as this should all be performed on the sub-page component level. </p>
+
+<ol>
+<li>yo acs page</li>
+<li>Name component / page</li>
+<li>Select template type</li>
+</ol><hr><h3>
 <a name="object-orientation-in-the-frontend" class="anchor" href="#object-orientation-in-the-frontend"><span class="octicon octicon-link"></span></a>Object orientation in the Frontend</h3>
 
 <p>Atomic design is an Object Oriented methodology for frontend development. It focuses on creating a set of base components, and inheriting them into parent component groups. </p>
