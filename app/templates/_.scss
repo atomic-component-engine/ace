@@ -16,11 +16,11 @@ $large: 99999px;
 //Default style (Small first)
 
 
-@include at-min-width($medium + 1){
-	//medium styles
-}
+// @include at-min-width($medium + 1){
+// 	//medium styles
+// }
 
 
-@include at-min-width($large + 1){
-	//large styles
-}
+// @include at-min-width($large + 1){
+// 	//large styles
+// }

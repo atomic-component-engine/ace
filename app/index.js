@@ -3,6 +3,7 @@ var util = require('util');
 var path = require('path');
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
+var fs = require('fs');
 
 
 var getGitInfo = {
@@ -75,9 +76,30 @@ var questions = {
 
 var ComponentsGenerator = yeoman.generators.Base.extend({
   init: function (arg) {
+    this.acsNeedsInit = false;
+    this.acsPage = false;
+    this.quit = false;
+
     if(arg == 'init'){
-      this.acsInit = true;
+      this.acsNeedsInit = true;
+    }else if(arg == 'page'){
+      this.acsPage = true;
     }
+
+    var acsConfig = "acs_config.json";
+    var file = false;
+
+    if(!this.acsNeedsInit){
+      try{
+        var file = this.readFileAsString(acsConfig);
+        this.isInit = true;
+        this.identifiedComponents = JSON.parse(file).identifiedComponents;
+      }catch (e){
+        console.log(chalk.red('acs_config.json not found. '), chalk.green('Running yo acs init...'));
+        this.acsNeedsInit = true;
+      }
+    }
+
   },
 
   askFor: function () {
@@ -85,7 +107,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     var self = this;
 
     // if you are running the init
-    if(this.acsInit){
+    if(this.acsNeedsInit){
 
       console.log(chalk.green('You\'re using the fantastic Atomic Componenet System'));
 
@@ -121,119 +143,139 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       });
 
     // if you are running the compoenent generator
+    }else if(this.acsPage){
+
+      var templates = fs.readdirSync("src/templates/");
+
+      this.prompt([questions.componentName, {
+        when: function (response) {
+          return response.componentName;
+        },
+        type: 'list',
+        name: 'templateSelect',
+        message: 'Which template do you want to use?',
+        choices: templates,
+      }], function (response) {
+          self.componentType = "page";
+          self.componentName = response.componentName;
+          self.templateSelect = response.templateSelect;
+          self.name = " ";
+          self.email = " ";
+          self.id = self.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+          done();
+      });
+
     }else{
 
       var gitConfig = ".git/config";
-      var acsConfig = "acs_config.json";
-      var file = false;
-
-      try{
-        var file = this.readFileAsString(acsConfig);
-        this.isInit = true;
-        var identifiedComponents = JSON.parse(file).identifiedComponents;
-      }catch (e){
-        console.log(chalk.red('acs_config.json not found. You either needs to init the project with ') + '"yo acs init"' + chalk.red(' or add the config file back in'));
-      }
 
       // if the init file exists
-      if(this.isInit){
+      var home_dir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+      var config_file = home_dir+'/.gitconfig';
+      var gitConfigStr = this.readFileAsString(config_file);
 
-          var home_dir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-          var config_file = home_dir+'/.gitconfig';
-          var gitConfigStr = this.readFileAsString(config_file);
+      // if gitconfig exists
+      if (gitConfigStr) {
+        console.log("Getting some information from the git configuration...");
+        var gitGlobalConfigFile = getGitInfo.parseConfig(gitConfigStr);
+      }
+      else {
+        console.log(chalk.red("Git configuration file does not exist, this is used in template headers..."));
+      };
 
-          // if gitconfig exists
-          if (gitConfigStr) {
-            console.log("Getting some information from the git configuration...");
-            var gitGlobalConfigFile = getGitInfo.parseConfig(gitConfigStr);
-          }
-          else {
-            console.log(chalk.red("Git configuration file does not exist, this is used in template headers..."));
-          };
+      // if the config exists and the user wants to add name and email to components
+      if((gitGlobalConfigFile) && (this.identifiedComponents)){
 
-          if((gitGlobalConfigFile) && (identifiedComponents)){
+        var prompts = [questions.componentType,questions.componentName];
 
-            var prompts = [questions.componentType,questions.componentName];
+        this.prompt(prompts, function (props) {
+          this.componentType = props.componentType;
+          this.componentName = props.componentName;
+          this.name = gitGlobalConfigFile['user'].name;
+          this.email = gitGlobalConfigFile['user'].email;
+          this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+          done();
+        }.bind(this));
 
-            this.prompt(prompts, function (props) {
-              this.componentType = props.componentType;
-              this.componentName = props.componentName;
-              this.name = gitGlobalConfigFile['user'].name;
-              this.email = gitGlobalConfigFile['user'].email;
-              this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-              done();
-            }.bind(this));
+      // if the user doesn't want to add name and email to components
+      }else if(!this.identifiedComponents){
 
-          }else if(!identifiedComponents){
+        var prompts = [questions.componentType,questions.componentName];
 
-            var prompts = [questions.componentType,questions.componentName];
+        this.prompt(prompts, function (props) {
+          this.componentType = props.componentType;
+          this.componentName = props.componentName;
+          this.name = " ";
+          this.email = " ";
+          this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+          done();
+        }.bind(this));
+    
+      // if the config doesn't exists and the user wants to add name and email to components
+      }else if((!gitGlobalConfigFile) && (this.identifiedComponents)){
 
-            this.prompt(prompts, function (props) {
-              this.componentType = props.componentType;
-              this.componentName = props.componentName;
-              this.name = " ";
-              this.email = " ";
-              this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-              done();
-            }.bind(this));
-        }else if(identifiedComponents){
+          var prompts = [questions.componentType,questions.componentName,questions.userName,questions.userEmail];
 
-            var prompts = [questions.componentType,questions.componentName,questions.userName,questions.userEmail];
-
-            this.prompt(prompts, function (props) {
-              this.componentType = props.componentType;
-              this.componentName = props.componentName;
-              this.name = props.userName;
-              this.email = props.userEmail
-              this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-              done();
-            }.bind(this));
-        }else{
-            console.log(chalk.red("Error"));
-        }
-
+          this.prompt(prompts, function (props) {
+            this.componentType = props.componentType;
+            this.componentName = props.componentName;
+            this.name = props.userName;
+            this.email = props.userEmail
+            this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            done();
+          }.bind(this));
+      }else{
+          console.log(chalk.red("Error"));
       }
 
     }
+
   },
 
   app: function () {
 
-    this.dirs = {
-      // this is where we define our jade and jade demo paths
-      jadeModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.jade',
-      jadeDemoDir:  "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.jade',
+    if(!this.quit){
 
-      // this is where we define our js path
-      jsModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.js',
+      this.dirs = {
+        // this is where we define our jade and jade demo paths
+        jadeModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.jade',
+        jadeDemoDir:  "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.jade',
 
-      // this is where we define our sass and sass demo paths
-      sassDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.scss',
-      sassDemoDir: "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.scss'
-    };
+        // this is where we define our js path
+        jsModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.js',
 
-    if(this.componentType){
-      if(this.componentType == 'template'){
-        this.template('_template.jade', this.dirs.jadeModDir);
-        this.template('_.js', this.dirs.jsModDir);
-        this.template('_.scss', this.dirs.sassDir);
-      }else{
-        this.template('_.jade', this.dirs.jadeModDir);
-        this.template('_demo.jade', this.dirs.jadeDemoDir);
-        this.template('_.scss', this.dirs.sassDir);
-        this.template('_demo.scss', this.dirs.sassDemoDir);
-        this.template('_.js', this.dirs.jsModDir);
-      }
-    }else{
-        this.directory('init_templates/src', 'src');
-        this.template('init_templates/_acs_config.tmpl.json', 'acs_config.json');
-        this.copy('init_templates/Gruntfile.js', 'Gruntfile.js');
-        this.copy('init_templates/package.json', 'package.json');
-        this.copy('init_templates/README.md', 'README.md');
-        if(this.isGit){
-            this.copy('init_templates/gitignore', '.gitignore');
-            console.log(chalk.green('You now have the default .gitignore'));
+        // this is where we define our sass and sass demo paths
+        sassDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.scss',
+        sassDemoDir: "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.scss'
+      };
+
+      if(this.componentType){
+        if(this.componentType == 'template'){
+          this.template('_template.jade', this.dirs.jadeModDir);
+          this.template('_.js', this.dirs.jsModDir);
+          this.template('_.scss', this.dirs.sassDir);
+        }else if(this.componentType == 'page'){
+          this.template('_page.jade', this.dirs.jadeModDir);
+          this.template('_.js', this.dirs.jsModDir);
+          this.template('_.scss', this.dirs.sassDir);
+        }else{
+          this.template('_.jade', this.dirs.jadeModDir);
+          this.template('_demo.jade', this.dirs.jadeDemoDir);
+          this.template('_.scss', this.dirs.sassDir);
+          this.template('_demo.scss', this.dirs.sassDemoDir);
+          this.template('_.js', this.dirs.jsModDir);
         }
+      }else{
+          this.directory('init_templates/src', 'src');
+          this.template('init_templates/_acs_config.tmpl.json', 'acs_config.json');
+          this.copy('init_templates/Gruntfile.js', 'Gruntfile.js');
+          this.copy('init_templates/package.json', 'package.json');
+          this.copy('init_templates/README.md', 'README.md');
+          if(this.isGit){
+              this.copy('init_templates/gitignore', '.gitignore');
+              console.log(chalk.green('You now have the default .gitignore'));
+          }
+      }
     }
 
   },
