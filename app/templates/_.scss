@@ -3,3 +3,24 @@
  * @author <%= name %> <%= email %>
  */
 
+// replace with medium and large
+// element breakpoints
+$medium: 99999px;
+$large: 99999px;
+
+
+// element color pallet
+// e.g $button-tint: #000000
+
+
+//Default style (Small first)
+
+
+@include at-min-width($medium + 1){
+	//medium styles
+}
+
+
+@include at-min-width($large + 1){
+	//large styles
+}
