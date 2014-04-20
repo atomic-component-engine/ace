@@ -1,6 +1,5 @@
 /**
  * @file Defines behaviours for a page_default module
- * @author Phil Hauser phil.hsr@gmail.com
  */
 
 define([
