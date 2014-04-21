@@ -42,8 +42,19 @@ var questions = {
     }
 }
 
-
+/**
+ * {yeoman.generators}
+ * {ComponentsGenerator}
+ * The main yeoman generator - handles project initialisation and component generation
+ */
 var ComponentsGenerator = yeoman.generators.Base.extend({
+
+  /**
+   * @constructor
+   * Defines init prompts
+   * Parses task name to set various flags
+   * If this isn't a project initialisation, try and read in the ACS config
+   */
   init: function (arg) {
     this.acsNeedsInit = false;
     this.acsPage = false;
@@ -96,15 +107,16 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       }
     ];
 
+    // Parse task name to determine course of action
     if(arg == 'init'){
       this.acsNeedsInit = true;
     }else if(arg == 'page'){
       this.acsPage = true;
     }
 
+    // Read in ACS config if generating page or component
     var acsConfig = "acs_config.json";
     var file = false;
-
     if(!this.acsNeedsInit){
       try{
         var file = this.readFileAsString(acsConfig);
@@ -118,6 +130,9 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
   },
 
+  /**
+   * Presents user with prompts for the requested task
+   */
   askFor: function () {
     var done = this.async();
     var self = this;
@@ -125,8 +140,9 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     // if you are running the init
     if(this.acsNeedsInit){
 
+      // Welcome message
       console.log(chalk.green('You\'re using the fantastic Atomic Componenet System /n more info: http://pjhauser.github.io/atomic-component-system/'));
-
+      // Begin the interrogation
       this.prompt(this.initPrompts, function (response) {
           self.nameInHeader = response.nameInHeader;
           self.baseUrl = response.baseUrl.replace(/\/+$/, "");;
@@ -135,11 +151,11 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           done();
       });
 
-    // if you are running the compoenent generator
+    // if you are running the page generator
     }else if(this.acsPage){
-
+      // Grab template files
       var templates = fs.readdirSync("src/templates/");
-
+      // Begin the interrogation
       this.prompt([questions.componentName, {
         when: function (response) {
           return response.componentName;
@@ -158,6 +174,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           done();
       });
 
+    // if you are running the component generator
     }else{
 
       var gitConfig = ".git/config";
@@ -225,6 +242,9 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
   },
 
+  /**
+   * Takes the user-entered data from askFor and runs the templating, either for project, component, template or page generation
+   */
   app: function () {
 
     if(!this.quit){
@@ -242,15 +262,19 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         sassDemoDir: "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.scss'
       };
 
+      // Generating a template, page or component
       if(this.componentType){
+        // Generating a page template
         if(this.componentType == 'template'){
           this.template('_template.jade', this.dirs.jadeModDir);
           this.template('_.js', this.dirs.jsModDir);
           this.template('_.scss', this.dirs.sassDir);
+        // Generating a page instance
         }else if(this.componentType == 'page'){
           this.template('_page.jade', this.dirs.jadeModDir);
           this.template('_.js', this.dirs.jsModDir);
           this.template('_.scss', this.dirs.sassDir);
+        // Generating a component
         }else{
           this.template('_.jade', this.dirs.jadeModDir);
           this.template('_demo.jade', this.dirs.jadeDemoDir);
@@ -258,6 +282,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           this.template('_demo.scss', this.dirs.sassDemoDir);
           this.template('_.js', this.dirs.jsModDir);
         }
+      // Generating a new project
       }else{
           this.directory('init_templates/src', 'src');
           this.template('init_templates/_acs_config.tmpl.json', 'acs_config.json');
