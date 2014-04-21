@@ -8,7 +8,10 @@ var fs = require('fs');
 
 var getGitInfo = require('./get-git-info');
 
-// This object contains common questions
+/**
+ * {Object}
+ * Contains common questions used by the component generator
+ */
 var questions = {
     componentType: {
       type: 'list',
