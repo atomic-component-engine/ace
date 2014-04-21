@@ -3,6 +3,13 @@
  */
 
 module.exports = {
+
+    /**
+     * @public
+     * Parses given git config file to get various user data
+     * @param {String} filename
+     * @returns {Object} user data keyed by config key name
+     */
     parseConfig: function(file){
 
         var regex = {
