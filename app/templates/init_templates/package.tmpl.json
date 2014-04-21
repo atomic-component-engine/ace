@@ -1,5 +1,5 @@
 {
-	"name": "emed-frontend-boilerplate",
+	"name": "<%= pkgName %>",
 	"version": "0.0.1",
 	"devDependencies": {
 		"grunt": "~0.4.2",

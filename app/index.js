@@ -119,8 +119,14 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         when: function (response) {
           return response.confirmInit;
         },
+        name: 'pkgName',
+        message: 'Sweet! What identifier should we use for your app? (e.g. my-atomic-website)'
+      }, {
+        when: function (response) {
+          return response.pkgName;
+        },
         name: 'baseUrl',
-        message: 'Sweet! Whats the local URL for this project? (e.g http://awesome.dev/)'
+        message: 'And what\'s the local URL for this project? (e.g http://awesome.dev/)'
       }, {
         when: function (response) {
           return response.baseUrl;
@@ -138,6 +144,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       }], function (response) {
           self.nameInHeader = response.nameInHeader;
           self.baseUrl = response.baseUrl.replace(/\/+$/, "");;
+          self.pkgName = response.pkgName;
           self.isGit = response.isGit;
           done();
       });
@@ -268,8 +275,8 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       }else{
           this.directory('init_templates/src', 'src');
           this.template('init_templates/_acs_config.tmpl.json', 'acs_config.json');
+          this.template('init_templates/package.tmpl.json', 'package.json');
           this.copy('init_templates/Gruntfile.js', 'Gruntfile.js');
-          this.copy('init_templates/package.json', 'package.json');
           this.copy('init_templates/README.md', 'README.md');
           if(this.isGit){
               this.copy('init_templates/gitignore', '.gitignore');
