@@ -46,6 +46,53 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     this.acsPage = false;
     this.quit = false;
 
+    /**
+     * {Array}
+     * Contains prompts presented to user at project generation time
+     */
+    this.initPrompts = [
+      // Confirm project generation
+      {
+        name: 'confirmInit',
+        type: 'confirm',
+        message: 'Do you want to init this directory for acs?'
+      },
+      // Ask for a package name to be used in package.json
+      {
+        when: function (response) {
+          return response.confirmInit;
+        },
+        name: 'pkgName',
+        message: 'Sweet! What identifier should we use for your app? (e.g. my-atomic-website)'
+      },
+      // Ask for the base URL at which the project is accessed over HTTP
+      {
+        when: function (response) {
+          return response.pkgName;
+        },
+        name: 'baseUrl',
+        message: 'And what\'s the local URL for this project? (e.g http://awesome.dev/)'
+      },
+      // Ask whether the project will be using Git
+      {
+        when: function (response) {
+          return response.baseUrl;
+        },
+        name: 'isGit',
+        type: 'confirm',
+        message: 'Are you using Git?'
+      },
+      // Ask whether the user's name and email should be injected into the comment headers of generated files
+      {
+        when: function (response) {
+          return response.isGit;
+        },
+        name: 'nameInHeader',
+        type: 'confirm',
+        message: 'Do you want your name and email to be placed in the header \nof all of the compoenents you create (This is useful in teams \nand acs will read these details from your gitconfig)?'
+      }
+    ];
+
     if(arg == 'init'){
       this.acsNeedsInit = true;
     }else if(arg == 'page'){
@@ -77,37 +124,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
       console.log(chalk.green('You\'re using the fantastic Atomic Componenet System /n more info: http://pjhauser.github.io/atomic-component-system/'));
 
-      this.prompt([{
-        name: 'confirmInit',
-        type: 'confirm',
-        message: 'Do you want to init this directory for acs?'
-      }, {
-        when: function (response) {
-          return response.confirmInit;
-        },
-        name: 'pkgName',
-        message: 'Sweet! What identifier should we use for your app? (e.g. my-atomic-website)'
-      }, {
-        when: function (response) {
-          return response.pkgName;
-        },
-        name: 'baseUrl',
-        message: 'And what\'s the local URL for this project? (e.g http://awesome.dev/)'
-      }, {
-        when: function (response) {
-          return response.baseUrl;
-        },
-        name: 'isGit',
-        type: 'confirm',
-        message: 'Are you using Git?'
-      }, {
-        when: function (response) {
-          return response.isGit;
-        },
-        name: 'nameInHeader',
-        type: 'confirm',
-        message: 'Do you want your name and email to be placed in the header \nof all of the compoenents you create (This is useful in teams \nand acs will read these details from your gitconfig)?'
-      }], function (response) {
+      this.prompt(this.initPrompts, function (response) {
           self.nameInHeader = response.nameInHeader;
           self.baseUrl = response.baseUrl.replace(/\/+$/, "");;
           self.pkgName = response.pkgName;
