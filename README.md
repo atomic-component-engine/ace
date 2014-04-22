@@ -7,11 +7,7 @@ Atomic Component System v0.1.7 - *PRE-RELEASE*
  	* [ACS Init](#acs-init)
  	* [Component generation](#component-generation)
  	* [Page generation](#page-generation)
-* [Object Oriented Frontend](#object-orientation-in-the-frontend)
-* [Nitty Gritty](#nitty)
-	* [Boilerplate](#boilerplate)
-	* [Component factory](#component-factory)
-	* [File structure](#file-structure)
+
 * [Todos](#todos)
 
 ACS is a system for creating and maintaining Frontend projects. It builds on the ideas forwarded by [Brad Frost](http://bradfrostweb.com/blog/post/atomic-web-design/) where instead of designing pages, we design and develop a system of components. 
@@ -23,7 +19,7 @@ This system has 2 main elements. The boilerplate, which consists of a Grunt base
 
 #### Getting Started
 
-1. Download the zip.
+1. Download the [zip](https://github.com/pjhauser/atomic-component-system/archive/master.zip).
 2. `cd` into the yeoman directory
 3. Run `npm install -g`
 4. Run `npm link`
