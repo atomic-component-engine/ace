@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Atomic-component-system by pjhauser</title>
+    <title>Atomic Component System by pjhauser</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
@@ -15,7 +15,7 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>Atomic-component-system</h1>
+        <h1>Atomic Component System</h1>
         <p>This is a yeoman generator for an atomic design system</p>
 
         <p class="view"><a href="https://github.com/pjhauser/atomic-component-system">View the Project on GitHub <small>pjhauser/atomic-component-system</small></a></p>
@@ -29,12 +29,12 @@
       </header>
       <section>
         <h1>
-<a name="atomic-component-system-v017---pre-release" class="anchor" href="#atomic-component-system-v017---pre-release"><span class="octicon octicon-link"></span></a>Atomic Component System v0.1.7 - <em>PRE-RELEASE</em>
+<a name="acs-v017---pre-release" class="anchor" href="#acs-v017---pre-release"><span class="octicon octicon-link"></span></a>ACS v0.1.7 - <em>PRE-RELEASE</em>
 </h1>
 
 <ul>
 <li>
-<a href="#quick">Quick Start</a>
+<p><a href="#quick">Quick Start</a></p>
 
 <ul>
 <li><a href="#getting-started">Getting Started</a></li>
@@ -43,17 +43,7 @@
 <li><a href="#page-generation">Page generation</a></li>
 </ul>
 </li>
-<li><a href="#object-orientation-in-the-frontend">Object Oriented Frontend</a></li>
-<li>
-<a href="#nitty">Nitty Gritty</a>
-
-<ul>
-<li><a href="#boilerplate">Boilerplate</a></li>
-<li><a href="#component-factory">Component factory</a></li>
-<li><a href="#file-structure">File structure</a></li>
-</ul>
-</li>
-<li><a href="#todos">Todos</a></li>
+<li><p><a href="#todos">Todos</a></p></li>
 </ul><p>ACS is a system for creating and maintaining Frontend projects. It builds on the ideas forwarded by <a href="http://bradfrostweb.com/blog/post/atomic-web-design/">Brad Frost</a> where instead of designing pages, we design and develop a system of components. </p>
 
 <p>This system has 2 main elements. The boilerplate, which consists of a Grunt based project, and a component generator, both of which are managed by Yeoman. </p>
@@ -65,7 +55,7 @@
 <a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h4>
 
 <ol>
-<li>Download the zip.</li>
+<li>Download the <a href="https://github.com/pjhauser/atomic-component-system/archive/master.zip">zip</a>.</li>
 <li>
 <code>cd</code> into the yeoman directory</li>
 <li>Run <code>npm install -g</code>
@@ -112,101 +102,6 @@
 <li>Name component / page</li>
 <li>Select template type</li>
 </ol><hr><h3>
-<a name="object-orientation-in-the-frontend" class="anchor" href="#object-orientation-in-the-frontend"><span class="octicon octicon-link"></span></a>Object orientation in the Frontend</h3>
-
-<p>Atomic design is an Object Oriented methodology for frontend development. It focuses on creating a set of base components, and inheriting them into parent component groups. </p>
-
-<p><img src="http://bradfrostweb.com/wp-content/uploads/2013/06/atomic-design.png" alt="Atomic Design Diagram"></p>
-
-<p>This this method of inheritance is not yet possible with HTML and CSS. We need an abstraction layer and build process. This is where we introduce three fundamental aspects of ACS. </p>
-
-<ul>
-<li><a href="https://github.com/visionmedia/jade">Jade</a></li>
-<li><a href="https://github.com/nex3/sass">SASS</a></li>
-<li><a href="https://github.com/gruntjs/grunt">Grunt</a></li>
-</ul><p>Jade and SASS form our abstraction layers, and Grunt forms our build process. </p>
-
-<p>Jade offers a flexible templating engine that allows for mixins and includes. The flexibility of the engine and it's compatibility with Grunt. </p>
-
-<h3>
-<a name="nitty-gritty" class="anchor" href="#nitty-gritty"><span class="octicon octicon-link"></span></a>Nitty Gritty</h3>
-
-<h4>
-<a name="boilerplate" class="anchor" href="#boilerplate"><span class="octicon octicon-link"></span></a>Boilerplate</h4>
-
-<p>The boilerplate consists of </p>
-
-<pre><code>|-- Gruntfile.js
-|-- README.md
-|-- _acs_config.tmpl.json
-|-- gitignore
-|-- package.json
-`-- src
-    |-- fonts
-    |-- global-js
-    |   |-- ie
-    |   |   |-- boxsizing.htc
-    |   |   |-- elementQuery.js
-    |   |   `-- html5shiv.js
-    |   |-- main.js
-    |   |-- r.js
-    |   `-- vendor
-    |       |-- Base.js
-    |       |-- almond.js
-    |       |-- console.js
-    |       |-- elementQuery.js
-    |       |-- jquery.js
-    |       |-- modernizr
-    |       |   |-- modernizr.js
-    |       |   |-- modernizrpolys.js
-    |       |   `-- polyfills
-    |       |       `-- simple-placeholder.js
-    |       |-- require-text.js
-    |       `-- require.js
-    |-- global-scss
-    |   |-- _debug.scss
-    |   |-- _normalise.scss
-    |   |-- _settings.scss
-    |   |-- main.scss
-    |   `-- mixins
-    |       |-- _circle.scss
-    |       |-- _cover.scss
-    |       |-- _element_query.scss
-    |       `-- _offscreen.scss
-    |-- img
-    `-- templates
-        `-- _page_default
-            |-- _page_default.jade
-            |-- _page_default.js
-            `-- _page_default.scss
-</code></pre>
-
-<h4>
-<a name="component-factory" class="anchor" href="#component-factory"><span class="octicon octicon-link"></span></a>Component factory</h4>
-
-<p>Once you have the boilerplate in you'll need to install the Yeoman component generator. This is the day-to-day generator. <code>cd</code> into the directory. Once in you'll want to <code>npm install -g</code> which will install the generator, and then <code>npm link</code>. </p>
-
-<p>Now you'll have the generator installed and ready to use. </p>
-
-<h4>
-<a name="file-structure" class="anchor" href="#file-structure"><span class="octicon octicon-link"></span></a>File structure</h4>
-
-<pre><code>src
-  | --&gt; /atoms
-           |--&gt; /atom_name
-                  | --&gt; atom_name.jade
-                  | --&gt; atom_name.js
-                  | --&gt; atom_name.sass
-                  | --&gt; demo_atom_name.jade
-
-  | --&gt; /molecules
-  | --&gt; /organisms
-  | --&gt; /templates
-  | --&gt; /global-js
-  | --&gt; /global-sass
-</code></pre>
-
-<h3>
 <a name="todos" class="anchor" href="#todos"><span class="octicon octicon-link"></span></a>Todos</h3>
 
 <ul>
