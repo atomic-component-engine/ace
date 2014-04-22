@@ -6,43 +6,12 @@ var chalk = require('chalk');
 var fs = require('fs');
 
 
-var getGitInfo = {
-    parseConfig: function(file){
+var getGitInfo = require('./get-git-info');
 
-        var regex = {
-          section: /^\s*\[\s*([^\]]*)\s*\]\s*$/,
-          param: /^\s*([\w\.\-\_]+)\s*=\s*(.*?)\s*$/,
-          comment: /^\s*;.*$/
-        };
-
-
-        var value = {};
-        var lines = file.split(/\r\n|\r|\n/);
-        var section = null;
-        lines.forEach(function(line){
-          if(regex.comment.test(line)){
-            return;
-          }else if(regex.param.test(line)){
-            var match = line.match(regex.param);
-            if(section){
-              value[section][match[1]] = match[2];
-            }else{
-              value[match[1]] = match[2];
-            }
-          }else if(regex.section.test(line)){
-            var match = line.match(regex.section);
-            value[match[1]] = {};
-            section = match[1];
-          }else if(line.length == 0 && section){
-            section = null;
-          };
-        });
-
-        return value;
-    }
-};
-
-// This object contains common questions
+/**
+ * {Object}
+ * Contains common questions used by the component generator
+ */
 var questions = {
     componentType: {
       type: 'list',
@@ -73,21 +42,81 @@ var questions = {
     }
 }
 
-
+/**
+ * {yeoman.generators}
+ * {ComponentsGenerator}
+ * The main yeoman generator - handles project initialisation and component generation
+ */
 var ComponentsGenerator = yeoman.generators.Base.extend({
+
+  /**
+   * @constructor
+   * Defines init prompts
+   * Parses task name to set various flags
+   * If this isn't a project initialisation, try and read in the ACS config
+   */
   init: function (arg) {
     this.acsNeedsInit = false;
     this.acsPage = false;
     this.quit = false;
 
+    /**
+     * {Array}
+     * Contains prompts presented to user at project generation time
+     */
+    this.initPrompts = [
+      // Confirm project generation
+      {
+        name: 'confirmInit',
+        type: 'confirm',
+        message: 'Do you want to init this directory for acs?'
+      },
+      // Ask for a package name to be used in package.json
+      {
+        when: function (response) {
+          return response.confirmInit;
+        },
+        name: 'pkgName',
+        message: 'Sweet! What identifier should we use for your app? (e.g. my-atomic-website)'
+      },
+      // Ask for the base URL at which the project is accessed over HTTP
+      {
+        when: function (response) {
+          return response.pkgName;
+        },
+        name: 'baseUrl',
+        message: 'And what\'s the local URL for this project? (e.g http://awesome.dev/)'
+      },
+      // Ask whether the project will be using Git
+      {
+        when: function (response) {
+          return response.baseUrl;
+        },
+        name: 'isGit',
+        type: 'confirm',
+        message: 'Are you using Git?'
+      },
+      // Ask whether the user's name and email should be injected into the comment headers of generated files
+      {
+        when: function (response) {
+          return response.isGit;
+        },
+        name: 'nameInHeader',
+        type: 'confirm',
+        message: 'Do you want your name and email to be placed in the header \nof all of the compoenents you create (This is useful in teams \nand acs will read these details from your gitconfig)?'
+      }
+    ];
+
+    // Parse task name to determine course of action
     if(arg == 'init'){
       this.acsNeedsInit = true;
     }else if(arg == 'page'){
       this.acsPage = true;
     }
 
+    // Read in ACS config if generating page or component
     var acsConfig = "acs_config.json";
-    var acsInitFile = false;
+    this.acsInitFile = false;
 
     if(!this.acsNeedsInit){
       try{
@@ -118,6 +147,9 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
   },
 
+  /**
+   * Presents user with prompts for the requested task
+   */
   askFor: function () {
     var done = this.async();
     var self = this;
@@ -125,36 +157,12 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     // if you are running the init
     if(this.acsNeedsInit){
 
-      console.log(chalk.green('You\'re using the fantastic Atomic Componenet System. more info: http://pjhauser.github.io/atomic-component-system/'));
+      // Welcome message
+      console.log(chalk.green('You\'re using the fantastic Atomic Componenet System /n more info: http://pjhauser.github.io/atomic-component-system/'));
+      // Begin the interrogation
+      this.prompt(this.initPrompts, function (response) {
 
-      this.prompt([{
-        name: 'confirmInit',
-        type: 'confirm',
-        message: 'Do you want to init this directory for acs?'
-      }, {
-        when: function (response) {
-          return response.confirmInit;
-        },
-        name: 'baseUrl',
-        message: 'Sweet! Whats the local URL for this project? (e.g http://awesome.dev/)'
-      }, {
-        when: function (response) {
-          return response.baseUrl;
-        },
-        name: 'isGit',
-        type: 'confirm',
-        message: 'Are you using Git?'
-      }, {
-        when: function (response) {
-          return response.isGit;
-        },
-        name: 'nameInHeader',
-        type: 'confirm',
-        message: 'Do you want your name and email to be placed in the header \nof all of the compoenents you create (This is useful in teams \nand acs will read these details from your gitconfig)?'
-      }], function (response) {
           self.nameInHeader = response.nameInHeader;
-
-          console.log(self.nameInHeader);
 
           if(self.nameInHeader){
               // if the config exists and the user wants to add name and email to components
@@ -175,15 +183,16 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           }
 
           self.baseUrl = response.baseUrl.replace(/\/+$/, "");;
+          self.pkgName = response.pkgName;
           self.isGit = response.isGit;
           done();
       });
 
-    // if you are running the compoenent generator
+    // if you are running the page generator
     }else if(this.acsPage){
-
+      // Grab template files
       var templates = fs.readdirSync("src/templates/");
-
+      // Begin the interrogation
       this.prompt([questions.componentName, {
         when: function (response) {
           return response.componentName;
@@ -200,6 +209,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           done();
       });
 
+    // if you are running the component generator
     }else{
 
       var prompts = [questions.componentType, questions.componentName]
@@ -214,6 +224,9 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
   },
 
+  /**
+   * Takes the user-entered data from askFor and runs the templating, either for project, component, template or page generation
+   */
   app: function () {
 
     if(!this.quit){
@@ -231,15 +244,19 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         sassDemoDir: "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.scss'
       };
 
+      // Generating a template, page or component
       if(this.componentType){
+        // Generating a page template
         if(this.componentType == 'template'){
           this.template('_template.jade', this.dirs.jadeModDir);
           this.template('_.js', this.dirs.jsModDir);
           this.template('_.scss', this.dirs.sassDir);
+        // Generating a page instance
         }else if(this.componentType == 'page'){
           this.template('_page.jade', this.dirs.jadeModDir);
           this.template('_.js', this.dirs.jsModDir);
           this.template('_.scss', this.dirs.sassDir);
+        // Generating a component
         }else{
           this.template('_.jade', this.dirs.jadeModDir);
           this.template('_demo.jade', this.dirs.jadeDemoDir);
@@ -247,15 +264,15 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           this.template('_demo.scss', this.dirs.sassDemoDir);
           this.template('_.js', this.dirs.jsModDir);
         }
+      // Generating a new project
       }else{
           this.directory('init_templates/src', 'src');
           this.template('init_templates/_acs_config.tmpl.json', 'acs_config.json');
+          this.template('init_templates/package.tmpl.json', 'package.json');
           this.copy('init_templates/Gruntfile.js', 'Gruntfile.js');
-          this.copy('init_templates/package.json', 'package.json');
           this.copy('init_templates/README.md', 'README.md');
           if(this.isGit){
               this.copy('init_templates/gitignore', '.gitignore');
-              console.log(chalk.green('You now have the default .gitignore'));
           }
       }
     }
