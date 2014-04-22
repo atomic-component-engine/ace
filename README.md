@@ -49,12 +49,12 @@ You can use the same yeoman generator to create components. Just type:
 
 The generator will then create a component in the following folder structure:
 
-  | --> /atoms
-           |--> /atom_name
-                  | --> atom_name.jade
-                  | --> atom_name.js
-                  | --> atom_name.sass
-                  | --> demo_atom_name.jade
+	| --> /atoms
+		  |--> /atom_name
+			   | --> atom_name.jade
+			   | --> atom_name.js
+			   | --> atom_name.sass
+			   | --> demo_atom_name.jade
 
 
 #### Page generation
