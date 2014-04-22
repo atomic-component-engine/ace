@@ -1,4 +1,6 @@
 {
 	"baseURL": "<%= baseUrl %>",
-	"identifiedComponents": <%= nameInHeader %> 
+	"identifiedComponents": <%= nameInHeader %>,
+	"name" : "<%= name %>",
+	"email" : "<%= email %>"
 }

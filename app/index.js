@@ -87,18 +87,34 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     }
 
     var acsConfig = "acs_config.json";
-    var file = false;
+    var acsInitFile = false;
 
     if(!this.acsNeedsInit){
       try{
-        var file = this.readFileAsString(acsConfig);
+        this.acsInitFile = this.readFileAsString(acsConfig);
+        this.acsInitFileJSON = JSON.parse(this.acsInitFile);
         this.isInit = true;
-        this.identifiedComponents = JSON.parse(file).identifiedComponents;
+        this.identifiedComponents = this.acsInitFileJSON.identifiedComponents;
+        this.name = this.acsInitFileJSON.name;
+        this.email = this.acsInitFileJSON.email;
       }catch (e){
         console.log(chalk.red('acs_config.json not found. '), chalk.green('Running yo acs init...'));
         this.acsNeedsInit = true;
       }
     }
+
+    var home_dir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+    var config_file = home_dir+'/.gitconfig';
+    var gitConfigStr = this.readFileAsString(config_file);
+
+    // if gitconfig exists
+    if (gitConfigStr) {
+      console.log("Getting some information from the git configuration...");
+      this.gitGlobalConfigFile = getGitInfo.parseConfig(gitConfigStr);
+    }
+    else {
+      console.log(chalk.red("Git configuration file does not exist, this is used in template headers..."));
+    };
 
   },
 
@@ -109,7 +125,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     // if you are running the init
     if(this.acsNeedsInit){
 
-      console.log(chalk.green('You\'re using the fantastic Atomic Componenet System /n more info: http://pjhauser.github.io/atomic-component-system/'));
+      console.log(chalk.green('You\'re using the fantastic Atomic Componenet System. more info: http://pjhauser.github.io/atomic-component-system/'));
 
       this.prompt([{
         name: 'confirmInit',
@@ -137,6 +153,27 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         message: 'Do you want your name and email to be placed in the header \nof all of the compoenents you create (This is useful in teams \nand acs will read these details from your gitconfig)?'
       }], function (response) {
           self.nameInHeader = response.nameInHeader;
+
+          console.log(self.nameInHeader);
+
+          if(self.nameInHeader){
+              // if the config exists and the user wants to add name and email to components
+              if(self.gitGlobalConfigFile){
+                self.name = self.gitGlobalConfigFile['user'].name;
+                self.email = self.gitGlobalConfigFile['user'].email;
+              // if the config doesn't exists and the user wants to add name and email to components
+              }else{
+                var prompts = [questions.userName, questions.userPassword]
+                self.prompt(prompts, function (props) {
+                  self.name = props.userName;
+                  self.email = props.userEmail;
+                }.bind(this));
+              }
+          }else{
+              self.name = " ";
+              self.email = " ";
+          }
+
           self.baseUrl = response.baseUrl.replace(/\/+$/, "");;
           self.isGit = response.isGit;
           done();
@@ -159,74 +196,19 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           self.componentType = "page";
           self.componentName = response.componentName;
           self.templateSelect = response.templateSelect;
-          self.name = " ";
-          self.email = " ";
           self.id = self.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
           done();
       });
 
     }else{
 
-      var gitConfig = ".git/config";
-
-      // if the init file exists
-      var home_dir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-      var config_file = home_dir+'/.gitconfig';
-      var gitConfigStr = this.readFileAsString(config_file);
-
-      // if gitconfig exists
-      if (gitConfigStr) {
-        console.log("Getting some information from the git configuration...");
-        var gitGlobalConfigFile = getGitInfo.parseConfig(gitConfigStr);
-      }
-      else {
-        console.log(chalk.red("Git configuration file does not exist, this is used in template headers..."));
-      };
-
-      // if the config exists and the user wants to add name and email to components
-      if((gitGlobalConfigFile) && (this.identifiedComponents)){
-
-        var prompts = [questions.componentType,questions.componentName];
-
-        this.prompt(prompts, function (props) {
-          this.componentType = props.componentType;
-          this.componentName = props.componentName;
-          this.name = gitGlobalConfigFile['user'].name;
-          this.email = gitGlobalConfigFile['user'].email;
-          this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-          done();
-        }.bind(this));
-
-      // if the user doesn't want to add name and email to components
-      }else if(!this.identifiedComponents){
-
-        var prompts = [questions.componentType,questions.componentName];
-
-        this.prompt(prompts, function (props) {
-          this.componentType = props.componentType;
-          this.componentName = props.componentName;
-          this.name = " ";
-          this.email = " ";
-          this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-          done();
-        }.bind(this));
-    
-      // if the config doesn't exists and the user wants to add name and email to components
-      }else if((!gitGlobalConfigFile) && (this.identifiedComponents)){
-
-          var prompts = [questions.componentType,questions.componentName,questions.userName,questions.userEmail];
-
-          this.prompt(prompts, function (props) {
-            this.componentType = props.componentType;
-            this.componentName = props.componentName;
-            this.name = props.userName;
-            this.email = props.userEmail
-            this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-            done();
-          }.bind(this));
-      }else{
-          console.log(chalk.red("Error"));
-      }
+      var prompts = [questions.componentType, questions.componentName]
+      this.prompt(prompts, function (props) {
+        this.componentType = props.componentType;
+        this.componentName = props.componentName;
+        this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        done();
+      }.bind(this));
 
     }
 
