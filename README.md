@@ -1,4 +1,4 @@
-Atomic Component System v0.1.7 - *PRE-RELEASE*
+ACS v0.1.7 - *PRE-RELEASE*
 =======================
 
 
@@ -15,25 +15,25 @@ ACS is a system for creating and maintaining Frontend projects. It builds on the
 This system has 2 main elements. The boilerplate, which consists of a Grunt based project, and a component generator, both of which are managed by Yeoman. 
 
 
-###Quick Start
-
 #### Getting Started
 
 1. Download the [zip](https://github.com/pjhauser/atomic-component-system/archive/master.zip).
-2. `cd` into the yeoman directory
-3. Run `npm install -g`
-4. Run `npm link`
-5. cd into the working directory of your project
-6. Run `yo acs init` and follow the instructions
+2. Extract the downloaded zip
+3. `cd` into the unzipped directory
+4. Run `npm install -g`
+5. Run `npm link`
+6. cd into the working directory of your project
+7. Run `yo acs init` and follow the instructions
 
 
 #### ACS Init
-This task initialises the directory with the main boilerplate. You will be asked 4 questions:
+This task initialises the directory with the main boilerplate. You will be asked 5 questions:
 
 1. Do you want to init this directory with ACS (Y/n)
-2. What is the base URL of the directory? *This is for the script and css paths of the template*
-3. Are you using Git? *This will add the base gitignore*
-4. Do you want your name and email to be placed in the header of all of the compoenents you create? *This is useful in teams and acs will read these details from your gitconfig if present*
+2. Sweet! What identifier should we use for your app? (e.g. my-atomic-website) *This is the name of your project in the package.json file*
+3. What is the base URL of the directory? *This is for the script and css paths of the template*
+4. Are you using Git? *This will add the base gitignore*
+5. Do you want your name and email to be placed in the header of all of the compoenents you create? *This is useful in teams and acs will read these details from your gitconfig if present*
 
 
 Now your directory has the base boilerplate you'll want to start creating components. 
@@ -46,8 +46,15 @@ You can use the same yeoman generator to create components. Just type:
 1. yo acs
 2. Select component type
 3. Name component
-4. *(optional)* Type name
-5. *(optional)* Enter email
+
+The generator will then create a component in the following folder structure:
+
+  | --> /atoms
+           |--> /atom_name
+                  | --> atom_name.jade
+                  | --> atom_name.js
+                  | --> atom_name.sass
+                  | --> demo_atom_name.jade
 
 
 #### Page generation
