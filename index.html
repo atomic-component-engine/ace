@@ -29,7 +29,7 @@
       </header>
       <section>
         <h1>
-<a name="acs-v017---pre-release" class="anchor" href="#acs-v017---pre-release"><span class="octicon octicon-link"></span></a>ACS v0.1.7 - <em>PRE-RELEASE</em>
+<a name="acs-v018---pre-release" class="anchor" href="#acs-v018---pre-release"><span class="octicon octicon-link"></span></a>ACS v0.1.8 - <em>PRE-RELEASE</em>
 </h1>
 
 <ul>
@@ -48,29 +48,29 @@
 
 <p>This system has 2 main elements. The boilerplate, which consists of a Grunt based project, and a component generator, both of which are managed by Yeoman. </p>
 
-<h3>
-<a name="quick-start" class="anchor" href="#quick-start"><span class="octicon octicon-link"></span></a>Quick Start</h3>
-
 <h4>
 <a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h4>
 
+<p><img src="https://raw.githubusercontent.com/pjhauser/atomic-component-system/master/gifs/install.gif" alt="install generator"></p>
+
 <ol>
 <li>Download the <a href="https://github.com/pjhauser/atomic-component-system/archive/master.zip">zip</a>.</li>
+<li>Extract the downloaded zip</li>
 <li>
-<code>cd</code> into the yeoman directory</li>
+<code>cd</code> into the <code>generator-acs</code> directory</li>
 <li>Run <code>npm install -g</code>
-</li>
-<li>Run <code>npm link</code>
 </li>
 <li>cd into the working directory of your project</li>
 <li>Run <code>yo acs init</code> and follow the instructions</li>
 </ol><h4>
 <a name="acs-init" class="anchor" href="#acs-init"><span class="octicon octicon-link"></span></a>ACS Init</h4>
 
-<p>This task initialises the directory with the main boilerplate. You will be asked 4 questions:</p>
+<p>This task initialises the directory with the main boilerplate. You will be asked 5 questions:</p>
 
 <ol>
 <li>Do you want to init this directory with ACS (Y/n)</li>
+<li>Sweet! What identifier should we use for your app? (e.g. my-atomic-website) <em>This is the name of your project in the package.json file</em>
+</li>
 <li>What is the base URL of the directory? <em>This is for the script and css paths of the template</em>
 </li>
 <li>Are you using Git? <em>This will add the base gitignore</em>
@@ -88,11 +88,17 @@
 <li>yo acs</li>
 <li>Select component type</li>
 <li>Name component</li>
-<li>
-<em>(optional)</em> Type name</li>
-<li>
-<em>(optional)</em> Enter email</li>
-</ol><h4>
+</ol><p>The generator will then create a component in the following folder structure:</p>
+
+<pre><code>| --&gt; /atoms
+      |--&gt; /atom_name
+           | --&gt; atom_name.jade
+           | --&gt; atom_name.js
+           | --&gt; atom_name.sass
+           | --&gt; demo_atom_name.jade
+</code></pre>
+
+<h4>
 <a name="page-generation" class="anchor" href="#page-generation"><span class="octicon octicon-link"></span></a>Page generation</h4>
 
 <p>Pages are a little different to compoenents, ideally these should have minimal CSS and JS, as this should all be performed on the sub-page component level. </p>
