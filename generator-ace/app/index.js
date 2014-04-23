@@ -74,6 +74,9 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       // Ask for a package name to be used in package.json
       {
         when: function (response) {
+          if(!response.confirmInit){
+            this.quit = true;
+          }
           return response.confirmInit;
         },
         name: 'pkgName',

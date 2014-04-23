@@ -33,7 +33,6 @@ html(lang="en")
 		meta(name="viewport", content="width=device-width")
 		meta(name="format-detection", content="telephone=no")
 		link(rel="stylesheet", href=aceConfig.baseURL + "/" + env + "/css/main.css")
-		script(src=aceConfig.baseURL + "/" + env + "/js/ie/html5shiv.js")
 
 		// if lt IE 9
 			script(src=aceConfig.baseURL  + "/" + env + "/js/ie/eventlistener.js")
@@ -47,5 +46,5 @@ html(lang="en")
 		if (env == "dev")
 			script(data-main=aceConfig.baseURL + "/" + env + "/js/main", src= aceConfig.baseURL + "/" + env + "/js/vendor/require.js")
 		else
-			script(src="js/"+pkg.name+".min.js")
+			script(src=aceConfig.baseURL + "/" + env + "/js/"+pkg.name+".min.js")
 

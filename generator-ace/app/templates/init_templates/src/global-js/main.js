@@ -12,6 +12,7 @@ requirejs.config({
 		'elementquery':		'vendor/elementQuery',
 		'modernizr':		'vendor/modernizr/modernizr',
 		'modernizrpolys':	'vendor/modernizr/modernizrpolys',
+		'html5shiv':		'ie/html5shiv',
 	},
 	
 	'shim': {
@@ -26,6 +27,9 @@ requirejs.config({
 		},
 		'modernizrpolys': {
 			'deps': ['modernizr'],
+		},
+		'html5shiv':{
+			'exports' : 'h5s'
 		}
 	},
 	
@@ -40,6 +44,8 @@ require([
 	'vendor/console',
 	'jquery',
 	'elementquery',
+	'modernizr',
+	'html5shiv'
 ],
 	
 function (consolePolyfill, $, eq) {

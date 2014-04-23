@@ -56,8 +56,7 @@ module.exports = function(grunt) {
 	gruntConfig.requirejs = {
 		compile: {
 			options: {
-				baseUrl: "src/**/**",
-				mainConfigFile: "src/global-js/rconfig.js",
+				mainConfigFile: "src/global-js/main.js",
 				out: env.dest+'/js/<%= pkg.name %>.min.js'
 			}
 		}
