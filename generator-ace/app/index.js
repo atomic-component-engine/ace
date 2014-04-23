@@ -53,11 +53,11 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
    * @constructor
    * Defines init prompts
    * Parses task name to set various flags
-   * If this isn't a project initialisation, try and read in the ACS config
+   * If this isn't a project initialisation, try and read in the ACE config
    */
   init: function (arg) {
-    this.acsNeedsInit = false;
-    this.acsPage = false;
+    this.aceNeedsInit = false;
+    this.acePage = false;
     this.quit = false;
 
     /**
@@ -69,7 +69,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       {
         name: 'confirmInit',
         type: 'confirm',
-        message: 'Do you want to init this directory for acs?'
+        message: 'Do you want to init this directory for ACE?'
       },
       // Ask for a package name to be used in package.json
       {
@@ -103,32 +103,32 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         },
         name: 'nameInHeader',
         type: 'confirm',
-        message: 'Do you want your name and email to be placed in the header \nof all of the compoenents you create (This is useful in teams \nand acs will read these details from your gitconfig)?'
+        message: 'Do you want your name and email to be placed in the header \nof all of the compoenents you create (This is useful in teams \nand ace will read these details from your gitconfig)?'
       }
     ];
 
     // Parse task name to determine course of action
     if(arg == 'init'){
-      this.acsNeedsInit = true;
+      this.aceNeedsInit = true;
     }else if(arg == 'page'){
-      this.acsPage = true;
+      this.acePage = true;
     }
 
-    // Read in ACS config if generating page or component
-    var acsConfig = "acs_config.json";
-    this.acsInitFile = false;
+    // Read in ace config if generating page or component
+    var aceConfig = "ace_config.json";
+    this.aceInitFile = false;
 
-    if(!this.acsNeedsInit){
+    if(!this.aceNeedsInit){
       try{
-        this.acsInitFile = this.readFileAsString(acsConfig);
-        this.acsInitFileJSON = JSON.parse(this.acsInitFile);
+        this.aceInitFile = this.readFileAsString(aceConfig);
+        this.aceInitFileJSON = JSON.parse(this.aceInitFile);
         this.isInit = true;
-        this.identifiedComponents = this.acsInitFileJSON.identifiedComponents;
-        this.name = this.acsInitFileJSON.name;
-        this.email = this.acsInitFileJSON.email;
+        this.identifiedComponents = this.aceInitFileJSON.identifiedComponents;
+        this.name = this.aceInitFileJSON.name;
+        this.email = this.aceInitFileJSON.email;
       }catch (e){
-        console.log(chalk.red('acs_config.json not found. '), chalk.green('Running yo acs init...'));
-        this.acsNeedsInit = true;
+        console.log(chalk.red('ace_config.json not found. '), chalk.green('Running yo ace init...'));
+        this.aceNeedsInit = true;
       }
     }
 
@@ -155,10 +155,11 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     var self = this;
 
     // if you are running the init
-    if(this.acsNeedsInit){
+    if(this.aceNeedsInit){
 
       // Welcome message
-      console.log(chalk.green('You\'re using the fantastic Atomic Componenet System /n more info: http://pjhauser.github.io/atomic-component-system/'));
+      console.log(chalk.green('You\'re using the fantastic Atomic Componenet Engine'))
+      console.log(chalk.green('more info: http://pjhauser.github.io/atomic-component-engine/'));
       // Begin the interrogation
       this.prompt(this.initPrompts, function (response) {
 
@@ -189,7 +190,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       });
 
     // if you are running the page generator
-    }else if(this.acsPage){
+    }else if(this.acePage){
       // Grab template files
       var templates = fs.readdirSync("src/templates/");
       // Begin the interrogation
@@ -267,7 +268,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       // Generating a new project
       }else{
           this.directory('init_templates/src', 'src');
-          this.template('init_templates/_acs_config.tmpl.json', 'acs_config.json');
+          this.template('init_templates/_ace_config.tmpl.json', 'ace_config.json');
           this.template('init_templates/package.tmpl.json', 'package.json');
           this.copy('init_templates/Gruntfile.js', 'Gruntfile.js');
           this.copy('init_templates/README.md', 'README.md');

@@ -73,7 +73,7 @@ module.exports = function(grunt) {
 					pkg: {
 						name: '<%= pkg.name %>'
 					},
-					acsConfig: grunt.file.readJSON('acs_config.json'),
+					aceConfig: grunt.file.readJSON('ace_config.json'),
 				}
 			},
 			files:  [
