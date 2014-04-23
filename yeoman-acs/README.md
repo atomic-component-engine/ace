@@ -1,4 +1,4 @@
-ACS v0.1.7 - *PRE-RELEASE*
+ACS v0.1.8 - *PRE-RELEASE*
 =======================
 
 
@@ -19,7 +19,7 @@ This system has 2 main elements. The boilerplate, which consists of a Grunt base
 
 1. Download the [zip](https://github.com/pjhauser/atomic-component-system/archive/master.zip).
 2. Extract the downloaded zip
-3. `cd` into the unzipped directory
+3. `cd` into the `yeoman-acs` directory
 4. Run `npm install -g`
 5. Run `npm link`
 6. cd into the working directory of your project
