@@ -1,0 +1,15 @@
+/**
+ * @file Provides an 'off-screening' mixin
+ * @author Tom Jenkins tom.jenkins@kp360group.com
+ * @exports offscreen, onscreen
+ */
+
+@mixin offscreen {
+	position: absolute;
+	left: -9999px;
+}
+
+@mixin onscreen {
+	position: static;
+	left: auto;
+}

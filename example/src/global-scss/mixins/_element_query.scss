@@ -1,0 +1,40 @@
+/**
+ * @file Provides mixins for elementQuery breakpoints
+ */
+
+/**
+ * Writes a min-width elementQuery selector
+ * @param {CSS Length} breakpoint width
+ * @block Styles to apply at and above the given width
+ */
+@mixin at-min-width($width) {
+	&[min-width~="#{$width}"] {
+		@content
+	}
+}
+
+/**
+ * Writes a max-width elementQuery selector
+ * @param {CSS Length} breakpoint width
+ * @block Styles to apply at and below the given width
+ */
+@mixin at-max-width($width) {
+	&[max-width~="#{$width}"] {
+		@content
+	}
+}
+
+
+/**
+ * Writes a min-max-width elementQuery selector
+ * @param {CSS Length} breakpoint width
+ * @block Styles to apply at and below the given width
+ */
+@mixin at-min-and-max-width($minwidth,$maxwidth) {
+	&[min-width~="#{$minwidth}"][max-width~="#{$maxwidth}"] {
+		@content
+	}
+}
+
+
+

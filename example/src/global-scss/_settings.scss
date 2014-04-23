@@ -1,0 +1,90 @@
+// Colours
+$softgrey: #f2f2f2;
+$lightgrey: #D7D7D7;
+$midgrey: #E3E3E3;
+$middarkgrey: #979797;
+$darkgrey: #494949;
+$superdarkgrey: #303030;
+
+$orange1: #cf4520;
+$orange2: #D76446;
+$orange3: #ffad33;
+$yellow1: #ffd100;
+$blue1: #001489;
+$blue2: #7f89c4;
+$blue3: #D5D9F1;
+$blue4: #e7e7e7;
+$purple1: #c87ec9;
+$purple2: #c87ec9;
+$purple3: #990099;
+$purple4: #5d005b;
+$purple5: #763F77;
+
+$feedback-positive: #C7DFBF;
+$feedback-negative: #c31D1D;
+$feedback-negative-bg: #f5dddc;
+
+$share-blue: #4A4299;
+
+
+// CTA BG Colors
+$primary-cta-hover: $blue2;
+$primary-cta: $blue1;
+$primary-cta-alt: #990099;
+$primary-cta-rollover: #717171;
+
+$secondary-cta-rollover: #fff;
+$secondary-cta: $orange2;
+
+// Element colors eg table
+$primary-element-tint: $secondary-cta;
+$primary-element-color: white;
+$secondary-element-tint: white;
+
+// nav colors
+$nav-bg: #fff;
+$hamburger-bg: $blue1;
+
+// subnav colors
+$sub-nav-hover: #7F89C4;
+
+// Font sizes
+$font-size-xsmall: 0.6rem;
+$font-size-small: 0.8rem;
+$font-size-medium: 1rem;
+$font-size-large: 1.125rem;
+$font-size-xlarge: 1.5rem;
+$font-size-xxlarge: 2rem;
+$font-size-xxxlarge: 2.3125rem;
+$font-size-xxxxlarge: 4rem;
+
+$lightfontweight: 100;
+$regularfontweight: 300;
+$mediumfontweight: 600;
+$heavyfontweight: 700;
+
+$line-height-tight: 1;
+$line-height-normal: 1.5;
+$line-height-loose: 1.75;
+
+$font-family: Arial, "Lucida Grande", sans-serif;
+//$font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+
+// Whitespace
+$wsunit: 1.25rem; // nominally 20px
+$wsunit2: 0.6rem; // nominally 10px
+
+// Media queries
+// Min-up
+$mq-m: "screen and (min-width: 768px)";
+$mq-l: "screen and (min-width: 960px)";
+$mq-xl: "screen and (min-width: 1400px)";
+// Max-down (useful in certain circumstances like offcanvas nav)
+$mq-lt-m: "screen and (max-width: 768px)";
+$mq-lt-l: "screen and (max-width: 960px)";
+$mq-lt-xl: "screen and (max-width: 1400px)";
+
+// Adaptive page widths
+$wrapper-large: 960px;
+$wrapper-medium: 768px;
+$wrapper-small: 320px;

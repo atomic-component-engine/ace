@@ -1,0 +1,34 @@
+/**
+ * @file Provides a mixin to style a circle
+ */
+
+/**
+ * @param {CSS Length} offset from sides of parent
+ */
+@mixin circle($size: 50px, $fill: transparent, $border: 0 solid) {
+
+
+	display: inline-block;
+	width: $size;
+	height: $size;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+	background: $fill;
+	border: $border;
+
+	-moz-background-clip: border;
+	-webkit-background-clip: border;
+	background-clip: border-box;
+
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding;
+	background-clip: padding-box;
+
+	-moz-background-clip: content;
+	-webkit-background-clip: content;
+	background-clip: content-box;
+
+	@content;
+
+}

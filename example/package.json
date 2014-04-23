@@ -1,0 +1,26 @@
+{
+	"name": "ace-site",
+	"version": "0.0.1",
+	"devDependencies": {
+		"grunt": "~0.4.2",
+		"uglify-js": "~2.4.3",
+		"jade": "~0.35.0",
+		"jshint": "~2.3.0",
+		"compass": "~0.1.0",
+		"underscore": "~1.5.2",
+		"gaze": "~0.4.3",
+		"tmp": "0.0.21",
+		"copy": "0.0.1",
+		"source-map": "~0.1.31",
+		"grunt-exec": "~0.4.2",
+		"grunt-lib-contrib": "~0.6.1",
+		"grunt-contrib-uglify": "~0.2.7",
+		"grunt-contrib-jshint": "~0.7.2",
+		"grunt-contrib-watch": "~0.5.3",
+		"grunt-contrib-jade": "~0.8.0",
+		"grunt-contrib-compass": "~0.6.0",
+		"grunt-contrib-copy": "~0.4.1",
+		"grunt-contrib-requirejs": "~0.4.1",
+		"grunt-remfallback": "0.0.5"
+	}
+}

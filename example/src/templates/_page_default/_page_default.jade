@@ -1,0 +1,50 @@
+//-
+	@file Defines the default page template
+
+//- Template dependencies
+
+//- Default vars
+- var page = {id: "page_default", title: "Default Boilerplate Page"};
+
+
+//- Import variables from calling page
+block page_vars
+
+//- Build body class
+- var bodyClass = "page-"+page.id
+
+!!! 5
+//if lt IE 7
+	<html class="lt-ie9 lt-ie8 lt-ie7">
+//if IE 7
+	<html class="lt-ie9 lt-ie8">
+//if IE 8
+	<html class="lt-ie9">
+//if IE 9
+	<html class="lt-ie10">
+// [if gt IE 9] <!
+html(lang="en")
+	// <![endif]
+	head
+		title #{page.title}
+		meta(charset="utf-8")
+		meta(name="description", content=page.description)
+		meta(name="keywords", content=page.keywords)
+		meta(name="viewport", content="width=device-width")
+		meta(name="format-detection", content="telephone=no")
+		link(rel="stylesheet", href=aceConfig.baseURL + "/" + env + "/css/main.css")
+
+		// if lt IE 9
+			script(src=aceConfig.baseURL  + "/" + env + "/js/ie/eventlistener.js")
+			script(src=aceConfig.baseURL  + "/" + env + "/js/ie/selectivizr-min.js")
+			script(src=aceConfig.baseURL  + "/" + env + "/js/ie/respond.min.js")
+
+	body(class=bodyClass, data-page=page.id)
+		block content
+
+
+		if (env == "dev")
+			script(data-main=aceConfig.baseURL + "/" + env + "/js/main", src= aceConfig.baseURL + "/" + env + "/js/vendor/require.js")
+		else
+			script(src=aceConfig.baseURL + "/" + env + "/js/"+pkg.name+".min.js")
+
