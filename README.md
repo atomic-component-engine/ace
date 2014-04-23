@@ -17,7 +17,7 @@ This system has 2 main elements. The boilerplate, which consists of a Grunt base
 
 #### Getting Started
 
-![install generator](https://github.com/pjhauser/atomic-component-system/gifs/install.gif)
+![install generator](https://raw.githubusercontent.com/pjhauser/atomic-component-system/master/gifs/install.gif)
 
 
 1. Download the [zip](https://github.com/pjhauser/atomic-component-system/archive/master.zip).
