@@ -29,6 +29,9 @@ This system has 2 main elements. The boilerplate, which consists of a Grunt base
 
 
 #### ace Init
+
+![init generator](https://raw.githubusercontent.com/pjhauser/atomic-component-engine/master/gifs/init.gif)
+
 This task initialises the directory with the main boilerplate. You will be asked 5 questions:
 
 1. Do you want to init this directory with ACE (Y/n)
