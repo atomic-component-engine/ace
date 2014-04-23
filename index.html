@@ -18,18 +18,18 @@
         <h1>Atomic Component System</h1>
         <p>This is a yeoman generator for an atomic design system</p>
 
-        <p class="view"><a href="https://github.com/pjhauser/atomic-component-system">View the Project on GitHub <small>pjhauser/atomic-component-system</small></a></p>
+        <p class="view"><a href="https://github.com/pjhauser/atomic-component-engine">View the Project on GitHub <small>pjhauser/atomic-component-engine</small></a></p>
 
 
         <ul>
-          <li><a href="https://github.com/pjhauser/atomic-component-system/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/pjhauser/atomic-component-system/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/pjhauser/atomic-component-system">View On <strong>GitHub</strong></a></li>
+          <li><a href="https://github.com/pjhauser/atomic-component-engine/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/pjhauser/atomic-component-engine/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/pjhauser/atomic-component-engine">View On <strong>GitHub</strong></a></li>
         </ul>
       </header>
       <section>
         <h1>
-<a name="acs-v018---pre-release" class="anchor" href="#acs-v018---pre-release"><span class="octicon octicon-link"></span></a>ACS v0.1.8 - <em>PRE-RELEASE</em>
+<a name="ace-v018---pre-release" class="anchor" href="#ace-v018---pre-release"><span class="octicon octicon-link"></span></a>ACE v0.1.8 - <em>PRE-RELEASE</em>
 </h1>
 
 <ul>
@@ -38,13 +38,13 @@
 
 <ul>
 <li><a href="#getting-started">Getting Started</a></li>
-<li><a href="#acs-init">ACS Init</a></li>
+<li><a href="#ace-init">ACE Init</a></li>
 <li><a href="#component-generation">Component generation</a></li>
 <li><a href="#page-generation">Page generation</a></li>
 </ul>
 </li>
 <li><p><a href="#todos">Todos</a></p></li>
-</ul><p>ACS is a system for creating and maintaining Frontend projects. It builds on the ideas forwarded by <a href="http://bradfrostweb.com/blog/post/atomic-web-design/">Brad Frost</a> where instead of designing pages, we design and develop a system of components. </p>
+</ul><p>ACE is a system for creating and maintaining Frontend projects. It builds on the ideas forwarded by <a href="http://bradfrostweb.com/blog/post/atomic-web-design/">Brad Frost</a> where instead of designing pages, we design and develop a system of components. </p>
 
 <p>This system has 2 main elements. The boilerplate, which consists of a Grunt based project, and a component generator, both of which are managed by Yeoman. </p>
 
@@ -57,25 +57,25 @@
 <li>Download the <a href="https://github.com/pjhauser/atomic-component-system/archive/master.zip">zip</a>.</li>
 <li>Extract the downloaded zip</li>
 <li>
-<code>cd</code> into the <code>generator-acs</code> directory</li>
+<code>cd</code> into the <code>generator-ace</code> directory</li>
 <li>Run <code>npm install -g</code>
 </li>
 <li>cd into the working directory of your project</li>
-<li>Run <code>yo acs init</code> and follow the instructions</li>
+<li>Run <code>yo ace init</code> and follow the instructions</li>
 </ol><h4>
-<a name="acs-init" class="anchor" href="#acs-init"><span class="octicon octicon-link"></span></a>ACS Init</h4>
+<a name="ace-init" class="anchor" href="#ace-init"><span class="octicon octicon-link"></span></a>ace Init</h4>
 
 <p>This task initialises the directory with the main boilerplate. You will be asked 5 questions:</p>
 
 <ol>
-<li>Do you want to init this directory with ACS (Y/n)</li>
+<li>Do you want to init this directory with ACE (Y/n)</li>
 <li>Sweet! What identifier should we use for your app? (e.g. my-atomic-website) <em>This is the name of your project in the package.json file</em>
 </li>
 <li>What is the base URL of the directory? <em>This is for the script and css paths of the template</em>
 </li>
 <li>Are you using Git? <em>This will add the base gitignore</em>
 </li>
-<li>Do you want your name and email to be placed in the header of all of the compoenents you create? <em>This is useful in teams and acs will read these details from your gitconfig if present</em>
+<li>Do you want your name and email to be placed in the header of all of the compoenents you create? <em>This is useful in teams and ace will read these details from your gitconfig if present</em>
 </li>
 </ol><p>Now your directory has the base boilerplate you'll want to start creating components. </p>
 
@@ -85,7 +85,7 @@
 <p>You can use the same yeoman generator to create components. Just type:</p>
 
 <ol>
-<li>yo acs</li>
+<li>yo ace</li>
 <li>Select component type</li>
 <li>Name component</li>
 </ol><p>The generator will then create a component in the following folder structure:</p>
@@ -104,7 +104,7 @@
 <p>Pages are a little different to compoenents, ideally these should have minimal CSS and JS, as this should all be performed on the sub-page component level. </p>
 
 <ol>
-<li>yo acs page</li>
+<li>yo ace page</li>
 <li>Name component / page</li>
 <li>Select template type</li>
 </ol><hr><h3>
