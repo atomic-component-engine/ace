@@ -17,6 +17,9 @@ This system has 2 main elements. The boilerplate, which consists of a Grunt base
 
 #### Getting Started
 
+![install generator](https://github.com/pjhauser/atomic-component-system/gifs/install.gif)
+
+
 1. Download the [zip](https://github.com/pjhauser/atomic-component-system/archive/master.zip).
 2. Extract the downloaded zip
 3. `cd` into the `generator-acs` directory
