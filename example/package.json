@@ -1,5 +1,5 @@
 {
-	"name": "ace-site",
+	"name": "ace-website",
 	"version": "0.0.1",
 	"devDependencies": {
 		"grunt": "~0.4.2",
