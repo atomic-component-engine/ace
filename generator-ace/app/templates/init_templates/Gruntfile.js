@@ -61,7 +61,6 @@ module.exports = function(grunt) {
 			}
 		}
 	};
-
 	// Jade => HTML
 	gruntConfig.jade = {
 		compile: {
@@ -80,7 +79,15 @@ module.exports = function(grunt) {
 					expand: true,
 					cwd: 'src/',
 					dest: env.dest,
-					src: ['**/**/*.jade'],
+					src: ['**/**/*.jade', '!pages/**/*.jade'],
+					ext: '.html'
+				},
+				{
+					expand: true,
+					flatten: true,
+					cwd: 'src/pages/',
+					dest: env.dest+"/pages/",
+					src: ['**/*.jade'],
 					ext: '.html'
 				}
 			],
@@ -123,16 +130,6 @@ module.exports = function(grunt) {
 				{expand: true, cwd: 'src/img', src: ['**'], dest: env.dest+'/img', filter: 'isFile'}
 			]
 		},
-		content: {
-			files: [
-				{expand: true, cwd: 'src/content', src: ['**'], dest: env.dest+'/content'},
-			]
-		},
-		jade: {
-			files: [
-				{expand: true, cwd: 'dev', src: ['templates/**.jade'], dest: env.dest}
-			]					
-		},
 		video: {
 			files: [
 				{expand: true, cwd: 'src/video', src: ['**'], dest: env.dest+'/video'}
@@ -167,7 +164,7 @@ module.exports = function(grunt) {
 		},
 		jade: {
 			files: ['src/**/**/*.jade'],
-			tasks: ['jade', 'copy:jade'],
+			tasks: ['jade'],
 			options: {
 				interrupt: true
 			}
@@ -182,13 +179,6 @@ module.exports = function(grunt) {
 		video: {
 			files: ['src/video/**'],
 			tasks: ['copy:video'],
-			options: {
-				interrupt: true
-			},
-		},
-		content: {
-			files: ['src/content/**'],
-			tasks: ['copy:content'],
 			options: {
 				interrupt: true
 			},
@@ -209,7 +199,7 @@ module.exports = function(grunt) {
 
 	// Set up task aliases
 	grunt.registerTask('js', env.jsTasks); // Get JS tasks from environment (e.g. only run concat or uglify in release)
-	grunt.registerTask('default', ['jshint', 'jade', 'js', 'copy:img', 'copy:video', 'copy:content', 'compass', 'remfallback']);
+	grunt.registerTask('default', ['jshint', 'jade', 'js', 'copy:img', 'copy:video', 'compass', 'remfallback']);
 	
 	grunt.registerTask('sass', ['compass', 'remfallback']);
 	
