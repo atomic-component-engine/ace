@@ -185,7 +185,12 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
               self.email = " ";
           }
 
-          self.baseUrl = response.baseUrl.replace(/\/+$/, "");;
+          self.baseUrl = response.baseUrl.replace(/\/+$/, "");
+
+          if (!/^(f|ht)tps?:\/\//i.test(self.baseUrl)) {
+             self.baseUrl = "http://" + self.baseUrl;
+          }
+
           self.pkgName = response.pkgName;
           self.isGit = response.isGit;
           done();
