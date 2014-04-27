@@ -75,3 +75,6 @@ Pages are a little different to compoenents, ideally these should have minimal C
 
 ### Todos 
 * Create an example webpage using this generator. 
+
+### Contributing
+We welcome pull requests. This project uses [nvie](https://github.com/nvie)'s super helpful [gitflow](https://github.com/nvie/gitflow) branching model; as such please branch your features from ```develop```
