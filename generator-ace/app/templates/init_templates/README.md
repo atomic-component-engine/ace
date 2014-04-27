@@ -1,7 +1,6 @@
 #Front-end project boilerplate#
 
-## ACE Config
-The ACE config file powers a few user config settings. Firstly it contains an option for the baseUrl that gets passed to your Jade Templates. This option is for absolute URL's. Which are needed due to the folder structure. 
+Please check the wiki for more information: [https://github.com/pjhauser/atomic-component-engine/wiki](https://github.com/pjhauser/atomic-component-engine/wiki)
 
 ##Dependencies##
 
