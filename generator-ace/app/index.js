@@ -141,7 +141,6 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
     // if gitconfig exists
     if (gitConfigStr) {
-      console.log("Getting some information from the git configuration...");
       this.gitGlobalConfigFile = getGitInfo.parseConfig(gitConfigStr);
     }
     else {

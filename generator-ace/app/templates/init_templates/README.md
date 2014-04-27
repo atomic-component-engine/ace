@@ -1,7 +1,7 @@
 #Front-end project boilerplate#
 
-##Introduction##
-This project is a starting point for front-end development projects using a [Grunt JS](http://gruntjs.com/) workflow. It uses [SASS](http://sass-lang.com/) as a CSS preprocessor and [Jade](http://jade-lang.com/) as a HTML preprocessor. 
+## ACE Config
+The ACE config file powers a few user config settings. Firstly 
 
 ##Dependencies##
 
@@ -12,7 +12,7 @@ This project is a starting point for front-end development projects using a [Gru
 	- compass
 
 ##Usage##
-Once checked out, install the node modules:
+Install the node modules:
 
 ```> npm install```
 
