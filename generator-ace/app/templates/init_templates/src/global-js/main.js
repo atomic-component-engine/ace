@@ -20,6 +20,7 @@ requirejs.config({
 			'exports': '$'
 		},
 		'elementquery': {
+			'deps': ['jquery'],
 			'exports': 'elementQuery'
 		},
 		'modernizr': {
@@ -40,7 +41,7 @@ requirejs.config({
 });
 
 
-require([
+requirejs([
 	'vendor/console',
 	'jquery',
 	'elementquery',
@@ -51,7 +52,6 @@ require([
 function (consolePolyfill, $, eq) {
 	consolePolyfill.run();
 	console.log('[main.js] Website init');
-	
 
 
 	// Get body element
@@ -86,8 +86,10 @@ function (consolePolyfill, $, eq) {
 	};
 
 
-	// Run elementquery
-	eq.init();
+	// Run elementquery on resize event
+	window.addEventListener('resize', function(e){
+		elementQuery({}, true);
+	}, false);
 
 	// Detect components and run behaviours
 	/**
