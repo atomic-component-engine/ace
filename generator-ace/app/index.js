@@ -276,6 +276,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       }else{
           this.directory('init_templates/src', 'src');
           this.template('init_templates/_ace_config.tmpl.json', 'ace_config.json');
+          this.template('init_templates/_ace.sublime-project.tmpl', 'ace.sublime-project');
           this.template('init_templates/package.tmpl.json', 'package.json');
           this.copy('init_templates/Gruntfile.js', 'Gruntfile.js');
           this.copy('init_templates/README.md', 'README.md');
