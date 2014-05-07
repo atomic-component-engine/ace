@@ -1,5 +1,4 @@
 /*! elementQuery | Author: Tyson Matanich (http://matanich.com), 2013 | License: MIT */
-/* Modified by Tom Jenkins 2013-12-10 to allow initialisation after window.load */
 (function (window, document, undefined) {
     // Enable strict mode
     "use strict";
@@ -325,9 +324,6 @@
         }
     };
 
-    // Allow init if loaded after window.load
-    window.elementQuery.init = init;
-
     //NOTE: For development purposes only!
     window.elementQuery.selectors = function () {
 
@@ -356,15 +352,22 @@
         return data;
     };
 
-    if (window.addEventListener) {
-        window.addEventListener("resize", refresh, false);
-        window.addEventListener("DOMContentLoaded", init, false);
-        window.addEventListener("load", init, false);
-    }
-    else if (window.attachEvent) {
-        window.attachEvent("onresize", refresh);
-        window.attachEvent("onload", init);
-    }
+    if (document.readyState === "complete") { 
+        init();
+    }else{
+
+        if (window.addEventListener) {
+            window.addEventListener("resize", refresh, false);
+            window.addEventListener("DOMContentLoaded", init, false);
+            window.addEventListener("load", init, false);
+        }
+        else if (window.attachEvent) {
+            window.attachEvent("onresize", refresh);
+            window.attachEvent("onload", init);
+        }
+
+    };
+
 }(this, document, undefined));
 
 /*! getEmPixels  | Author: Tyson Matanich (http://matanich.com), 2013 | License: MIT */
