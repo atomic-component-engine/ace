@@ -29,10 +29,16 @@
       </header>
       <section>
         <h1>
-<a name="ace-v022---alpha-release" class="anchor" href="#ace-v022---alpha-release"><span class="octicon octicon-link"></span></a>ACE v0.2.2 - <em>ALPHA-RELEASE</em>
+<a name="ace-v024---alpha-release" class="anchor" href="#ace-v024---alpha-release"><span class="octicon octicon-link"></span></a>ACE v0.2.4 - <em>ALPHA-RELEASE</em>
 </h1>
 
-<ul>
+<h3>
+<a name="dependancies" class="anchor" href="#dependancies"><span class="octicon octicon-link"></span></a>Dependancies</h3>
+
+<ol>
+<li>Node.js</li>
+<li>npm</li>
+</ol><hr><ul>
 <li>
 <p><a href="#quick">Quick Start</a></p>
 
@@ -43,7 +49,8 @@
 <li><a href="#page-generation">Page generation</a></li>
 </ul>
 </li>
-<li><p><a href="#todos">Todos</a></p></li>
+<li><p><a href="#sublime-text-project">Sublime Text Project</a></p></li>
+<li><a href="#todos">Todos</a></li>
 </ul><p>ACE is a system for creating and maintaining Frontend projects. It builds on the ideas forwarded by <a href="http://bradfrostweb.com/blog/post/atomic-web-design/">Brad Frost</a> where instead of designing pages, we design and develop a system of components. </p>
 
 <p>This system has 2 main elements. The boilerplate, which consists of a Grunt based project, and a component generator, both of which are managed by Yeoman. </p>
@@ -110,6 +117,19 @@
 <li>Name component / page</li>
 <li>Select template type</li>
 </ol><hr><h3>
+<a name="sublime-text-project" class="anchor" href="#sublime-text-project"><span class="octicon octicon-link"></span></a>Sublime Text Project</h3>
+
+<p>Included in the init boilerplate is a file named <code>ace.sublime-project</code>. Opening this file will launch sublime text with a custom file structure and some other small settings. File structure:</p>
+
+<pre><code>| --&gt; /src
+| --&gt; /01. Atoms
+| --&gt; /02. Molecules
+| --&gt; /03. Organisms
+| --&gt; /04. Templates
+| --&gt; /05. Pages
+</code></pre>
+
+<hr><h3>
 <a name="todos" class="anchor" href="#todos"><span class="octicon octicon-link"></span></a>Todos</h3>
 
 <ul>
