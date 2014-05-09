@@ -1,0 +1,59 @@
+//-
+	@file Demo page for the content_block module
+	@author Phil Hauser phil.hsr@gmail.com
+	@extends page_templates/_factory.jade
+	@requires mixins/content_block/[MODFILE]
+
+//- Page dependencies
+include _content_block
+
+//- Page template
+extends ../../templates/_page_default/_page_default
+
+//- Page variables to pass to template
+block page_vars
+	- var page = {}
+	- page.id = "content_block"
+	- page.title = "content_block"
+	- page.mainScript = "content_block.js"
+
+
+//- Content block
+block content
+
+	+content_block([
+		{
+			img: "http://placehold.it/350x150",
+			text: "Lorem ipsum Ut nostrud esse ex dolor irure commodo dolore quis qui sit quis in quis eu ex in sit laborum sit."
+		},
+		{
+			img: "http://placehold.it/350x150",
+			text: "Lorem ipsum Ut nostrud esse ex dolor irure commodo dolore quis qui sit quis in quis eu ex in sit laborum sit."
+		},
+		{
+			img: "http://placehold.it/350x150",
+			text: "Lorem ipsum Ut nostrud esse ex dolor irure commodo dolore quis qui sit quis in quis eu ex in sit laborum sit."
+		}
+	])
+
+	hr
+
+	+content_block([
+		{
+			img: "http://placehold.it/350x150",
+			text: "Lorem ipsum Ut nostrud esse ex dolor irure commodo dolore quis qui sit quis in quis eu ex in sit laborum sit."
+		},
+		{
+			img: "http://placehold.it/350x150",
+			text: "Lorem ipsum Ut nostrud esse ex dolor irure commodo dolore quis qui sit quis in quis eu ex in sit laborum sit."
+		}
+	])
+
+	hr
+
+	+content_block([
+		{
+			img: "http://placehold.it/350x150",
+			text: "Lorem ipsum Ut nostrud esse ex dolor irure commodo dolore quis qui sit quis in quis eu ex in sit laborum sit."
+		}
+	])

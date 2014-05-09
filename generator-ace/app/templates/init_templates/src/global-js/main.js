@@ -94,6 +94,7 @@ function (consolePolyfill, $, eq) {
 	// because it it far less resource intensive.
 	$.windowResize(window.elementQuery.refresh);
 
+
 	// Detect components and run behaviours
 	/**
 	 * {array}

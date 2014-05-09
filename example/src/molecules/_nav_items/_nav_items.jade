@@ -1,0 +1,17 @@
+//-
+	@file Defines a nav_items mixin
+	@author Phil Hauser phil.hsr@gmail.com
+
+//- Dependencies
+include ../../atoms/_nav_item/_nav_item
+
+
+//- Definition
+mixin nav_items()
+
+	nav
+		ul
+			+nav_item("home", "#")
+			+nav_item("work", "#")
+			+nav_item("blog", "#")
+			+nav_item("about", "#")

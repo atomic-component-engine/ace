@@ -1,0 +1,117 @@
+/**
+ * @file Defines styles for a content_block module
+ * @author Phil Hauser phil.hsr@gmail.com
+ */
+
+// replace with medium and large
+// element breakpoints
+$medium: 500px;
+$mid-large: 900px;
+$large: 99999px;
+
+
+// element color pallet
+// e.g $button-tint: #000000
+
+
+//Default style (Small first)
+
+
+// @include at-min-width($medium + 1){
+// 	//medium styles
+// }
+
+
+// @include at-min-width($large + 1){
+// 	//large styles
+// }
+
+.content-section--3-up{
+	.content-block{
+		width: 100%;
+		display: block;
+		margin: 1% 0;
+
+		@include at-min-width($medium) {
+			width: 30%;
+			display: inline-block;
+			margin: 1%;
+		}
+
+		img{
+			width: 100%;
+		}
+	}
+}
+
+.content-section--2-up{
+
+
+	.content-block{
+		width: 100%;
+		display: block;
+		margin: 1% 0;
+
+		img, p{
+			width: 100%;
+			margin: 0%;
+		}
+	}
+
+
+	@include at-min-width($medium) {
+		.content-block{
+			width: 46%;
+			display: inline-block;
+			margin: 1%;
+			img,p{
+				float: left;
+				width: 100%;
+				margin: 0%;
+			}
+		}
+	}
+
+	@include at-min-width($mid-large) {
+		.content-block{
+			img,p{
+				float: left;
+				width: 45%;
+				margin: 1%;
+			}
+		}
+	}
+
+}
+
+.content-section--1-up{
+	.content-block {
+		p{
+			width: 100%;
+			display: block;
+			margin: 1% 0;
+			float: left;
+
+			@include at-min-width($medium) {
+				width: 60%;
+				display: inline-block;
+				margin: 1%;
+			}
+		}
+
+
+		img{
+			width: 100%;
+			float: left;
+
+			@include at-min-width($medium) {
+				width: 30%;
+				display: inline-block;
+				margin: 1%;
+			}
+		}
+	}
+
+}
+
+

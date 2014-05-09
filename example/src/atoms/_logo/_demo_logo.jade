@@ -1,0 +1,24 @@
+//-
+	@file Demo page for the logo module
+	@author Phil Hauser phil.hsr@gmail.com
+	@extends page_templates/_factory.jade
+	@requires mixins/logo/[MODFILE]
+
+//- Page dependencies
+include _logo
+
+//- Page template
+extends ../../templates/_page_default/_page_default
+
+//- Page variables to pass to template
+block page_vars
+	- var page = {}
+	- page.id = "logo"
+	- page.title = "logo"
+	- page.mainScript = "logo.js"
+
+
+//- Content block
+block content
+
+	+logo()
