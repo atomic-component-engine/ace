@@ -1,0 +1,39 @@
+/**
+ * @file Defines styles for a nav_item module
+ * @author Phil Hauser phil.hsr@gmail.com
+ */
+
+// replace with medium and large
+// element breakpoints
+$medium: 99999px;
+$large: 99999px;
+
+
+// element color pallet
+// e.g $button-tint: #000000
+
+
+//Default style (Small first)
+
+
+// @include at-min-width($medium + 1){
+// 	//medium styles
+// }
+
+
+// @include at-min-width($large + 1){
+// 	//large styles
+// }
+
+nav ul {
+	list-style: none;
+	li {
+		display: inline-block;
+		height: 100%;
+		a{
+			color: black;
+			margin: 0.5rem;
+			margin-top: -1rem;
+		}
+	}
+}

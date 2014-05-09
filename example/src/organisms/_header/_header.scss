@@ -1,0 +1,75 @@
+/**
+ * @file Defines styles for a header module
+ * @author Phil Hauser phil.hsr@gmail.com
+ */
+
+// replace with medium and large
+// element breakpoints
+$medium: 390px;
+$large: 99999px;
+
+
+// element color pallet
+// e.g $button-tint: #000000
+
+
+//Default style (Small first)
+
+
+// @include at-min-width($medium + 1){
+// 	//medium styles
+// }
+
+
+// @include at-min-width($large + 1){
+// 	//large styles
+// }
+
+header{
+	@include cf();
+	height: 7rem;
+	margin-bottom: 1rem;
+
+	.logo, nav{
+		display: block;
+		width: 100%;
+
+		ul li a{
+			position: relative;
+			top: 5%;
+		}
+
+	}
+
+
+	.logo{
+		text-align: center;
+	}
+
+
+	@include at-min-width($medium) {
+		background-color: $softgrey;
+		height: 5rem;
+		.logo, nav{
+			float: left;
+			display: inline-block;
+			width: 30%;
+		}
+
+
+		nav{
+			float: right;
+			display: inline-block;
+			width: 60%;
+			min-width: 15rem;
+			height: 100%;
+
+			ul li a{
+				top: 35%;
+			}
+
+		}
+	}
+
+}
+

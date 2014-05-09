@@ -1,0 +1,18 @@
+//-
+	@file Defines a content_block mixin
+	@author Phil Hauser phil.hsr@gmail.com
+
+//- Dependencies
+
+//- Definition
+mixin content_block(content)
+
+	// 
+		Get the content array and layout images and text, also wrap 
+		the conent in a div with a modifier detailling the amount
+		of children
+	div(class="content-section--#{content.length}-up")
+		each val, index in content
+			.content-block
+				img(src=val.img, alt="")
+				p= val.text

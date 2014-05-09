@@ -1,6 +1,11 @@
-ACE v0.2.2 - *ALPHA-RELEASE*
+ACE v0.2.4 - *ALPHA-RELEASE*
 =======================
 
+### Dependancies 
+1. Node.js
+2. npm
+
+---
 
 * [Quick Start](#quick)
 	* [Getting Started](#getting-started)
@@ -8,6 +13,7 @@ ACE v0.2.2 - *ALPHA-RELEASE*
  	* [Component generation](#component-generation)
  	* [Page generation](#page-generation)
 
+* [Sublime Text Project](#sublime-text-project)
 * [Todos](#todos)
 
 ACE is a system for creating and maintaining Frontend projects. It builds on the ideas forwarded by [Brad Frost](http://bradfrostweb.com/blog/post/atomic-web-design/) where instead of designing pages, we design and develop a system of components. 
@@ -69,6 +75,19 @@ Pages are a little different to compoenents, ideally these should have minimal C
 1. yo ace page
 2. Name component / page
 3. Select template type
+
+---
+
+### Sublime Text Project
+Included in the init boilerplate is a file named `ace.sublime-project`. Opening this file will launch sublime text with a custom file structure and some other small settings. File structure:
+
+	| --> /src
+	| --> /01. Atoms
+	| --> /02. Molecules
+	| --> /03. Organisms
+	| --> /04. Templates
+	| --> /05. Pages
+
 
 ---
 

@@ -1,4 +1,5 @@
 /*! elementQuery | Author: Tyson Matanich (http://matanich.com), 2013 | License: MIT */
+/* Modified by Tom Jenkins 2013-12-10 to allow initialisation after window.load */
 (function (window, document, undefined) {
     // Enable strict mode
     "use strict";
@@ -278,6 +279,7 @@
                             /* NOTE: Using offsetWidth/Height so an element can be adjusted when it reaches a specific size.
                             /* For Nested queries scrollWidth/Height or clientWidth/Height may sometime be desired but are not supported. */
 
+                            removeFrom(element, j, k);
                             if ((j == "min-width" && element.offsetWidth >= val) ||
                                 (j == "max-width" && element.offsetWidth <= val) ||
                                 (j == "min-height" && element.offsetHeight >= val) ||
@@ -324,6 +326,10 @@
         }
     };
 
+    // Allow init if loaded after window.load
+    window.elementQuery.init = function(){init()};
+    window.elementQuery.refresh = function(){refresh()};
+
     //NOTE: For development purposes only!
     window.elementQuery.selectors = function () {
 
@@ -352,22 +358,15 @@
         return data;
     };
 
-    if (document.readyState === "complete") { 
-        init();
-    }else{
-
-        if (window.addEventListener) {
-            window.addEventListener("resize", refresh, false);
-            window.addEventListener("DOMContentLoaded", init, false);
-            window.addEventListener("load", init, false);
-        }
-        else if (window.attachEvent) {
-            window.attachEvent("onresize", refresh);
-            window.attachEvent("onload", init);
-        }
-
-    };
-
+    if (window.addEventListener) {
+        window.addEventListener("resize", refresh, false);
+        window.addEventListener("DOMContentLoaded", init, false);
+        window.addEventListener("load", init, false);
+    }
+    else if (window.attachEvent) {
+        window.attachEvent("onresize", refresh);
+        window.attachEvent("onload", init);
+    }
 }(this, document, undefined));
 
 /*! getEmPixels  | Author: Tyson Matanich (http://matanich.com), 2013 | License: MIT */
@@ -411,3 +410,40 @@
         return value;
     };
 }(document, document.documentElement));
+
+
+jQuery.windowResize = (function($) {
+        
+    var enqueue = function() { // Setter method for the queue of callbacks
+    
+            var callbacks = Array.prototype.slice.call(arguments);
+        
+            for (var i in callbacks) queue.push(callbacks[i]);
+ 
+        },
+        flush = function() { // Check every 100ms to see if resize has finished
+ 
+            clearTimeout(timer);
+            
+            timer = setTimeout(doCallbacks, 100);
+        
+        },
+        doCallbacks = function() { // Run any functions that have been queued
+        
+            for (var i in queue) queue[i].call(window);
+        
+        },
+        timer,
+        queue = [];
+        
+    $(function() {
+    
+        $(window).resize(flush); // Bind to jQuery window object just once
+    
+    });
+ 
+    return enqueue;
+ 
+})(jQuery);
+
+

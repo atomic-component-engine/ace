@@ -86,10 +86,14 @@ function (consolePolyfill, $, eq) {
 	};
 
 
-	// Run elementquery on resize event
-	window.addEventListener('resize', function(e){
-		elementQuery({}, true);
-	}, false);
+	// init element query
+	window.elementQuery.init();
+
+	// refresh element query on window resize
+	// NOTE: we use a jQuery plugin for the resize event
+	// because it it far less resource intensive.
+	$.windowResize(window.elementQuery.refresh);
+
 
 	// Detect components and run behaviours
 	/**

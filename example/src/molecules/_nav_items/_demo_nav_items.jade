@@ -1,0 +1,24 @@
+//-
+	@file Demo page for the nav_items module
+	@author Phil Hauser phil.hsr@gmail.com
+	@extends page_templates/_factory.jade
+	@requires mixins/nav_items/[MODFILE]
+
+//- Page dependencies
+include _nav_items
+
+//- Page template
+extends ../../templates/_page_default/_page_default
+
+//- Page variables to pass to template
+block page_vars
+	- var page = {}
+	- page.id = "nav_items"
+	- page.title = "nav_items"
+	- page.mainScript = "nav_items.js"
+
+
+//- Content block
+block content
+
+	+nav_items()
