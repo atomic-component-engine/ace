@@ -33,7 +33,12 @@ html(lang="en")
 		meta(name="keywords", content=page.keywords)
 		meta(name="viewport", content="width=device-width")
 		meta(name="format-detection", content="telephone=no")
-		link(rel="stylesheet", href=aceConfig.baseURL + "/" + env + "/css/main.css")
+		if (env == "dev")
+			link(rel="stylesheet", href=aceConfig.baseURL + "/" + env + "/css/main.css")
+		else
+			link(rel="stylesheet", href="css/main.css")
+
+		link(href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,600,700,800,300', rel='stylesheet', type='text/css')
 
 		// if lt IE 9
 			script(src=aceConfig.baseURL  + "/" + env + "/js/ie/eventlistener.js")
@@ -41,12 +46,12 @@ html(lang="en")
 			script(src=aceConfig.baseURL  + "/" + env + "/js/ie/respond.min.js")
 
 	body(class=bodyClass, data-page=page.id)
+		+header()
 		block content
 
 
 		if (env == "dev")
 			script(data-main=aceConfig.baseURL + "/" + env + "/js/main", src= aceConfig.baseURL + "/" + env + "/js/vendor/require.js")
 		else
-			script(src=aceConfig.baseURL + "/" + env + "/js/"+pkg.name+".min.js")
-
+			script(src="js/"+pkg.name+".min.js")
 

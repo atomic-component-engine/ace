@@ -1,4 +1,4 @@
-ACE v0.2.4 - *ALPHA-RELEASE*
+ACE v0.2.5
 =======================
 
 ### Dependancies 

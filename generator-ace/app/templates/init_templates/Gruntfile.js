@@ -34,6 +34,15 @@ module.exports = function(grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 	};
 
+	// Execute shell commands
+	gruntConfig.exec = {
+		dev: {
+			cmd: function() {
+				return 'grunt dev';
+			}
+		}
+	};
+
 	// JS linting
 	gruntConfig.jshint = {
 		files: ['gruntfile.js', 'src/**/**/*.js'],
@@ -78,7 +87,7 @@ module.exports = function(grunt) {
 				{
 					expand: true,
 					cwd: 'src/',
-					dest: env.dest,
+					dest: 'dev',
 					src: ['**/**/*.jade', '!pages/**/*.jade'],
 					ext: '.html'
 				},
@@ -86,7 +95,7 @@ module.exports = function(grunt) {
 					expand: true,
 					flatten: true,
 					cwd: 'src/pages/',
-					dest: env.dest+"/pages/",
+					dest: "dev/pages/",
 					src: ['**/*.jade'],
 					ext: '.html'
 				}
@@ -130,11 +139,6 @@ module.exports = function(grunt) {
 				{expand: true, cwd: 'src/img', src: ['**'], dest: env.dest+'/img', filter: 'isFile'}
 			]
 		},
-		video: {
-			files: [
-				{expand: true, cwd: 'src/video', src: ['**'], dest: env.dest+'/video'}
-			]					
-		},
 		js: {
 			files: [
 				{expand: true, flatten: true, cwd: 'src/atoms', src: ['**/*.js'], dest: env.dest+'/js'},
@@ -142,6 +146,15 @@ module.exports = function(grunt) {
 				{expand: true, flatten: true, cwd: 'src/organisms', src: ['**/*.js'], dest: env.dest+'/js'},
 				{expand: true, flatten: true, cwd: 'src/templates', src: ['**/*.js'], dest: env.dest+'/js'},
 				{expand: true, flatten: false, cwd: 'src/global-js', src: ['**/*.js'], dest: env.dest+'/js'}
+			]
+		},
+		release: {
+			files: [
+				{expand: true, flatten: true, cwd: 'dev', src: ['pages/*.html'], dest: 'release/'},
+				{expand: true, flatten: true, cwd: 'dev', src: ['atoms/**/*.html'], dest: 'release/'},
+				{expand: true, flatten: true, cwd: 'dev', src: ['molecules/**/*.html'], dest: 'release/'},
+				{expand: true, flatten: true, cwd: 'dev', src: ['organisms/**/*.html'], dest: 'release/'},
+				{expand: true, flatten: true, cwd: 'dev', src: ['templates/**/*.html'], dest: 'release/'}
 			]
 		}
 	};
@@ -175,13 +188,6 @@ module.exports = function(grunt) {
 			options: {
 				interrupt: true
 			},
-		},
-		video: {
-			files: ['src/video/**'],
-			tasks: ['copy:video'],
-			options: {
-				interrupt: true
-			},
 		}
 	};
 
@@ -196,15 +202,21 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-remfallback');
+	grunt.loadNpmTasks('grunt-exec');
 
 	// Set up task aliases
 	grunt.registerTask('js', env.jsTasks); // Get JS tasks from environment (e.g. only run concat or uglify in release)
-	grunt.registerTask('default', ['jshint', 'jade', 'js', 'copy:img', 'copy:video', 'compass', 'remfallback']);
+	grunt.registerTask('default', ['jshint', 'jade', 'js', 'copy:img', 'compass', 'remfallback']);
+	grunt.registerTask('default-release', ['jshint', 'jade', 'js', 'copy:img', 'compass', 'remfallback', 'copy:release', 'exec:dev']);
 	
 	grunt.registerTask('sass', ['compass', 'remfallback']);
 	
 	// Define dummy tasks to allow  CLI to pass environment
 	grunt.registerTask('dev', ['default', 'watch']);
-	grunt.registerTask('release', ['default']);
+	grunt.registerTask('release', ['default-release']);
 
 };
+
+
+
+
