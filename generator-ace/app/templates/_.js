@@ -21,11 +21,11 @@ define([
 	* to the component task module:
 	*
 	* componentTasks.registerTask({
-	* 	taskSelector: 'selector',
-	* 	task: componentTaskMethod()
+	*	taskSelector: 'selector',
+	*	task: componentTaskMethod()
 	* });
 	*/
-
+	
 	return {};
 
 });
