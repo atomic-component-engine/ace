@@ -26,7 +26,25 @@ module.exports = function(grunt) {
 		buildType = 'dev';
 	}
 	env = buildConfig[buildType];
-	
+
+
+
+	///////////////////////////////////////////////////////////////////////////////
+	// ACE Component Task setup
+	///////////////////////////////////////////////////////////////////////////////	
+	var jsFiles = grunt.file.expand(["src/atoms/**/*.js", "src/molecules/**/*.js", "src/organisms/**/*.js", "src/templates/**/*.js", "src/pages/**/*.js"]);
+	var fileNameArray = [];
+	for(i=0;i<jsFiles.length;i++){
+		var slashSeperatedFile = jsFiles[i].split("/");
+		var fileName = slashSeperatedFile.pop();
+		fileName = fileName.substring(0, fileName.length-3);
+		fileNameArray.push(fileName);
+	}
+
+	grunt.file.write("dev/js/componentList.json", JSON.stringify(fileNameArray));
+
+
+
 	///////////////////////////////////////////////////////////////////////////////
 	// DEPENDENCIES & TASK SETUP
 	///////////////////////////////////////////////////////////////////////////////
@@ -145,6 +163,7 @@ module.exports = function(grunt) {
 				{expand: true, flatten: true, cwd: 'src/molecules', src: ['**/*.js'], dest: env.dest+'/js'},
 				{expand: true, flatten: true, cwd: 'src/organisms', src: ['**/*.js'], dest: env.dest+'/js'},
 				{expand: true, flatten: true, cwd: 'src/templates', src: ['**/*.js'], dest: env.dest+'/js'},
+				{expand: true, flatten: true, cwd: 'src/pages', src: ['**/*.js'], dest: env.dest+'/js'},
 				{expand: true, flatten: false, cwd: 'src/global-js', src: ['**/*.js'], dest: env.dest+'/js'}
 			]
 		},
@@ -154,7 +173,8 @@ module.exports = function(grunt) {
 				{expand: true, flatten: true, cwd: 'dev', src: ['atoms/**/*.html'], dest: 'release/'},
 				{expand: true, flatten: true, cwd: 'dev', src: ['molecules/**/*.html'], dest: 'release/'},
 				{expand: true, flatten: true, cwd: 'dev', src: ['organisms/**/*.html'], dest: 'release/'},
-				{expand: true, flatten: true, cwd: 'dev', src: ['templates/**/*.html'], dest: 'release/'}
+				{expand: true, flatten: true, cwd: 'dev', src: ['templates/**/*.html'], dest: 'release/'},
+				{expand: true, flatten: true, cwd: 'dev', src: ['pages/**/*.html'], dest: 'release/'}
 			]
 		}
 	};

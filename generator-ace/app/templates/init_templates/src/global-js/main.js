@@ -8,10 +8,7 @@ requirejs.config({
 		'base':				'vendor/Base',
 		'jquery':			'vendor/jquery',
 		'text':				'vendor/require-text',
-		'templates':		'../templates',
 		'elementquery':		'vendor/elementQuery',
-		'modernizr':		'vendor/modernizr/modernizr',
-		'modernizrpolys':	'vendor/modernizr/modernizrpolys',
 		'html5shiv':		'ie/html5shiv',
 	},
 	
@@ -22,12 +19,6 @@ requirejs.config({
 		'elementquery': {
 			'deps': ['jquery'],
 			'exports': 'elementQuery'
-		},
-		'modernizr': {
-			'exports': 'Modernizr'
-		},
-		'modernizrpolys': {
-			'deps': ['modernizr'],
 		},
 		'html5shiv':{
 			'exports' : 'h5s'
@@ -45,46 +36,14 @@ requirejs([
 	'vendor/console',
 	'jquery',
 	'elementquery',
-	'modernizr',
-	'html5shiv'
+	'html5shiv',
+	'offcanvasMenu',
+	'componentList'
 ],
 	
-function (consolePolyfill, $, eq) {
+function (consolePolyfill, $, eq, h5s, offcanvasMenu, componentList) {
 	consolePolyfill.run();
 	console.log('[main.js] Website init');
-
-
-	// Get body element
-	var $body = $(document.body);
-	var $html = $body.parent();
-
-	/**
-	 * {object}
-	 * Defines global tasks; each of these will always run regardless of page
-	 */
-	var globalTasks = {
-
-	};
-
-	/**
-	 * {object} 
-	 * Defines tasks to run for specific components. Keyed by component classname by default
-	 * Tasks will only be run if their selector is listed in the componentSelectors array (see below)
-	 */
-	var componentTasks = {
-		/**
-		 * Add objects whose key is the $ selector for the compoenent
-		 * and the function is the component specific JS
-		 * 
-		 *	'component-selector': function () {
-		 *
-		 *		// component js
-		 *
-		 *	}
-		 *
-		 */
-	};
-
 
 	// init element query
 	window.elementQuery.init();
@@ -94,16 +53,9 @@ function (consolePolyfill, $, eq) {
 	// because it it far less resource intensive.
 	$.windowResize(window.elementQuery.refresh);
 
-
-	// Loop over selectors,  detecting components and running necessary tasks
-	for (var selector in componentTasks) {
-		var $components = $(selector);
-
-		if ($components.length) {
-			// Run component task
-			componentTasks[selector].apply(this, [$components]);
-		}
-	}
+	// Get the list of components and 
+	// run their tasks
+	componentList.runComponentTasks();
 
 
 });
