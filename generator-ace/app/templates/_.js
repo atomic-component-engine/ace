@@ -4,9 +4,28 @@
  */
 
 define([
+	'jquery',
+	'componentTasks'
+], function ($, componentTasks) {
 
-], function () {
+	/**
+	 * 
+	 * If your component has a task you will need to
+	 * set your component's task as a method:
+	 *
+	 * componentTaskMethod = function(){
+	 * };
+	 *
+	 *
+	 * And then pass that with the component selector
+	 * to the component task module:
+	 *
+	 * componentTasks.registerTask({
+	 * 	taskSelector: 'selector',
+	 * 	task: componentTaskMethod()
+	 * });
+	 */
 
-	return {}; // Replace this return value with whatever class/function definition you wish this module to make available
+	return {};
 
 });
