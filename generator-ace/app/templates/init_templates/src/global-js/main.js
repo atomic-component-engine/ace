@@ -95,17 +95,8 @@ function (consolePolyfill, $, eq) {
 	$.windowResize(window.elementQuery.refresh);
 
 
-	// Detect components and run behaviours
-	/**
-	 * {array}
-	 * List of component selectors
-	 */
-	var componentSelectors = [
-		// 'compoenent-selector',
-	];
 	// Loop over selectors,  detecting components and running necessary tasks
-	for (var k in componentSelectors) {
-		var selector = componentSelectors[k];
+	for (var selector in componentTasks) {
 		var $components = $(selector);
 
 		if ($components.length) {
