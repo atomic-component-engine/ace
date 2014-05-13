@@ -32,16 +32,40 @@ module.exports = function(grunt) {
 	///////////////////////////////////////////////////////////////////////////////
 	// ACE Component Task setup
 	///////////////////////////////////////////////////////////////////////////////	
+
+	/**
+	 * {Array}
+	 * List of all files (require modules) representing user's components
+	 */
 	var jsFiles = grunt.file.expand(["src/atoms/**/*.js", "src/molecules/**/*.js", "src/organisms/**/*.js", "src/templates/**/*.js", "src/pages/**/*.js"]);
-	var fileNameArray = [];
+	/**
+	 * {Array}
+	 * List of user components, formatted for use as requireJS dependencies
+	 */
+	var componentsList = [];
+	// Loop over files to create componentList
 	for(i=0;i<jsFiles.length;i++){
-		var slashSeperatedFile = jsFiles[i].split("/");
-		var fileName = slashSeperatedFile.pop();
-		fileName = fileName.substring(0, fileName.length-3);
-		fileNameArray.push(fileName);
+		var fileName;
+		// Depending on environment (dev or release) the dependency paths will be different
+		if (buildType == 'dev') {
+			// Dev, strip path and .js extension
+			var slashSeperatedFile = jsFiles[i].split("/");
+			fileName = slashSeperatedFile.pop();
+			fileName = fileName.substring(0, fileName.length-3);
+		} else if (buildType == 'release') {
+			// Release, include corrected path (replace leading src/ with ../) and strip .js extension
+			fileName = '../' + jsFiles[i].substring(4, jsFiles[i].length - 3);
+		}
+		// Add component dependency to list
+		componentsList.push(fileName);
 	}
 
-	grunt.file.write("dev/js/componentList.json", JSON.stringify(fileNameArray));
+	// Write component dependency file for require to read in at runtime (dev) or build time (release)
+	if (buildType == 'dev') {
+		grunt.file.write("dev/js/componentList.json", JSON.stringify(componentsList));
+	} else if (buildType == 'release') {
+		grunt.file.write("src/global-js/componentList.json", JSON.stringify(componentsList));
+	}
 
 
 
@@ -79,10 +103,20 @@ module.exports = function(grunt) {
 		}
 	};
 
-	// RequireJS
+	// RequireJS build (release only)
+	/**
+	 * {Array}
+	 * List of requireJS modules to pass in to build as explicit dependencies
+	 */
+	var explicitDependencies;
+	explicitDependencies = componentsList.slice(0); // Clone user components array
+	explicitDependencies.push('vendor/almond'); // Add almond AMD loader
 	gruntConfig.requirejs = {
 		compile: {
 			options: {
+				optimize: "none", 
+				findNestedDependencies: 'true',
+				include: explicitDependencies,
 				mainConfigFile: "src/global-js/main.js",
 				out: env.dest+'/js/<%= pkg.name %>.min.js'
 			}

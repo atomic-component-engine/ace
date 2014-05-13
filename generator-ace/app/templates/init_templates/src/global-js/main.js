@@ -26,7 +26,6 @@ requirejs.config({
 	},
 	
 	'name': 'main',
-	'include': 'vendor/almond',
 	'wrap': true
 	
 });
