@@ -148,6 +148,9 @@ module.exports = function(grunt) {
 
 	// Task watching
 	gruntConfig.watch = {
+		options: {
+			livereload: true
+		},
 		js: {
 			files: ['src/**/**/*.js'],
 			tasks: ['js'],
@@ -191,7 +194,8 @@ module.exports = function(grunt) {
 			options: {
 				port: 7000,
 				base: 'dev',
-				keepalive: true
+				keepalive: true,
+				livereload: true
 			}
 		},
 		release: {
