@@ -26,7 +26,6 @@ requirejs.config({
 	},
 	
 	'name': 'main',
-	'include': 'vendor/almond',
 	'wrap': true
 	
 });
@@ -37,11 +36,10 @@ requirejs([
 	'jquery',
 	'elementquery',
 	'html5shiv',
-	'offcanvasMenu',
 	'componentList'
 ],
 	
-function (consolePolyfill, $, eq, h5s, offcanvasMenu, componentList) {
+function (consolePolyfill, $, eq, h5s, componentList) {
 	consolePolyfill.run();
 	console.log('[main.js] Website init');
 

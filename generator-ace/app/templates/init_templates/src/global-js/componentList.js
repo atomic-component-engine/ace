@@ -19,6 +19,7 @@ define([
 		runComponentTasks: function(){
 
 			require(this.components, function(){
+				console.log('components modules loaded as:', arguments);
 				// Loop over selectors,  detecting components and running necessary tasks
 				for (var selector in componentTasks.taskList) {
 					var $components = $(selector);

@@ -27,21 +27,44 @@ module.exports = function(grunt) {
 	}
 	env = buildConfig[buildType];
 
-
-
 	///////////////////////////////////////////////////////////////////////////////
 	// ACE Component Task setup
 	///////////////////////////////////////////////////////////////////////////////	
+
+	/**
+	 * {Array}
+	 * List of all files (require modules) representing user's components
+	 */
 	var jsFiles = grunt.file.expand(["src/atoms/**/*.js", "src/molecules/**/*.js", "src/organisms/**/*.js", "src/templates/**/*.js", "src/pages/**/*.js"]);
-	var fileNameArray = [];
+	/**
+	 * {Array}
+	 * List of user components, formatted for use as requireJS dependencies
+	 */
+	var componentsList = [];
+	// Loop over files to create componentList
 	for(i=0;i<jsFiles.length;i++){
-		var slashSeperatedFile = jsFiles[i].split("/");
-		var fileName = slashSeperatedFile.pop();
-		fileName = fileName.substring(0, fileName.length-3);
-		fileNameArray.push(fileName);
+		var fileName;
+		// Depending on environment (dev or release) the dependency paths will be different
+		if (buildType == 'dev') {
+			// Dev, strip path and .js extension
+			var slashSeperatedFile = jsFiles[i].split("/");
+			fileName = slashSeperatedFile.pop();
+			fileName = fileName.substring(0, fileName.length-3);
+		} else if (buildType == 'release') {
+			// Release, include corrected path (replace leading src/ with ../) and strip .js extension
+			fileName = '../' + jsFiles[i].substring(4, jsFiles[i].length - 3);
+		}
+		// Add component dependency to list
+		componentsList.push(fileName);
 	}
 
-	grunt.file.write("dev/js/componentList.json", JSON.stringify(fileNameArray));
+	// Write component dependency file for require to read in at runtime (dev) or build time (release)
+	if (buildType == 'dev') {
+		grunt.file.write("dev/js/componentList.json", JSON.stringify(componentsList));
+	} else if (buildType == 'release') {
+		grunt.file.write("src/global-js/componentList.json", JSON.stringify(componentsList));
+	}
+
 
 
 
@@ -50,15 +73,6 @@ module.exports = function(grunt) {
 	///////////////////////////////////////////////////////////////////////////////
 	var gruntConfig = {
 		pkg: grunt.file.readJSON('package.json'),
-	};
-
-	// Execute shell commands
-	gruntConfig.exec = {
-		dev: {
-			cmd: function() {
-				return 'grunt dev';
-			}
-		}
 	};
 
 	// JS linting
@@ -79,47 +93,84 @@ module.exports = function(grunt) {
 		}
 	};
 
-	// RequireJS
+	// RequireJS build (release only)
+	/**
+	 * {Array}
+	 * List of requireJS modules to pass in to build as explicit dependencies
+	 */
+	var explicitDependencies;
+	explicitDependencies = componentsList.slice(0); // Clone user components array
+	explicitDependencies.push('vendor/almond'); // Add almond AMD loader
 	gruntConfig.requirejs = {
 		compile: {
 			options: {
+				optimize: "none", 
+				findNestedDependencies: 'true',
+				include: explicitDependencies,
 				mainConfigFile: "src/global-js/main.js",
 				out: env.dest+'/js/<%= pkg.name %>.min.js'
 			}
 		}
 	};
-	// Jade => HTML
-	gruntConfig.jade = {
-		compile: {
-			options: {
-				pretty: true,
-				data: {
-					env: buildType,
-					pkg: {
-						name: '<%= pkg.name %>'
-					},
-					aceConfig: grunt.file.readJSON('ace_config.json'),
-				}
-			},
-			files:  [
-				{
-					expand: true,
-					cwd: 'src/',
-					dest: 'dev',
-					src: ['**/**/*.jade', '!pages/**/*.jade'],
-					ext: '.html'
+
+
+	if(buildType == "dev"){
+
+		// Jade => HTML
+		gruntConfig.jade = {
+			compile: {
+				options: {
+					pretty: true,
+					data: {
+						env: buildType,
+						pkg: {
+							name: '<%= pkg.name %>'
+						},
+						aceConfig: grunt.file.readJSON('ace_config.json'),
+					}
 				},
-				{
-					expand: true,
-					flatten: true,
-					cwd: 'src/pages/',
-					dest: "dev/pages/",
-					src: ['**/*.jade'],
-					ext: '.html'
-				}
-			],
-		}
-	};
+				files: [
+					{
+						expand: true,
+						cwd: 'src/',
+						dest: env.dest,
+						src: ['**/**/*.jade'],
+						ext: '.html'
+					}
+				],
+			}
+		};
+
+	}else{
+
+		// Jade => HTML
+		gruntConfig.jade = {
+			compile: {
+				options: {
+					pretty: true,
+					data: {
+						env: buildType,
+						pkg: {
+							name: '<%= pkg.name %>'
+						},
+						aceConfig: grunt.file.readJSON('ace_config.json'),
+					}
+				},
+				files: [
+					{
+						expand: true,
+						flatten: true,
+						cwd: 'src/',
+						dest: env.dest,
+						src: ['pages/**/*.jade'],
+						ext: '.html'
+					}
+				],
+			}
+		};
+
+	}
+
 
 	// SASS => CSS
 	gruntConfig.compass = {
@@ -157,6 +208,11 @@ module.exports = function(grunt) {
 				{expand: true, cwd: 'src/img', src: ['**'], dest: env.dest+'/img', filter: 'isFile'}
 			]
 		},
+		video: {
+			files: [
+				{expand: true, cwd: 'src/video', src: ['**'], dest: env.dest+'/video'}
+			]					
+		},
 		js: {
 			files: [
 				{expand: true, flatten: true, cwd: 'src/atoms', src: ['**/*.js'], dest: env.dest+'/js'},
@@ -166,21 +222,14 @@ module.exports = function(grunt) {
 				{expand: true, flatten: true, cwd: 'src/pages', src: ['**/*.js'], dest: env.dest+'/js'},
 				{expand: true, flatten: false, cwd: 'src/global-js', src: ['**/*.js'], dest: env.dest+'/js'}
 			]
-		},
-		release: {
-			files: [
-				{expand: true, flatten: true, cwd: 'dev', src: ['pages/*.html'], dest: 'release/'},
-				{expand: true, flatten: true, cwd: 'dev', src: ['atoms/**/*.html'], dest: 'release/'},
-				{expand: true, flatten: true, cwd: 'dev', src: ['molecules/**/*.html'], dest: 'release/'},
-				{expand: true, flatten: true, cwd: 'dev', src: ['organisms/**/*.html'], dest: 'release/'},
-				{expand: true, flatten: true, cwd: 'dev', src: ['templates/**/*.html'], dest: 'release/'},
-				{expand: true, flatten: true, cwd: 'dev', src: ['pages/**/*.html'], dest: 'release/'}
-			]
 		}
 	};
 
 	// Task watching
 	gruntConfig.watch = {
+		options: {
+			livereload: true
+		},
 		js: {
 			files: ['src/**/**/*.js'],
 			tasks: ['js'],
@@ -208,6 +257,32 @@ module.exports = function(grunt) {
 			options: {
 				interrupt: true
 			},
+		},
+		video: {
+			files: ['src/video/**'],
+			tasks: ['copy:video'],
+			options: {
+				interrupt: true
+			},
+		}
+	};
+
+	// Servers
+	gruntConfig.connect = {
+		dev: {
+			options: {
+				port: 7000,
+				base: 'dev',
+				keepalive: true,
+				livereload: true
+			}
+		},
+		release: {
+			options: {
+				port: 8000,
+				base: 'release',
+				keepalive: true
+			}
 		}
 	};
 
@@ -222,21 +297,20 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-remfallback');
-	grunt.loadNpmTasks('grunt-exec');
+	grunt.loadNpmTasks('grunt-contrib-connect');
 
 	// Set up task aliases
 	grunt.registerTask('js', env.jsTasks); // Get JS tasks from environment (e.g. only run concat or uglify in release)
-	grunt.registerTask('default', ['jshint', 'jade', 'js', 'copy:img', 'compass', 'remfallback']);
-	grunt.registerTask('default-release', ['jshint', 'jade', 'js', 'copy:img', 'compass', 'remfallback', 'copy:release', 'exec:dev']);
+	grunt.registerTask('default', ['jshint', 'jade', 'js', 'copy:img', 'copy:video', 'compass', 'remfallback']);
 	
 	grunt.registerTask('sass', ['compass', 'remfallback']);
+
+	// Shorthand environment servers
+	grunt.registerTask('serve-dev', ['connect:dev']);
+	grunt.registerTask('serve-release', ['connect:release']);
 	
 	// Define dummy tasks to allow  CLI to pass environment
 	grunt.registerTask('dev', ['default', 'watch']);
-	grunt.registerTask('release', ['default-release']);
+	grunt.registerTask('release', ['default']);
 
 };
-
-
-
-

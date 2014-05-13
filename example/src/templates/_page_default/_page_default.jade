@@ -5,7 +5,7 @@
 include ../../organisms/_header/_header
 
 //- Default vars
-- var page = {id: "page_default", title: "Default Boilerplate Page"};
+- var page = {id: "page_default", title: "Default Page"};
 
 
 //- Import variables from calling page
@@ -51,4 +51,5 @@ html(lang="en")
 			script(data-main=aceConfig.baseURL + "/" + env + "/js/main", src= aceConfig.baseURL + "/" + env + "/js/vendor/require.js")
 		else
 			script(src=aceConfig.baseURL + "/" + env + "/js/"+pkg.name+".min.js")
+
 
