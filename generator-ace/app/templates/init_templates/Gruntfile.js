@@ -93,47 +93,84 @@ module.exports = function(grunt) {
 		}
 	};
 
-	// RequireJS
+	// RequireJS build (release only)
+	/**
+	 * {Array}
+	 * List of requireJS modules to pass in to build as explicit dependencies
+	 */
+	var explicitDependencies;
+	explicitDependencies = componentsList.slice(0); // Clone user components array
+	explicitDependencies.push('vendor/almond'); // Add almond AMD loader
 	gruntConfig.requirejs = {
 		compile: {
 			options: {
+				optimize: "none", 
+				findNestedDependencies: 'true',
+				include: explicitDependencies,
 				mainConfigFile: "src/global-js/main.js",
 				out: env.dest+'/js/<%= pkg.name %>.min.js'
 			}
 		}
 	};
-	// Jade => HTML
-	gruntConfig.jade = {
-		compile: {
-			options: {
-				pretty: true,
-				data: {
-					env: buildType,
-					pkg: {
-						name: '<%= pkg.name %>'
-					},
-					aceConfig: grunt.file.readJSON('ace_config.json'),
-				}
-			},
-			files:  [
-				{
-					expand: true,
-					cwd: 'src/',
-					dest: env.dest,
-					src: ['**/**/*.jade', '!pages/**/*.jade'],
-					ext: '.html'
+
+
+	if(buildType == "dev"){
+
+		// Jade => HTML
+		gruntConfig.jade = {
+			compile: {
+				options: {
+					pretty: true,
+					data: {
+						env: buildType,
+						pkg: {
+							name: '<%= pkg.name %>'
+						},
+						aceConfig: grunt.file.readJSON('ace_config.json'),
+					}
 				},
-				{
-					expand: true,
-					flatten: true,
-					cwd: 'src/pages/',
-					dest: env.dest+"/pages/",
-					src: ['**/*.jade'],
-					ext: '.html'
-				}
-			],
-		}
-	};
+				files: [
+					{
+						expand: true,
+						cwd: 'src/',
+						dest: env.dest,
+						src: ['**/**/*.jade'],
+						ext: '.html'
+					}
+				],
+			}
+		};
+
+	}else{
+
+		// Jade => HTML
+		gruntConfig.jade = {
+			compile: {
+				options: {
+					pretty: true,
+					data: {
+						env: buildType,
+						pkg: {
+							name: '<%= pkg.name %>'
+						},
+						aceConfig: grunt.file.readJSON('ace_config.json'),
+					}
+				},
+				files: [
+					{
+						expand: true,
+						flatten: true,
+						cwd: 'src/',
+						dest: env.dest,
+						src: ['pages/**/*.jade'],
+						ext: '.html'
+					}
+				],
+			}
+		};
+
+	}
+
 
 	// SASS => CSS
 	gruntConfig.compass = {
@@ -182,6 +219,7 @@ module.exports = function(grunt) {
 				{expand: true, flatten: true, cwd: 'src/molecules', src: ['**/*.js'], dest: env.dest+'/js'},
 				{expand: true, flatten: true, cwd: 'src/organisms', src: ['**/*.js'], dest: env.dest+'/js'},
 				{expand: true, flatten: true, cwd: 'src/templates', src: ['**/*.js'], dest: env.dest+'/js'},
+				{expand: true, flatten: true, cwd: 'src/pages', src: ['**/*.js'], dest: env.dest+'/js'},
 				{expand: true, flatten: false, cwd: 'src/global-js', src: ['**/*.js'], dest: env.dest+'/js'}
 			]
 		}
