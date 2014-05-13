@@ -1,4 +1,4 @@
-![logo](https://raw.githubusercontent.com/pjhauser/atomic-component-system/master/gifs/ace-molecule-logo.png)
+![logo](https://raw.githubusercontent.com/pjhauser/atomic-component-engine/develop/gifs/ace-molecule-logo.png)
 
 ACE v0.2.7
 =======================
