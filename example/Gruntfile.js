@@ -185,6 +185,24 @@ module.exports = function(grunt) {
 		}
 	};
 
+	// Servers
+	gruntConfig.connect = {
+		dev: {
+			options: {
+				port: 7000,
+				base: 'dev',
+				keepalive: true
+			}
+		},
+		release: {
+			options: {
+				port: 8000,
+				base: 'release',
+				keepalive: true
+			}
+		}
+	};
+
 	// Pass above config to Grunt
 	grunt.initConfig(gruntConfig);
 
@@ -196,12 +214,17 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-remfallback');
+	grunt.loadNpmTasks('grunt-contrib-connect');
 
 	// Set up task aliases
 	grunt.registerTask('js', env.jsTasks); // Get JS tasks from environment (e.g. only run concat or uglify in release)
 	grunt.registerTask('default', ['jshint', 'jade', 'js', 'copy:img', 'copy:video', 'compass', 'remfallback']);
 	
 	grunt.registerTask('sass', ['compass', 'remfallback']);
+
+	// Shorthand environment servers
+	grunt.registerTask('serve-dev', ['connect:dev']);
+	grunt.registerTask('serve-release', ['connect:release']);
 	
 	// Define dummy tasks to allow  CLI to pass environment
 	grunt.registerTask('dev', ['default', 'watch']);
