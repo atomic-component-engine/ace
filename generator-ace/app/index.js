@@ -82,18 +82,10 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         name: 'pkgName',
         message: 'Sweet! What identifier should we use for your app? (e.g. my-atomic-website)'
       },
-      // Ask for the base URL at which the project is accessed over HTTP
-      {
-        when: function (response) {
-          return response.pkgName;
-        },
-        name: 'baseUrl',
-        message: 'And what\'s the local URL for this project? (e.g http://awesome.dev/)'
-      },
       // Ask whether the project will be using Git
       {
         when: function (response) {
-          return response.baseUrl;
+          return response.pkgName;
         },
         name: 'isGit',
         type: 'confirm',
@@ -183,12 +175,6 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           }else{
               self.name = " ";
               self.email = " ";
-          }
-
-          self.baseUrl = response.baseUrl.replace(/\/+$/, "");
-
-          if (!/^(f|ht)tps?:\/\//i.test(self.baseUrl)) {
-             self.baseUrl = "http://" + self.baseUrl;
           }
 
           self.pkgName = response.pkgName;
