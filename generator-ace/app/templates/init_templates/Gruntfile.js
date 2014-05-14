@@ -311,6 +311,6 @@ module.exports = function(grunt) {
 	
 	// Define dummy tasks to allow  CLI to pass environment
 	grunt.registerTask('dev', ['default', 'watch']);
-	grunt.registerTask('release', ['default']);
+	grunt.registerTask('release', ['default', 'serve-release']);
 
 };
