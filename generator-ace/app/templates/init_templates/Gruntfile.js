@@ -241,7 +241,8 @@ module.exports = function(grunt) {
 			files: ['src/**/**/*.scss'],
 			tasks: ['sass'],
 			options: {
-				interrupt: true
+				interrupt: true,
+				livereload: false
 			}
 		},
 		jade: {
