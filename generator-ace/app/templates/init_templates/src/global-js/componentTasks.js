@@ -19,7 +19,7 @@ define([
 		},
 
 		getTask: function(selector){
-			var task = taskList[selector].task;
+			var task = this.taskList[selector];
 			return task;
 		}
 
