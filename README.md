@@ -1,11 +1,10 @@
 ![logo](https://raw.githubusercontent.com/pjhauser/atomic-component-engine/develop/gifs/ace-molecule-logo.png)
 
-ACE v0.2.7
+ACE v0.2.8
 =======================
 
 ### Dependencies 
-1. Node.js
-2. npm
+[Node.js](http://nodejs.org/download/)
 
 ---
 
@@ -63,11 +62,11 @@ You can use the same yeoman generator to create components. Just type:
 The generator will then create a component in the following folder structure:
 
 	| --> /atoms
-		  |--> /atom_name
-			   | --> atom_name.jade
-			   | --> atom_name.js
-			   | --> atom_name.sass
-			   | --> demo_atom_name.jade
+		  |--> /_atom_name
+			   | --> _atom_name.jade
+			   | --> _atom_name.js
+			   | --> _atom_name.sass
+			   | --> _demo_atom_name.jade
 
 
 #### Page generation
@@ -76,7 +75,7 @@ Pages are a little different to components, ideally these should have minimal CS
 
 1. yo ace page
 2. Name component / page
-3. Select template type
+3. Select template type *ACE will give you a choice of templates that your page will inherit, this is read from your templates dir*
 
 ---
 
