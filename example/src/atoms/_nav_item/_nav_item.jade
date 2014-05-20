@@ -7,5 +7,5 @@
 //- Definition
 mixin nav_item(name, link)
 
-	li 
+	li(class!=attributes.class)
 		a(href="#{link}") #{name}
