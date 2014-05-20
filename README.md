@@ -3,7 +3,7 @@
 ACE v0.2.7
 =======================
 
-### Dependancies 
+### Dependencies 
 1. Node.js
 2. npm
 
@@ -72,7 +72,7 @@ The generator will then create a component in the following folder structure:
 
 #### Page generation
 
-Pages are a little different to compoenents, ideally these should have minimal CSS and JS, as this should all be performed on the sub-page component level. 
+Pages are a little different to components, ideally these should have minimal CSS and JS, as this should all be performed on the sub-page component level. 
 
 1. yo ace page
 2. Name component / page
