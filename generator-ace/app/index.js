@@ -228,6 +228,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       this.dirs = {
         // this is where we define our jade and jade demo paths
         jadeModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.jade',
+        jadePageModDir: "src/" + this.componentType + 's/_' + this.id + '/' + this.id + '.jade',
         jadeDemoDir:  "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.jade',
 
         // this is where we define our js path
