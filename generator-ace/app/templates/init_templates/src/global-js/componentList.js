@@ -16,22 +16,32 @@ define([
 	ComponentList.prototype = {
 		components: [],
 
-		runComponentTasks: function(){
+		runComponentTasks: function(specificSelector){
 
 			require(this.components, function(){
-				console.log('components modules loaded as:', arguments);
-				// Loop over selectors,  detecting components and running necessary tasks
-				for (var selector in componentTasks.taskList) {
-					var $components = $(selector);
 
-					if ($components.length) {
+				// unless a speccific selector has been passed as an argument
+				if(!specificSelector){
+					// Loop over selectors,  detecting components and running necessary tasks
+					for (var selector in componentTasks.taskList) {
+						var $components = $(selector);
+						if ($components.length) {
+							// Run component task
+							componentTasks.getTask(selector).apply(this, [$components]);
+						}
+					}
+				}else{
+					var $component = $(specificSelector);
+					if ($component.length) {
 						// Run component task
-						componentTasks.getTask(selector).apply(this, [$components]);
+						componentTasks.getTask(specificSelector).apply(this, [$component]);
 					}
 				}
+
 			});
 
 		}
+
 	};
 
 	return new ComponentList();
