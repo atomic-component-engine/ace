@@ -59,6 +59,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     this.aceNeedsInit = false;
     this.acePage = false;
     this.quit = false;
+    this.aceExport = false;
 
     /**
      * {Array}
@@ -107,6 +108,8 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       this.aceNeedsInit = true;
     }else if(arg == 'page'){
       this.acePage = true;
+    }else if(arg == 'export'){
+      this.aceExport = true;
     }
 
     // Read in ace config if generating page or component
@@ -204,6 +207,52 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       });
 
     // if you are running the component generator
+    }else if(this.aceExport){
+
+      var self = this;
+      var exportPkg = {};
+      var componentList = [];
+      var jadeDependancies = [];
+      var match;
+
+      // Begin the interrogation
+      this.prompt([
+      {
+        type: 'list',
+        name: 'exportSelectType',
+        message: 'What type would you like to export?',
+        choices: questions.componentType.choices
+      },{
+        when: function (response) {
+          return true;
+        },
+        type: 'list',
+        name: 'componentSelect',
+        message: 'Which component do you want to export?',
+        choices: function(response){
+          componentList = fs.readdirSync("src/" + response.exportSelectType.toLowerCase() + "s");
+          return componentList;
+        },
+      }
+      ], function (response) {
+          var chosenExportFilePath = 'src/' + response.exportSelectType.toLowerCase() + "s/" + response.componentSelect + "/" + response.componentSelect + ".jade";
+          fs.readFile(chosenExportFilePath, "utf8", function (err, data) {
+            var checkInclude =  /\n[\s]*include\s(.+)/g;
+            while(match = checkInclude.exec(data)){
+              var matchRelativePath = match[1].replace(/\.{1,2}\//g, "");
+              var splitBySlash = matchRelativePath.split("/");
+              splitBySlash.pop();
+              console.log(splitBySlash.join("/"));
+              jadeDependancies.push(splitBySlash.join("/"));
+            };
+            self.jadeDependancies = jadeDependancies;
+            self.fileToExport = response.exportSelectType.toLowerCase() + "s/" + response.componentSelect;
+          });
+          //self.quit = true;
+          done();
+      });
+
+
     }else{
 
       var prompts = [questions.componentType, questions.componentName]
@@ -260,6 +309,8 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           this.template('_.js', this.dirs.jsModDir);
         }
       // Generating a new project
+      }else if(this.aceExport){
+          console.log(chalk.gree("Export complete"));
       }else{
           this.directory('init_templates/src', 'src');
           this.template('init_templates/_ace_config.tmpl.json', 'ace_config.json');
