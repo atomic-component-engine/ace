@@ -37,7 +37,7 @@ dependencyResolver.prototype = {
 	 * Finds the jade dependencies for a component by regexing the mixin file
 	 * @return {Array}
 	 */ 
-	getImpliedJadeDeps: function () {
+	getImpliedDeps: function () {
 		var deps = [];
 
 		var data = fs.readFileSync(this.jadeFile, "utf8");
@@ -53,20 +53,12 @@ dependencyResolver.prototype = {
 	},
 
 	/**
-	 * Finds the jade dependencies for a component that are explicity listed in the ace.json file
+	 * Finds the component dependencies for a component that are explicity listed in the ace.json file
 	 */
-	getExplicitJadeDeps: function () {
+	getExplicitDeps: function () {
 		
-		if (this.config.dependencies && this.config.dependencies.jade) {
-			var deps = this.config.dependencies.jade.map(function (dep) {
-				// Remove preceding 'src/'
-				dep = dep.replace(/^src\//, '');
-				// Remove trailing jade filename, to leave us with just the component dir path
-				var depParts = dep.split('/');
-				depParts.pop();
-				dep = depParts.join('/');
-				return dep;
-			});	
+		if (this.config.dependencies && this.config.dependencies.components) {
+			var deps = this.config.dependencies.components;	
 		} else {
 			var deps = [];
 		};

@@ -244,11 +244,13 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
             name: compName
           });
 
-          var impliedJadeDeps = depRes.getImpliedJadeDeps();
-          var explicitJadeDeps = depRes.getExplicitJadeDeps();
+          // Get implied dependencies
+          var impliedDeps = depRes.getImpliedDeps();
+          // Get user-defined dependencies
+          var explicitDeps = depRes.getExplicitDeps();
 
-          self.jadeDeps = _.union([], impliedJadeDeps, explicitJadeDeps);
-          console.log('Found jade deps:', self.jadeDeps);
+          self.deps = _.union([], impliedDeps, explicitDeps);
+          console.log('Found deps:', self.deps);
 
           self.fileToExport = compType + "s/" + compName;
           
