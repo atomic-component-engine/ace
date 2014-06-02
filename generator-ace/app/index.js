@@ -244,7 +244,10 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
             name: compName
           });
 
-          self.jadeDependancies = depRes.getJadeDeps();
+          self.jadeDependancies = depRes.getImpliedJadeDeps();
+
+depRes.getExplicitJadeDeps();
+
           self.fileToExport = compType + "s/" + compName;
           
           //self.quit = true;
