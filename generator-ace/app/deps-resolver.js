@@ -4,6 +4,7 @@
  */
 
 var fs = require('fs');
+var chalk = require('chalk');
 
 /**
  * {Constructor}
@@ -18,10 +19,9 @@ var dependencyResolver = function (options) {
 
 	// Get component config
 	if (!fs.existsSync(this.configFile)) {
-		console.log('no config file, writing blank');
+		console.log(chalk.green('create'), 'ace.json');
 		this.config = {};
 		var buf = new Buffer(JSON.stringify(this.config), 'utf-8');
-		console.log(fs.openSync(this.configFile, 'w'), buf, null, buf.length);
 		fs.writeSync(fs.openSync(this.configFile, 'w'), buf, null, buf.length, null);
 	} else {
 		this.config = JSON.parse(fs.readFileSync(this.configFile, 'utf8'));
