@@ -8,6 +8,8 @@ var fs = require('fs');
 
 var getGitInfo = require('./get-git-info');
 
+var dependencyResolver = require('./deps-resolver');
+
 /**
  * {Object}
  * Contains common questions used by the component generator
@@ -235,19 +237,16 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         },
       }
       ], function (response) {
-          var chosenExportFilePath = 'src/' + response.exportSelectType.toLowerCase() + "s/" + response.componentSelect + "/" + response.componentSelect + ".jade";
-          fs.readFile(chosenExportFilePath, "utf8", function (err, data) {
-            var checkInclude =  /\n[\s]*include\s(.+)/g;
-            while(match = checkInclude.exec(data)){
-              var matchRelativePath = match[1].replace(/\.{1,2}\//g, "");
-              var splitBySlash = matchRelativePath.split("/");
-              splitBySlash.pop();
-              console.log(splitBySlash.join("/"));
-              jadeDependancies.push(splitBySlash.join("/"));
-            };
-            self.jadeDependancies = jadeDependancies;
-            self.fileToExport = response.exportSelectType.toLowerCase() + "s/" + response.componentSelect;
+          var compType = response.exportSelectType.toLowerCase();
+          var compName = response.componentSelect;
+          var depRes = new dependencyResolver({
+            type: compType,
+            name: compName
           });
+
+          self.jadeDependancies = depRes.getJadeDeps();
+          self.fileToExport = compType + "s/" + compName;
+          
           //self.quit = true;
           done();
       });
