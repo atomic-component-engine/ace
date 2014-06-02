@@ -43,11 +43,10 @@ dependencyResolver.prototype = {
 		var data = fs.readFileSync(this.jadeFile, "utf8");
 		var checkInclude =  /\n[\s]*include\s(.+)/g;
 		while(match = checkInclude.exec(data)){
-			var matchRelativePath = match[1].replace(/\.{1,2}\//g, "");
-			var splitBySlash = matchRelativePath.split("/");
-			splitBySlash.pop();
-			console.log(splitBySlash.join("/"));
-			deps.push(splitBySlash.join("/"));
+			var stripRelativePath = match[1].replace(/\.{1,2}\//g, "");
+			var pathParts = stripRelativePath.split("/");
+			pathParts.pop();
+			deps.push(pathParts.join("/"));
 		};
 
 		return deps;
@@ -57,10 +56,22 @@ dependencyResolver.prototype = {
 	 * Finds the jade dependencies for a component that are explicity listed in the ace.json file
 	 */
 	getExplicitJadeDeps: function () {
-		var deps = [];
+		
+		if (this.config.dependencies && this.config.dependencies.jade) {
+			var deps = this.config.dependencies.jade.map(function (dep) {
+				// Remove preceding 'src/'
+				dep = dep.replace(/^src\//, '');
+				// Remove trailing jade filename, to leave us with just the component dir path
+				var depParts = dep.split('/');
+				depParts.pop();
+				dep = depParts.join('/');
+				return dep;
+			});	
+		} else {
+			var deps = [];
+		};
 
-		console.log(this.config);
-
+		return deps;
 	}
 
 }

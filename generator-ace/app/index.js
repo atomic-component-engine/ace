@@ -4,7 +4,7 @@ var path = require('path');
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var fs = require('fs');
-
+var _ = require('lodash');
 
 var getGitInfo = require('./get-git-info');
 
@@ -214,7 +214,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       var self = this;
       var exportPkg = {};
       var componentList = [];
-      var jadeDependancies = [];
+      var jadeDeps = [];
       var match;
 
       // Begin the interrogation
@@ -244,9 +244,11 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
             name: compName
           });
 
-          self.jadeDependancies = depRes.getImpliedJadeDeps();
+          var impliedJadeDeps = depRes.getImpliedJadeDeps();
+          var explicitJadeDeps = depRes.getExplicitJadeDeps();
 
-depRes.getExplicitJadeDeps();
+          self.jadeDeps = _.union([], impliedJadeDeps, explicitJadeDeps);
+          console.log('Found jade deps:', self.jadeDeps);
 
           self.fileToExport = compType + "s/" + compName;
           
