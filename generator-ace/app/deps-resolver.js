@@ -54,6 +54,7 @@ dependencyResolver.prototype = {
 
 	/**
 	 * Finds the component dependencies for a component that are explicity listed in the ace.json file
+	 * @return {Array}
 	 */
 	getExplicitDeps: function () {
 		
