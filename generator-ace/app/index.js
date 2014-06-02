@@ -310,7 +310,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         }
       // Generating a new project
       }else if(this.aceExport){
-          console.log(chalk.gree("Export complete"));
+          console.log(chalk.green("Export complete"));
       }else{
           this.directory('init_templates/src', 'src');
           this.template('init_templates/_ace_config.tmpl.json', 'ace_config.json');
