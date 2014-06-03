@@ -77,6 +77,7 @@ dependencyResolver.prototype = {
 
 	/**
 	 * Finds any non-component js depenencies for the component by regexing its js module
+	 * [Unimplemented]
 	 * @return {Array}
 	 */
 	getImpliedJSDeps: function () {
@@ -87,6 +88,7 @@ dependencyResolver.prototype = {
 
 	/**
 	 * Finds any non-component sass depenencies (e.g. mixins) for the component by regexing its sass module
+	 * [Unimplemented]
 	 * @return {Array}
 	 */
 	getImpliedSASSDeps: function () {
