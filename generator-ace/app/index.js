@@ -215,7 +215,6 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       var exportPkg = {};
       var componentList = [];
       var jadeDeps = [];
-      var match;
 
       // Begin the interrogation
       this.prompt([
@@ -249,8 +248,10 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           // Get user-defined dependencies
           var explicitDeps = depRes.getExplicitDeps();
 
-          self.deps = _.union([], impliedDeps, explicitDeps);
-          console.log('Found deps:', self.deps);
+          self.compDeps = _.union([], impliedDeps.components, explicitDeps.components);
+          self.jsDeps = _.union([], impliedDeps.js, explicitDeps.js);
+          self.sassDeps = _.union([], impliedDeps.sass, explicitDeps.sass);
+          console.log('Found deps:', self.compDeps);
 
           self.fileToExport = compType + "s/" + compName;
           
