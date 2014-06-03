@@ -90,17 +90,41 @@ dependencyResolver.prototype = {
 
 	/**
 	 * Finds any non-component sass depenencies (e.g. mixins) for the component by regexing its sass module
-	 * [Unimplemented]
+	 * [TODO currently only finds mixin dependencies, and assumes they are in the global sass mixins folder. Will not handle e.g. compass includes, or mixins that are placed elsewhere.]
 	 * @return {Array}
 	 */
 	getImpliedSASSDeps: function () {
 		var deps = [];
 		var data = fs.readFileSync(this.sassFile, 'utf-8');
 
-		var matchMixins = /^\s*@include ([^;]*);?\s*$/mg;
+		// Load in all global mixin files for later scanning
+		var mixinDir = this.options.projectSASS + 'mixins/';
+		var mixinFiles = fs.readdirSync(mixinDir);
+		var mixinData = {};
+		for (var k in mixinFiles) {
+			mixinData[mixinFiles[k]] = fs.readFileSync(mixinDir+mixinFiles[k], 'utf-8');
+		}
+
+		var matchMixins = /^\s*@include\s+([^;]*);?\s*$/mg;
 		var match;
+		var mixinName;
+		var mixinFile;
+		var mixinDefPattern;
 		while (match = matchMixins.exec(data)) {
-			deps.push(match[1]);
+			// Get matched mixin name
+			mixinName = match[1];
+			// Define mixin search pattern
+			mixinDefPattern = new RegExp('^\s*@mixin\\s+' + mixinName, ['m']);
+			// Loop over mixin files to find one that contains this mixin
+			for (var file in mixinData) {
+				// Does the file contain the mixin?
+				if (mixinDefPattern.test(mixinData[file])) {
+					mixinFile = file;
+					// Add to dep list
+					deps.push(mixinFile);
+					break;
+				}
+			}
 		}
 
 		return deps;

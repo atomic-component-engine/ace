@@ -20,6 +20,7 @@ var dependencyResolver = require('./deps-resolver');
 var projectRoot = process.cwd();
 
 var projectSrc = projectRoot + '/src/';
+var projectSASS = projectSrc + 'global-scss/';
 var projectExport = projectRoot + '/export/';
 
 /**
@@ -250,7 +251,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       ], function (response) {
         // Get type and name of component so we can find it
         var compType = response.exportSelectType.toLowerCase();
-        self.compName = response.componentSelect;
+        var compName = self.compName = response.componentSelect;
 
         /**
          * {DependencyResolver}
@@ -258,7 +259,8 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
          */
         var depRes = new dependencyResolver({
           type: compType,
-          name: self.compName
+          name: compName,
+          projectSASS: projectSASS
         });
 
         // Get implied dependencies
@@ -289,7 +291,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
         // Copy global SASS dependencies to export folder
         self.sassDeps.forEach(function (sassDep) {
-          self.copy(projectSrc+'sass/mixins/'+sassDep, projectExport+'sass/mixins/'+sassDep)
+          self.copy(projectSASS+'mixins/'+sassDep, projectExport+'sass/mixins/'+sassDep)
         });
         
         //self.quit = true;
