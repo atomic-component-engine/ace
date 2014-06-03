@@ -268,7 +268,8 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         self.compDeps = _.union([], impliedDeps.components, explicitDeps.components);
         self.jsDeps = _.union([], impliedDeps.js, explicitDeps.js);
         self.sassDeps = _.union([], impliedDeps.sass, explicitDeps.sass);
-        console.log('Found deps:', self.compDeps);
+        console.log('Component deps:', self.compDeps);
+        console.log('Global SASS deps:', self.sassDeps);
         
         // Build component folder path
         self.fileToExport = compType + "s/" + self.compName;
@@ -285,6 +286,11 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           self.exportedFiles.push(component + "/**");
         });
 
+        // Copy global SASS dependencies to export folder
+        self.sassDeps.forEach(function (sassDep) {
+          self.copy(projectSrc+'sass/mixins/'+sassDep, projectExport+'sass/mixins/'+sassDep)
+        });
+        
         //self.quit = true;
         done();
       });
