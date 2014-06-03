@@ -11,6 +11,15 @@ var getGitInfo = require('./get-git-info');
 var dependencyResolver = require('./deps-resolver');
 
 /**
+ * {String}
+ * The root folder of the project upon which the generator is running
+ */
+var projectRoot = process.cwd();
+
+var projectSrc = projectRoot + '/src/';
+var projectExport = projectRoot + '/export/';
+
+/**
  * {Object}
  * Contains common questions used by the component generator
  */
@@ -236,8 +245,14 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         },
       }
       ], function (response) {
+        // Get type and name of component so we can find it
         var compType = response.exportSelectType.toLowerCase();
         var compName = response.componentSelect;
+
+        /**
+         * {DependencyResolver}
+         * Instance to find all the component's dependencies
+         */
         var depRes = new dependencyResolver({
           type: compType,
           name: compName
@@ -245,15 +260,19 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
         // Get implied dependencies
         var impliedDeps = depRes.getImpliedDeps();
-        // Get user-defined dependencies
+        // Get explicit (config-defined) dependencies
         var explicitDeps = depRes.getExplicitDeps();
-
+        // Merge implied and explicit dependencies
         self.compDeps = _.union([], impliedDeps.components, explicitDeps.components);
         self.jsDeps = _.union([], impliedDeps.js, explicitDeps.js);
         self.sassDeps = _.union([], impliedDeps.sass, explicitDeps.sass);
         console.log('Found deps:', self.compDeps);
-
+        
+        // Build component folder path
         self.fileToExport = compType + "s/" + compName;
+
+        // Copy component (TODO and dependencies) to export folder
+        self.directory(projectSrc+self.fileToExport, projectExport+self.fileToExport);
         
         //self.quit = true;
         done();
