@@ -292,8 +292,10 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         // Copy global SASS dependencies to export folder
         self.sassDeps.forEach(function (sassDep) {
           self.copy(projectSASS+'mixins/'+sassDep, projectExport+'sass/mixins/'+sassDep)
+          self.exportedFiles.push('sass/mixins/'+sassDep+"**");
         });
-        
+
+
         //self.quit = true;
         done();
       });
@@ -361,11 +363,6 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           var output = fs.createWriteStream('export/' + this.compName + '.zip');
           var archive = archiver('zip');
 
-          output.on('close', function () {
-              console.log(archive.pointer() + ' total bytes');
-              console.log('archiver has been finalized and the output file descriptor has closed.');
-          });
-
           archive.on('error', function(err){
               throw err;
           });
@@ -377,9 +374,22 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           ]);
           archive.finalize();
 
-          for(i=0;i>self.exportedFiles.length;i++){
-            deleteFolderRecursive("export" + self.exportedFiles[i]);
-          };
+          archive.on('error', function(err){
+              throw err;
+          });
+
+          output.on('finish', function () {
+            setTimeout(function(){
+              for(var i=0;i<self.exportedFiles.length;i++){
+                var exportedFilePath = self.exportedFiles[i].split("/");
+                exportedFilePath.pop();
+                var exportedFilePath = exportedFilePath.join();
+                exportedFilePath = exportedFilePath.replace(",", "/");
+                console.log("export/" + exportedFilePath);
+                deleteFolderRecursive("export/" + exportedFilePath);
+              };
+            },3000);
+          });
 
           console.log(chalk.green("Export complete"));
       }else{
