@@ -236,29 +236,28 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         },
       }
       ], function (response) {
-          var compType = response.exportSelectType.toLowerCase();
-          var compName = response.componentSelect;
-          var depRes = new dependencyResolver({
-            type: compType,
-            name: compName
-          });
+        var compType = response.exportSelectType.toLowerCase();
+        var compName = response.componentSelect;
+        var depRes = new dependencyResolver({
+          type: compType,
+          name: compName
+        });
 
-          // Get implied dependencies
-          var impliedDeps = depRes.getImpliedDeps();
-          // Get user-defined dependencies
-          var explicitDeps = depRes.getExplicitDeps();
+        // Get implied dependencies
+        var impliedDeps = depRes.getImpliedDeps();
+        // Get user-defined dependencies
+        var explicitDeps = depRes.getExplicitDeps();
 
-          self.compDeps = _.union([], impliedDeps.components, explicitDeps.components);
-          self.jsDeps = _.union([], impliedDeps.js, explicitDeps.js);
-          self.sassDeps = _.union([], impliedDeps.sass, explicitDeps.sass);
-          console.log('Found deps:', self.compDeps);
+        self.compDeps = _.union([], impliedDeps.components, explicitDeps.components);
+        self.jsDeps = _.union([], impliedDeps.js, explicitDeps.js);
+        self.sassDeps = _.union([], impliedDeps.sass, explicitDeps.sass);
+        console.log('Found deps:', self.compDeps);
 
-          self.fileToExport = compType + "s/" + compName;
-          
-          //self.quit = true;
-          done();
+        self.fileToExport = compType + "s/" + compName;
+        
+        //self.quit = true;
+        done();
       });
-
 
     }else{
 
