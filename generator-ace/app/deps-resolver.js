@@ -17,7 +17,7 @@ var dependencyResolver = function (options) {
 	this.configFile = this.root + 'ace.json';
 	this.jadeFile = this.root + this.options.name + ".jade";
 	this.jsFile = this.root + this.options.name + ".js";
-	this.sassFile = this.root + this.options.name + ".sass";
+	this.sassFile = this.root + this.options.name + ".scss";
 
 	// Get component config
 	if (!fs.existsSync(this.configFile)) {
@@ -48,6 +48,8 @@ dependencyResolver.prototype = {
 		var sassDeps = [];
 
 		var compDeps = compDeps.concat(this.getImpliedComponentDeps());
+		var jsDeps = jsDeps.concat(this.getImpliedJSDeps());
+		var sassDeps = sassDeps.concat(this.getImpliedSASSDeps());
 
 		return {
 			components: compDeps,
@@ -63,7 +65,7 @@ dependencyResolver.prototype = {
 	getImpliedComponentDeps: function () {
 		var deps = [];
 		var data = fs.readFileSync(this.jadeFile, "utf8");
-		var matchJadeIncludes =  /\n[\s]*include\s(.+)/g;
+		var matchJadeIncludes =  /^[\s]*include\s(.+)\s*$/mg;
 		var match;
 		while(match = matchJadeIncludes.exec(data)){
 			var stripRelativePath = match[1].replace(/\.{1,2}\//g, "");
@@ -92,9 +94,16 @@ dependencyResolver.prototype = {
 	 * @return {Array}
 	 */
 	getImpliedSASSDeps: function () {
+		var deps = [];
 		var data = fs.readFileSync(this.sassFile, 'utf-8');
 
-		return [];
+		var matchMixins = /^\s*@include ([^;]*);?\s*$/mg;
+		var match;
+		while (match = matchMixins.exec(data)) {
+			deps.push(match[1]);
+		}
+
+		return deps;
 	},
 
 	/**
