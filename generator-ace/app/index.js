@@ -5,10 +5,12 @@ var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var fs = require('fs');
 var _ = require('lodash');
+var archiver = require('archiver');
 
 var getGitInfo = require('./get-git-info');
 
 var dependencyResolver = require('./deps-resolver');
+
 
 /**
  * {String}
@@ -247,7 +249,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       ], function (response) {
         // Get type and name of component so we can find it
         var compType = response.exportSelectType.toLowerCase();
-        var compName = response.componentSelect;
+        self.compName = response.componentSelect;
 
         /**
          * {DependencyResolver}
@@ -255,7 +257,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
          */
         var depRes = new dependencyResolver({
           type: compType,
-          name: compName
+          name: self.compName
         });
 
         // Get implied dependencies
@@ -269,15 +271,20 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         console.log('Found deps:', self.compDeps);
         
         // Build component folder path
-        self.fileToExport = compType + "s/" + compName;
+        self.fileToExport = compType + "s/" + self.compName;
 
         // Copy component to export folder
         self.directory(projectSrc+self.fileToExport, projectExport+self.fileToExport);
+
+        self.exportedFiles = [];
+        self.exportedFiles.push(self.fileToExport + "/**");
+
         // Copy dependency components to export folder
         self.compDeps.forEach(function (component) {
           self.directory(projectSrc+component, projectExport+component);
+          self.exportedFiles.push(component + "/**");
         });
-        
+
         //self.quit = true;
         done();
       });
@@ -339,6 +346,28 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         }
       // Generating a new project
       }else if(this.aceExport){
+
+          var self = this;
+
+          var output = fs.createWriteStream('export/' + this.compName + '.zip');
+          var archive = archiver('zip');
+
+          output.on('close', function () {
+              console.log(archive.pointer() + ' total bytes');
+              console.log('archiver has been finalized and the output file descriptor has closed.');
+          });
+
+          archive.on('error', function(err){
+              throw err;
+          });
+
+          archive.pipe(output);
+
+          archive.bulk([
+              { expand: true, cwd: 'export', src: self.exportedFiles, dest: 'export'}
+          ]);
+          archive.finalize();
+
           console.log(chalk.green("Export complete"));
       }else{
           this.directory('init_templates/src', 'src');
