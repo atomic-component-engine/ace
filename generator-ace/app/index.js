@@ -6,6 +6,7 @@ var chalk = require('chalk');
 var fs = require('fs');
 var _ = require('lodash');
 var archiver = require('archiver');
+var deleteFolderRecursive = require('./deleteFolderRecursive');
 
 var getGitInfo = require('./get-git-info');
 
@@ -373,6 +374,10 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
               { expand: true, cwd: 'export', src: self.exportedFiles, dest: 'export'}
           ]);
           archive.finalize();
+
+          for(i=0;i>self.exportedFiles.length;i++){
+            deleteFolderRecursive("export" + self.exportedFiles[i]);
+          };
 
           console.log(chalk.green("Export complete"));
       }else{
