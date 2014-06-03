@@ -275,7 +275,6 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         self.directory(projectSrc+self.fileToExport, projectExport+self.fileToExport);
         // Copy dependency components to export folder
         self.compDeps.forEach(function (component) {
-          console.log(component);
           self.directory(projectSrc+component, projectExport+component);
         });
         
