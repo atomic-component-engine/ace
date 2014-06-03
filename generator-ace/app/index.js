@@ -250,7 +250,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       ], function (response) {
         // Get type and name of component so we can find it
         var compType = response.exportSelectType.toLowerCase();
-        self.compName = response.componentSelect;
+        var compName = self.compName = response.componentSelect;
 
         /**
          * {DependencyResolver}
