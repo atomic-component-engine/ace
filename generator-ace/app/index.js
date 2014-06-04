@@ -71,10 +71,14 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
    * If this isn't a project initialisation, try and read in the ACE config
    */
   init: function (arg) {
+
+    // Set all arguments to false
     this.aceNeedsInit = false;
     this.acePage = false;
     this.quit = false;
     this.aceExport = false;
+    this.addDep = false;
+    this.aceHelp = false;
 
     /**
      * {Array}
@@ -125,6 +129,10 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       this.acePage = true;
     }else if(arg == 'export'){
       this.aceExport = true;
+    }else if(arg == 'add-dependency'){
+      this.addDep = true;
+    }else if(arg == 'help'){
+      this.aceHelp = true;
     }
 
     // Read in ace config if generating page or component
@@ -295,11 +303,47 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           self.exportedFiles.push('sass/mixins/'+sassDep+"**");
         });
 
-
-        //self.quit = true;
         done();
       });
 
+    }else if(this.addDep){
+
+      var self = this;
+      var componentList = [];
+
+      // Begin the interrogation
+      this.prompt([
+      {
+        type: 'list',
+        name: 'selectComponentType',
+        message: 'What component do you want to add a dependency to?',
+        choices: questions.componentType.choices
+      },{
+        when: function (response) {
+          return true;
+        },
+        type: 'list',
+        name: 'componentSelect',
+        message: 'Select component',
+        choices: function(response){
+          componentList = fs.readdirSync("src/" + response.selectComponentType.toLowerCase() + "s");
+          return componentList;
+        },
+      }
+      ], function (response) {
+        self.quit = true;
+        done();
+      });
+
+    }else if(this.aceHelp){
+      var helpMessage = "Welcome to ACE - it looks like you need help: \n \
+yo ace init           -> This will add the initial boilerplate to your current directory. \n \
+yo ace                -> This will give you a list of options for creating compoenents. \n \
+yo ace add-dependency -> This will add a dependency to a component. \n \
+yo ace export         -> This will zip up your component and its dependencies."
+      console.log(helpMessage);
+      this.quit = true;
+      done();
     }else{
 
       var prompts = [questions.componentType, questions.componentName]
@@ -385,13 +429,12 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
                 exportedFilePath.pop();
                 var exportedFilePath = exportedFilePath.join();
                 exportedFilePath = exportedFilePath.replace(",", "/");
-                console.log("export/" + exportedFilePath);
                 deleteFolderRecursive("export/" + exportedFilePath);
               };
+              console.log(chalk.green("Export complete"));
             },3000);
           });
 
-          console.log(chalk.green("Export complete"));
       }else{
           this.directory('init_templates/src', 'src');
           this.template('init_templates/_ace_config.tmpl.json', 'ace_config.json');
