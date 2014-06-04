@@ -310,6 +310,8 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
       var self = this;
       var componentList = [];
+      var sassList = [];
+      var jsList = [];
 
       // Begin the interrogation
       this.prompt([
@@ -339,26 +341,70 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         },
       },{
         when: function (response) {
-          return true;
+          if(response.dependancyType == "Component"){
+            return true;
+          }else{
+            return false;
+          }
         },
         type: 'list',
         name: 'selectDependancyComponentType',
-        message: 'What component do you want to add a dependency to?',
+        message: 'Select dependancy to add',
         choices: questions.componentType.choices
       },{
         when: function (response) {
-          return true;
+          if(response.dependancyType == "Component"){
+            return true;
+          }else{
+            return false;
+          }
         },
         type: 'list',
         name: 'depComponentSelect',
         message: 'Select component',
         choices: function(response){
-          componentList = fs.readdirSync("src/" + response.selectDependancyComponentType.toLowerCase() + "s");
+          if(response.selectDependancyComponentType){
+            componentList = fs.readdirSync("src/" + response.selectDependancyComponentType.toLowerCase() + "s");
+          };
           return componentList;
+        },
+      },{
+        when: function (response) {
+          if(response.dependancyType == "SASS"){
+            return true;
+          }else{
+            return false;
+          }
+        },
+        type: 'list',
+        name: 'selectDependancySASSDir',
+        message: 'Select SASS dependancy to add',
+        choices: function(response){
+          if(response.dependancyType == "SASS"){
+            sassList = fs.readdirSync("src/global-scss");
+          };
+          return sassList;
+        },
+      },{
+        when: function (response) {
+          if(response.dependancyType == "JS"){
+            return true;
+          }else{
+            return false;
+          }
+        },
+        type: 'list',
+        name: 'selectDependancyJSDir',
+        message: 'Select JS dependancy to add',
+        choices: function(response){
+          if(response.dependancyType == "JS"){
+            jsList = fs.readdirSync("src/global-js");
+          };
+          return jsList;
         },
       }
       ], function (response) {
-        console.log("Your adding: " + response.selectDependancyComponentType.toLowerCase() + "/" + response.depComponentSelect + " to: " + response.selectComponentType.toLowerCase() + "/" + response.componentSelect);
+
         self.quit = true;
         done();
       });
