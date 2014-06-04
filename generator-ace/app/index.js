@@ -315,6 +315,14 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       this.prompt([
       {
         type: 'list',
+        name: 'dependancyType',
+        message: 'What type of dependancy do you want to add?',
+        choices: ["Component", "SASS", "JS"]
+      },{
+        when: function (response) {
+          return true;
+        },
+        type: 'list',
         name: 'selectComponentType',
         message: 'What component do you want to add a dependency to?',
         choices: questions.componentType.choices
@@ -329,18 +337,45 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           componentList = fs.readdirSync("src/" + response.selectComponentType.toLowerCase() + "s");
           return componentList;
         },
+      },{
+        when: function (response) {
+          return true;
+        },
+        type: 'list',
+        name: 'selectDependancyComponentType',
+        message: 'What component do you want to add a dependency to?',
+        choices: questions.componentType.choices
+      },{
+        when: function (response) {
+          return true;
+        },
+        type: 'list',
+        name: 'depComponentSelect',
+        message: 'Select component',
+        choices: function(response){
+          componentList = fs.readdirSync("src/" + response.selectDependancyComponentType.toLowerCase() + "s");
+          return componentList;
+        },
       }
       ], function (response) {
+        console.log("Your adding: " + response.selectDependancyComponentType.toLowerCase() + "/" + response.depComponentSelect + " to: " + response.selectComponentType.toLowerCase() + "/" + response.componentSelect);
         self.quit = true;
         done();
       });
 
+
+
     }else if(this.aceHelp){
-      var helpMessage = "Welcome to ACE - it looks like you need help: \n \
-yo ace init           -> This will add the initial boilerplate to your current directory. \n \
-yo ace                -> This will give you a list of options for creating compoenents. \n \
-yo ace add-dependency -> This will add a dependency to a component. \n \
-yo ace export         -> This will zip up your component and its dependencies."
+      var helpMessage = " \n\
+      \n \
+        Welcome to ACE - it looks like you need help: \n \
+      \n \
+      \n \
+        yo ace init           -> This will add the initial boilerplate to your current directory. \n \
+        yo ace                -> This will give you a list of options for creating compoenents. \n \
+        yo ace add-dependency -> This will add a dependency to a component. \n \
+        yo ace export         -> This will zip up your component and its dependencies. \n \n \n "
+
       console.log(helpMessage);
       this.quit = true;
       done();
