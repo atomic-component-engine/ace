@@ -57,6 +57,50 @@ var questions = {
     }
 }
 
+var aceJson = {
+
+  create: function(configFile, componentName, componentAuthor){
+    console.log(chalk.red("dep config doesn't exist... Creating a base config file:"));
+    var config = {
+      "name": componentName,
+      "author": componentAuthor,
+       "dependencies": {
+            "components": []
+        }
+    };
+    var buf = new Buffer(JSON.stringify(config), 'utf-8');
+    fs.writeSync(fs.openSync(configFile, 'w'), buf, null, buf.length, null);
+  },
+
+  getConfig: function(configFile){
+    var config = JSON.parse(fs.readFileSync(configFile, "utf8"));
+    return config;
+  },
+
+  addDependency: function(baseComponent, type, name){
+
+    var configFile = "src/" + baseComponent + "/ace.json";
+
+    switch(type) {
+        case "Component":
+            var config = aceJson.getConfig(configFile);
+            config.dependencies.components.push(name);
+            var buf = new Buffer(JSON.stringify(config), 'utf-8');
+            fs.writeSync(fs.openSync(configFile, 'w'), buf, null, buf.length, null);
+            break;
+        case "SASS":
+
+            break;
+        case "JS":
+
+            break;
+        default:
+            
+    }
+
+  }
+}
+
 /**
  * {yeoman.generators}
  * {ComponentsGenerator}
@@ -160,8 +204,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     // if gitconfig exists
     if (gitConfigStr) {
       this.gitGlobalConfigFile = getGitInfo.parseConfig(gitConfigStr);
-    }
-    else {
+    }else {
       console.log(chalk.red("Git configuration file does not exist, this is used in template headers..."));
     };
 
@@ -404,6 +447,30 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         },
       }
       ], function (response) {
+        var configFile = "src/" + response.selectComponentType.toLowerCase() + "s/" + response.componentSelect + "/ace.json";
+
+        if (!fs.existsSync(configFile)) {
+          aceJson.create(configFile, response.componentSelect, JSON.parse(self.aceInitFile).email);
+        }
+
+        var config = self.readFileAsString(configFile);
+
+        switch(response.dependancyType) {
+            case "Component":
+                var dependancyName = response.selectDependancyComponentType.toLowerCase() + "s/" + response.depComponentSelect;
+                break;
+            case "SASS":
+                var dependancyName = response.selectDependancySASSDir;
+                break;
+            case "JS":
+                var dependancyName = response.selectDependancyJSDir;
+                break;
+            default:
+                console.log(chalk.red("Invalid dependancy type"));
+        }
+
+        var baseComponent = response.selectComponentType.toLowerCase() + "s/" + response.componentSelect;
+        aceJson.addDependency(baseComponent, response.dependancyType, dependancyName);
 
         self.quit = true;
         done();
