@@ -80,25 +80,40 @@ var aceJson = {
   addDependency: function(baseComponent, type, name){
 
     var configFile = "src/" + baseComponent + "/ace.json";
+    var config = aceJson.getConfig(configFile);
+    var alreadyAdded = false;
 
     switch(type) {
         case "Component":
-            var config = aceJson.getConfig(configFile);
-            config.dependencies.components.push(name);
-            var buf = new Buffer(JSON.stringify(config), 'utf-8');
-            fs.writeSync(fs.openSync(configFile, 'w'), buf, null, buf.length, null);
+        // check if already exists
+            for(var i=0;i<config.dependencies.components.length;i++){
+              if(config.dependencies.components[i] == name){
+                alreadyAdded = true;
+              }
+            }
+            if(!alreadyAdded){
+              config.dependencies.components.push(name);
+            }else{
+              console.log("already added")
+            }
             break;
         case "SASS":
-
+            console.log(name);
+            //config.dependencies.components.push(name);
             break;
         case "JS":
-
+            console.log(name);
+            //config.dependencies.components.push(name);
             break;
         default:
             
     }
 
+    var buf = new Buffer(JSON.stringify(config), 'utf-8');
+    fs.writeSync(fs.openSync(configFile, 'w'), buf, null, buf.length, null);
+
   }
+
 }
 
 /**
