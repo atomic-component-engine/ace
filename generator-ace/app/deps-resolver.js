@@ -5,6 +5,7 @@
 
 var fs = require('fs');
 var chalk = require('chalk');
+var madge = require('madge');
 
 /**
  * {Constructor}
@@ -85,7 +86,13 @@ dependencyResolver.prototype = {
 	getImpliedJSDeps: function () {
 		var data = fs.readFileSync(this.jsFile, 'utf-8');
 
-		return [];
+		// Use madge to gather require module dependencies
+		var results = madge(this.root, {
+			format: 'amd',
+		});
+		var deps = results.tree[this.options.name];
+
+		return deps;
 	},
 
 	/**

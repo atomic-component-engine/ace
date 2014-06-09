@@ -26,7 +26,8 @@
     "yeoman-generator": "~0.16.0",
     "chalk": "~0.4.0",
     "lodash": "^2.4.1",
-    "archiver": "~0.10.0"
+    "archiver": "~0.10.0",
+    "madge": "~0.1.9"
   },
   "devDependencies": {
     "mocha": "*"

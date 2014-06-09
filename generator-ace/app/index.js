@@ -339,6 +339,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         self.sassDeps = _.union([], impliedDeps.sass, explicitDeps.sass);
         console.log('Component deps:', self.compDeps);
         console.log('Global SASS deps:', self.sassDeps);
+        console.log('Global JS deps:', self.jsDeps);
         
         // Build component folder path
         self.fileToExport = compType + "s/" + self.compName;
