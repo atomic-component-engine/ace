@@ -21,6 +21,7 @@ var projectRoot = process.cwd();
 
 var projectSrc = projectRoot + '/src/';
 var projectSASS = projectSrc + 'global-scss/';
+var projectJS = projectSrc + 'global-js/';
 var projectExport = projectRoot + '/export/';
 
 /**
@@ -360,6 +361,12 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         self.sassDeps.forEach(function (sassDep) {
           self.copy(projectSASS+'mixins/'+sassDep, projectExport+'sass/mixins/'+sassDep)
           self.exportedFiles.push('sass/mixins/'+sassDep+"**");
+        });
+
+        // Copy global JS dependencies to export folder
+        self.jsDeps.forEach(function (jsDep) {
+          self.copy(projectJS+jsDep, projectExport+'global-js/'+jsDep)
+          self.exportedFiles.push('global-js/'+jsDep);
         });
 
         done();
