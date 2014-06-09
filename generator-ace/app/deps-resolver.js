@@ -5,6 +5,7 @@
 
 var fs = require('fs');
 var chalk = require('chalk');
+var madge = require('madge');
 
 /**
  * {Constructor}
@@ -12,12 +13,14 @@ var chalk = require('chalk');
 var dependencyResolver = function (options) {
 	this.options = options;
 
-	// Various file paths for component
-	this.root = 'src/' + this.options.type + "s/" + this.options.name + "/";
+	// Various file paths for project & component
+	this.cwd = process.cwd()
+	this.root = 'src/' + this.options.type + 's/' + this.options.name + '/';
 	this.configFile = this.root + 'ace.json';
-	this.jadeFile = this.root + this.options.name + ".jade";
-	this.jsFile = this.root + this.options.name + ".js";
-	this.sassFile = this.root + this.options.name + ".scss";
+	this.jadeFile = this.root + this.options.name + '.jade';
+	this.jsFile = this.root + this.options.name + '.js';
+	this.sassFile = this.root + this.options.name + '.scss';
+	this.globalJSDir = this.cwd + '/src/global-js/';
 
 	// Get component config
 	if (!fs.existsSync(this.configFile)) {
@@ -28,6 +31,9 @@ var dependencyResolver = function (options) {
 	} else {
 		this.config = JSON.parse(fs.readFileSync(this.configFile, 'utf8'));
 	}
+
+	// Get project's requireJS config
+	this.projectRequireConfig = require(this.globalJSDir + 'main.js');
 }
 
 /**
@@ -78,14 +84,28 @@ dependencyResolver.prototype = {
 	},
 
 	/**
-	 * Finds any non-component js depenencies for the component by regexing its js module
-	 * [Unimplemented]
+	 * Finds any non-component js dependencies for the component using madge (http://github.com.pahen.madge)
 	 * @return {Array}
 	 */
 	getImpliedJSDeps: function () {
-		var data = fs.readFileSync(this.jsFile, 'utf-8');
 
-		return [];
+		// Gather require module dependencies
+		var results = madge(this.root, {
+			format: 'amd',
+		});
+		var deps = results.tree[this.options.name];
+
+		// Get filenames for dependencies, using path alias if necessary
+		deps = deps.map(function (dep, i) {
+			var depFile = dep + '.js';
+			if (fs.existsSync(this.globalJSDir + depFile)) {
+				return depFile;
+			} else {
+				return this.projectRequireConfig.paths[dep] ? this.projectRequireConfig.paths[dep] + '.js' : null;
+			}
+		}.bind(this));
+
+		return deps;
 	},
 
 	/**
