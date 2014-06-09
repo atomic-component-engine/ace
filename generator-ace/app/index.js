@@ -359,8 +359,8 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
         // Copy global SASS dependencies to export folder
         self.sassDeps.forEach(function (sassDep) {
-          self.copy(projectSASS+'mixins/'+sassDep, projectExport+'sass/mixins/'+sassDep)
-          self.exportedFiles.push('sass/mixins/'+sassDep+"**");
+          self.copy(projectSASS+'mixins/'+sassDep, projectExport+'global-scss/mixins/'+sassDep)
+          self.exportedFiles.push('global-scss/mixins/'+sassDep+"**");
         });
 
         // Copy global JS dependencies to export folder
@@ -602,6 +602,18 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
                 exportedFilePath = exportedFilePath.replace(",", "/");
                 deleteFolderRecursive("export/" + exportedFilePath);
               };
+              // Remove empty dirs
+              var emptyDirs = [
+                'global-scss',
+                'global-js',
+                'atoms',
+                'molecules',
+                'organisms',
+              ];
+              emptyDirs.forEach(function(emptyDir) {
+                if (fs.existsSync(projectExport+emptyDir)) fs.rmdirSync(projectExport+emptyDir);
+              });
+
               console.log(chalk.green("Export complete"));
             },3000);
           });
