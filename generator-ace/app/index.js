@@ -68,8 +68,10 @@ var aceJson = {
       "name": componentName,
       "author": componentAuthor,
        "dependencies": {
-            "components": []
-        }
+           "components": [],
+           "js": [],
+           "sass": []
+       }
     };
     var buf = new Buffer(JSON.stringify(config), 'utf-8');
     fs.writeSync(fs.openSync(configFile, 'w'), buf, null, buf.length, null);
@@ -85,34 +87,24 @@ var aceJson = {
     var configFile = "src/" + baseComponent + "/ace.json";
     var config = aceJson.getConfig(configFile);
     var alreadyAdded = false;
+    var type = type.toLowerCase();
+    var dependencyList = config.dependencies[type];
 
-    switch(type) {
-        case "Component":
-        // check if already exists
-            for(var i=0;i<config.dependencies.components.length;i++){
-              if(config.dependencies.components[i] == name){
-                alreadyAdded = true;
-              }
-            }
-            if(!alreadyAdded){
-              config.dependencies.components.push(name);
-            }else{
-              console.log("already added")
-            }
-            break;
-        case "SASS":
-            console.log(name);
-            //config.dependencies.components.push(name);
-            break;
-        case "JS":
-            console.log(name);
-            //config.dependencies.components.push(name);
-            break;
-        default:
-            
+    console.log(baseComponent, type, name);
+
+    for(var i=0;i<dependencyList.length;i++){
+      if(dependencyList[i] == name){
+        alreadyAdded = true;
+      }
     }
 
-    var buf = new Buffer(JSON.stringify(config), 'utf-8');
+    if(!alreadyAdded){
+      config.dependencies[type].push(name);
+    }else{
+      console.log(chalk.red("You have already added this dependency"));
+    }
+
+    var buf = new Buffer(JSON.stringify(config, null, 4), 'utf-8');
     fs.writeSync(fs.openSync(configFile, 'w'), buf, null, buf.length, null);
 
   }
@@ -492,7 +484,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
                 var dependancyName = response.selectDependancyComponentType.toLowerCase() + "s/" + response.depComponentSelect;
                 break;
             case "SASS":
-                var dependancyName = response.selectDependancySASSDir;
+                var dependancyName = "global-scss/" + response.selectDependancySASSDir;
                 break;
             case "JS":
                 var dependancyName = response.selectDependancyJSDir;
