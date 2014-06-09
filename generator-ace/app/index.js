@@ -10,7 +10,9 @@ var deleteFolderRecursive = require('./deleteFolderRecursive');
 
 var getGitInfo = require('./get-git-info');
 
-var dependencyResolver = require('./deps-resolver');
+var DependencyResolver = require('./deps-resolver');
+var ProjectHelper = require('./project-helper');
+var ComponentHelper = require('./component-helper');
 
 
 /**
@@ -139,6 +141,11 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     this.aceExport = false;
     this.addDep = false;
     this.aceHelp = false;
+
+    /**
+     * {ProjectHelper}
+     */
+    this.projectHelper = new ProjectHelper();
 
     /**
      * {Array}
@@ -321,14 +328,16 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         var compName = self.compName = response.componentSelect;
 
         /**
-         * {DependencyResolver}
-         * Instance to find all the component's dependencies
+         * {ComponentHelper}
          */
-        var depRes = new dependencyResolver({
+        self.componentHelper = new ComponentHelper({
           type: compType,
           name: compName,
-          projectSASS: projectSASS
         });
+        /**
+         * {DependencyResolver}
+         */
+        var depRes = new DependencyResolver(self.projectHelper, self.componentHelper);
 
         // Get implied dependencies
         var impliedDeps = depRes.getImpliedDeps();

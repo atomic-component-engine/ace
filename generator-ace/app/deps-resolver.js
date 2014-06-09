@@ -10,36 +10,28 @@ var madge = require('madge');
 /**
  * {Constructor}
  */
-var dependencyResolver = function (options) {
-	this.options = options;
-
-	// Various file paths for project & component
-	this.cwd = process.cwd()
-	this.root = 'src/' + this.options.type + 's/' + this.options.name + '/';
-	this.configFile = this.root + 'ace.json';
-	this.jadeFile = this.root + this.options.name + '.jade';
-	this.jsFile = this.root + this.options.name + '.js';
-	this.sassFile = this.root + this.options.name + '.scss';
-	this.globalJSDir = this.cwd + '/src/global-js/';
+var DependencyResolver = function (project, component) {
+	this.project = project;
+	this.component = component;
 
 	// Get component config
-	if (!fs.existsSync(this.configFile)) {
+	if (!fs.existsSync(this.component.configFile)) {
 		console.log(chalk.green('create'), 'ace.json');
 		this.config = {};
 		var buf = new Buffer(JSON.stringify(this.config), 'utf-8');
-		fs.writeSync(fs.openSync(this.configFile, 'w'), buf, null, buf.length, null);
+		fs.writeSync(fs.openSync(this.component.configFile, 'w'), buf, null, buf.length, null);
 	} else {
-		this.config = JSON.parse(fs.readFileSync(this.configFile, 'utf8'));
+		this.config = JSON.parse(fs.readFileSync(this.component.configFile, 'utf8'));
 	}
 
 	// Get project's requireJS config
-	this.projectRequireConfig = require(this.globalJSDir + 'main.js');
+	this.project.requireConfig = require(this.project.jsDir + 'main.js');
 }
 
 /**
  * {Prototype}
  */
-dependencyResolver.prototype = {
+DependencyResolver.prototype = {
 
 	/**
 	 * Finds the dependencies for a component by parsing its various source files
@@ -70,7 +62,7 @@ dependencyResolver.prototype = {
 	 */ 
 	getImpliedComponentDeps: function () {
 		var deps = [];
-		var data = fs.readFileSync(this.jadeFile, "utf8");
+		var data = fs.readFileSync(this.component.jadeFile, "utf8");
 		var matchJadeIncludes =  /^[\s]*include\s(.+)\s*$/mg;
 		var match;
 		while(match = matchJadeIncludes.exec(data)){
@@ -90,18 +82,18 @@ dependencyResolver.prototype = {
 	getImpliedJSDeps: function () {
 
 		// Gather require module dependencies
-		var results = madge(this.root, {
+		var results = madge(this.component.root, {
 			format: 'amd',
 		});
-		var deps = results.tree[this.options.name];
+		var deps = results.tree[this.component.name];
 
 		// Get filenames for dependencies, using path alias if necessary
 		deps = deps.map(function (dep, i) {
 			var depFile = dep + '.js';
-			if (fs.existsSync(this.globalJSDir + depFile)) {
+			if (fs.existsSync(this.project.jsDir + depFile)) {
 				return depFile;
 			} else {
-				return this.projectRequireConfig.paths[dep] ? this.projectRequireConfig.paths[dep] + '.js' : null;
+				return this.project.requireConfig.paths[dep] ? this.project.requireConfig.paths[dep] + '.js' : null;
 			}
 		}.bind(this));
 
@@ -115,10 +107,10 @@ dependencyResolver.prototype = {
 	 */
 	getImpliedSASSDeps: function () {
 		var deps = [];
-		var data = fs.readFileSync(this.sassFile, 'utf-8');
+		var data = fs.readFileSync(this.component.sassFile, 'utf-8');
 
 		// Load in all global mixin files for later scanning
-		var mixinDir = this.options.projectSASS + 'mixins/';
+		var mixinDir = this.project.sassDir + 'mixins/';
 		var mixinFiles = fs.readdirSync(mixinDir);
 		var mixinData = {};
 		for (var k in mixinFiles) {
@@ -190,6 +182,20 @@ dependencyResolver.prototype = {
 	},
 
 	/**
+	 * Finds the component dependencies for a component that are explicity listed in the ace.json file
+	 * @return {Array}
+	 */
+	 getExplicitComponentDeps: function (component) {
+	 	var deps = [];
+
+	 	if (this.config.dependencies.components) {
+			deps = this.config.dependencies.components;
+		}
+
+		return deps;
+	},
+
+	/**
 	 * Finds the JS dependencies for a component that are explicity listed in the ace.json file
 	 * @return {Array}
 	 */
@@ -217,4 +223,4 @@ dependencyResolver.prototype = {
 	}
 }
 
-module.exports = dependencyResolver;
+module.exports = DependencyResolver;
