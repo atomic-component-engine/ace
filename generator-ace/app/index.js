@@ -335,6 +335,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         var impliedDeps = depRes.getImpliedDeps();
         // Get explicit (config-defined) dependencies
         var explicitDeps = depRes.getExplicitDeps();
+
         // Merge implied and explicit dependencies
         self.compDeps = _.union([], impliedDeps.components, explicitDeps.components);
         self.jsDeps = _.union([], impliedDeps.js, explicitDeps.js);

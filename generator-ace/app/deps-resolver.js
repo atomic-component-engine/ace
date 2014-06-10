@@ -6,6 +6,7 @@
 var fs = require('fs');
 var chalk = require('chalk');
 var madge = require('madge');
+var ComponentHelper = require('./component-helper');
 
 /**
  * {Constructor}
@@ -13,19 +14,6 @@ var madge = require('madge');
 var DependencyResolver = function (project, component) {
 	this.project = project;
 	this.component = component;
-
-	// Get component config
-	if (!fs.existsSync(this.component.configFile)) {
-		console.log(chalk.green('create'), 'ace.json');
-		this.config = {};
-		var buf = new Buffer(JSON.stringify(this.config), 'utf-8');
-		fs.writeSync(fs.openSync(this.component.configFile, 'w'), buf, null, buf.length, null);
-	} else {
-		this.config = JSON.parse(fs.readFileSync(this.component.configFile, 'utf8'));
-	}
-
-	// Get project's requireJS config
-	this.project.requireConfig = require(this.project.jsDir + 'main.js');
 }
 
 /**
@@ -154,8 +142,8 @@ DependencyResolver.prototype = {
 		var compDeps = [];
 		var jsDeps = [];
 		var sassDeps = [];
-		if (this.config.dependencies) {
-			compDeps = this.getExplicitComponentDeps();
+		if (this.component.config.dependencies) {
+			compDeps = this.getExplicitComponentDepsRecursive(this.component);
 			jsDeps = this.getExplicitJSDeps();
 			sassDeps = this.getExplicitSASSDeps();
 		}
@@ -168,28 +156,41 @@ DependencyResolver.prototype = {
 	},
 
 	/**
-	 * Finds the component dependencies for a component that are explicity listed in the ace.json file
+	 * Recursively finds the component dependencies for a component that are explicity listed in it and its dependencies ace.json file
 	 * @return {Array}
 	 */
-	 getExplicitComponentDeps: function () {
-	 	var deps = [];
-
-	 	if (this.config.dependencies.components) {
-			deps = this.config.dependencies.components;
+	getExplicitComponentDepsRecursive: function (component) {
+		var cDeps = this.getExplicitComponentDeps(component);
+		var rDeps = [].concat(cDeps);
+		var depDeps = [];
+		for (var i = 0; i < cDeps.length; i ++) {
+			var cdep = cDeps[i];
+			var cdep_parts = cdep.split('/');
+			var type = cdep_parts[0].substr(0, cdep_parts[0].length - 1);
+			var name = cdep_parts[1];
+			
+			var depHelper = new ComponentHelper({
+				type: type,
+				name: name
+			});
+			var cdepDeps = this.getExplicitComponentDepsRecursive(depHelper);
+			rDeps = rDeps.concat(cdepDeps);
 		}
-
-		return deps;
+		
+		return rDeps;
 	},
 
 	/**
-	 * Finds the component dependencies for a component that are explicity listed in the ace.json file
+	 * Finds the component dependencies for a component that are explicity listed in its ace.json file
 	 * @return {Array}
 	 */
 	 getExplicitComponentDeps: function (component) {
 	 	var deps = [];
 
-	 	if (this.config.dependencies.components) {
-			deps = this.config.dependencies.components;
+	 	if (typeof component == 'undefined') component = this.component;
+
+	 	if (component.config.dependencies && component.config.dependencies.components) {
+			deps = component.config.dependencies.components;
 		}
 
 		return deps;
@@ -202,8 +203,8 @@ DependencyResolver.prototype = {
 	getExplicitJSDeps: function () {
 		var deps = [];
 
-		if (this.config.dependencies.js) {
-			deps = this.config.dependencies.js;
+		if (this.component.config.dependencies.js) {
+			deps = this.component.config.dependencies.js;
 		}
 
 		return deps;
@@ -215,8 +216,8 @@ DependencyResolver.prototype = {
 	 */
 	getExplicitSASSDeps: function () {
 		var deps = [];
-		if (this.config.dependencies.sass) {
-			deps = this.config.dependencies.sass;
+		if (this.component.config.dependencies.sass) {
+			deps = this.component.config.dependencies.sass;
 		}
 
 		return deps;
