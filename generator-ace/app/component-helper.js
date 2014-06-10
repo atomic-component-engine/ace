@@ -33,9 +33,6 @@ var ComponentHelper = function (options) {
 	} else {
 		this.config = JSON.parse(fs.readFileSync(this.configFile, 'utf8'));
 	}
-
-	// Get project's requireJS config
-	
 }
 
 /**
