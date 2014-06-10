@@ -10,7 +10,9 @@ var deleteFolderRecursive = require('./deleteFolderRecursive');
 
 var getGitInfo = require('./get-git-info');
 
-var dependencyResolver = require('./deps-resolver');
+var DependencyResolver = require('./deps-resolver');
+var ProjectHelper = require('./project-helper');
+var ComponentHelper = require('./component-helper');
 
 
 /**
@@ -131,6 +133,11 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     this.aceExport = false;
     this.addDep = false;
     this.aceHelp = false;
+
+    /**
+     * {ProjectHelper}
+     */
+    this.projectHelper = new ProjectHelper();
 
     /**
      * {Array}
@@ -318,57 +325,10 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       }
       ], function (response) {
         // Get type and name of component so we can find it
-        var compType = response.exportSelectType.toLowerCase();
-        var compName = self.compName = response.componentSelect;
-
-        /**
-         * {DependencyResolver}
-         * Instance to find all the component's dependencies
-         */
-        var depRes = new dependencyResolver({
-          type: compType,
-          name: compName,
-          projectSASS: projectSASS
-        });
-
-        // Get implied dependencies
-        var impliedDeps = depRes.getImpliedDeps();
-        // Get explicit (config-defined) dependencies
-        var explicitDeps = depRes.getExplicitDeps();
-        // Merge implied and explicit dependencies
-        self.compDeps = _.union([], impliedDeps.components, explicitDeps.components);
-        self.jsDeps = _.union([], impliedDeps.js, explicitDeps.js);
-        self.sassDeps = _.union([], impliedDeps.sass, explicitDeps.sass);
-        console.log('Component deps:', self.compDeps);
-        console.log('Global SASS deps:', self.sassDeps);
-        console.log('Global JS deps:', self.jsDeps);
-        
-        // Build component folder path
-        self.fileToExport = compType + "s/" + self.compName;
-
-        // Copy component to export folder
-        self.directory(projectSrc+self.fileToExport, projectExport+self.fileToExport);
-
-        self.exportedFiles = [];
-        self.exportedFiles.push(self.fileToExport + "/**");
-
-        // Copy dependency components to export folder
-        self.compDeps.forEach(function (component) {
-          self.directory(projectSrc+component, projectExport+component);
-          self.exportedFiles.push(component + "/**");
-        });
-
-        // Copy global SASS dependencies to export folder
-        self.sassDeps.forEach(function (sassDep) {
-          self.copy(projectSASS+'mixins/'+sassDep, projectExport+'global-scss/mixins/'+sassDep)
-          self.exportedFiles.push('global-scss/mixins/'+sassDep+"**");
-        });
-
-        // Copy global JS dependencies to export folder
-        self.jsDeps.forEach(function (jsDep) {
-          self.copy(projectJS+jsDep, projectExport+'global-js/'+jsDep)
-          self.exportedFiles.push('global-js/'+jsDep);
-        });
+        self.exportComponent = {
+          type: response.exportSelectType.toLowerCase(),
+          name: response.componentSelect
+        }
 
         done();
       });
@@ -575,6 +535,58 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       }else if(this.aceExport){
 
           var self = this;
+
+          /**
+           * {ComponentHelper}
+           */
+          self.componentHelper = new ComponentHelper({
+            type: self.exportComponent.type,
+            name: self.exportComponent.name,
+          });
+          /**
+           * {DependencyResolver}
+           */
+          var depRes = new DependencyResolver(self.projectHelper, self.componentHelper);
+
+          // Get implied dependencies
+          var impliedDeps = depRes.getImpliedDeps();
+          // Get explicit (config-defined) dependencies
+          var explicitDeps = depRes.getExplicitDeps();
+
+          // Merge implied and explicit dependencies
+          self.compDeps = _.union([], impliedDeps.components, explicitDeps.components);
+          self.jsDeps = _.union([], impliedDeps.js, explicitDeps.js);
+          self.sassDeps = _.union([], impliedDeps.sass, explicitDeps.sass);
+          console.log('Component deps:', self.compDeps);
+          console.log('Global SASS deps:', self.sassDeps);
+          console.log('Global JS deps:', self.jsDeps);
+          
+          // Build component folder path
+          self.fileToExport = self.exportComponent.type + "s/" + self.exportComponent.name;
+
+          // Copy component to export folder
+          self.directory(projectSrc+self.fileToExport, projectExport+self.fileToExport);
+
+          self.exportedFiles = [];
+          self.exportedFiles.push(self.fileToExport + "/**");
+
+          // Copy dependency components to export folder
+          self.compDeps.forEach(function (component) {
+            self.directory(projectSrc+component, projectExport+component);
+            self.exportedFiles.push(component + "/**");
+          });
+
+          // Copy global SASS dependencies to export folder
+          self.sassDeps.forEach(function (sassDep) {
+            self.copy(projectSASS+'mixins/'+sassDep, projectExport+'global-scss/mixins/'+sassDep)
+            self.exportedFiles.push('global-scss/mixins/'+sassDep+"**");
+          });
+
+          // Copy global JS dependencies to export folder
+          self.jsDeps.forEach(function (jsDep) {
+            self.copy(projectJS+jsDep, projectExport+'global-js/'+jsDep)
+            self.exportedFiles.push('global-js/'+jsDep);
+          });
 
           var output = fs.createWriteStream('export/' + this.compName + '.zip');
           var archive = archiver('zip');
