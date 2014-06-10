@@ -133,8 +133,10 @@ DependencyResolver.prototype = {
 	getExplicitDepsRecursive: function (component) {
 		if (typeof component == 'undefined') component = this.component;
 
+		// Get immediate dependencies
 		var deps = this.getExplicitDeps(component);
-		// Clone deps object
+
+		// Clone deps object so we don't mutate it in the loop
 		var rDeps = JSON.parse(JSON.stringify(deps));
 
 		// Recurse into component dependencies
@@ -148,12 +150,19 @@ DependencyResolver.prototype = {
 			});
 			var depDeps = this.getExplicitDepsRecursive(depHelper);
 			rDeps.components = rDeps.components.concat(depDeps.components);
+			rDeps.js = rDeps.js.concat(depDeps.js);
+			rDeps.sass = rDeps.sass.concat(depDeps.sass);
+
+			// Add extensions to JS files
+			rDeps.js = rDeps.js.map(function (dep) {
+				return dep.substr(-3) == '.js' ? dep : dep + '.js';
+			});
+
+			// Add extensions to SASS files
+			rDeps.sass = rDeps.sass.map(function (dep) {
+				return dep.substr(-5) == '.scss' ? dep : dep + '.scss';
+			});
 		}.bind(this));
-
-		// TODO: Recurse into JS dependencies
-
-		// TODO: Recurse into SASS dependencies
-		
 
 		return rDeps;
 	},
@@ -198,33 +207,6 @@ DependencyResolver.prototype = {
 		}
 
 		return deps;
-	},
-
-	/**
-	 * Recursively finds the component dependencies for a component that are explicity listed in it and its dependencies ace.json file
-	 * @return {Array}
-	 */
-	getExplicitJSDepsRecursive: function (component) {
-		if (typeof component == 'undefined') component = this.component;
-
-		var cDeps = this.getExplicitJSDeps(component);
-		var rDeps = [].concat(cDeps);
-		var depDeps = [];
-		for (var i = 0; i < cDeps.length; i ++) {
-			var cdep = cDeps[i];
-			var cdep_parts = cdep.split('/');
-			var type = cdep_parts[0].substr(0, cdep_parts[0].length - 1);
-			var name = cdep_parts[1];
-			
-			var depHelper = new ComponentHelper({
-				type: type,
-				name: name
-			});
-			var cdepDeps = this.getExplicitJSDepsRecursive(depHelper);
-			rDeps = rDeps.concat(cdepDeps);
-		}
-		
-		return rDeps;
 	},
 
 	/**
