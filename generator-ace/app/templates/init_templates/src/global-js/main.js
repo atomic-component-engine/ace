@@ -39,13 +39,14 @@ if (!commonJS) {
 
 	requirejs([
 		'vendor/console',
+		'vendor/domReady',
 		'jquery',
 		'elementquery',
 		'html5shiv',
 		'componentList'
 	],
 		
-	function (consolePolyfill, $, eq, h5s, componentList) {
+	function (consolePolyfill, domReady, $, eq, h5s, componentList) {
 		consolePolyfill.run();
 		console.log('[main.js] Website init');
 
@@ -57,10 +58,11 @@ if (!commonJS) {
 		// because it it far less resource intensive.
 		$.windowResize(window.elementQuery.refresh);
 
-		// Get the list of components and 
-		// run their tasks
-		componentList.runComponentTasks();
-
+		domReady(function () {
+			// Get the list of components and 
+			// run their tasks
+			componentList.runComponentTasks();
+		});
 
 	});
 } else {
