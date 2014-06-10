@@ -143,8 +143,8 @@ DependencyResolver.prototype = {
 		var jsDeps = [];
 		var sassDeps = [];
 		if (this.component.config.dependencies) {
-			compDeps = this.getExplicitComponentDepsRecursive(this.component);
-			jsDeps = this.getExplicitJSDeps();
+			compDeps = this.getExplicitComponentDepsRecursive();
+			jsDeps = this.getExplicitJSDepsRecursive();
 			sassDeps = this.getExplicitSASSDeps();
 		}
 
@@ -160,6 +160,7 @@ DependencyResolver.prototype = {
 	 * @return {Array}
 	 */
 	getExplicitComponentDepsRecursive: function (component) {
+	 	if (typeof component == 'undefined') component = this.component;
 		var cDeps = this.getExplicitComponentDeps(component);
 		var rDeps = [].concat(cDeps);
 		var depDeps = [];
@@ -187,8 +188,6 @@ DependencyResolver.prototype = {
 	 getExplicitComponentDeps: function (component) {
 	 	var deps = [];
 
-	 	if (typeof component == 'undefined') component = this.component;
-
 	 	if (component.config.dependencies && component.config.dependencies.components) {
 			deps = component.config.dependencies.components;
 		}
@@ -197,14 +196,40 @@ DependencyResolver.prototype = {
 	},
 
 	/**
+	 * Recursively finds the component dependencies for a component that are explicity listed in it and its dependencies ace.json file
+	 * @return {Array}
+	 */
+	getExplicitJSDepsRecursive: function (component) {
+		if (typeof component == 'undefined') component = this.component;
+		var cDeps = this.getExplicitJSDeps(component);
+		var rDeps = [].concat(cDeps);
+		var depDeps = [];
+		for (var i = 0; i < cDeps.length; i ++) {
+			var cdep = cDeps[i];
+			var cdep_parts = cdep.split('/');
+			var type = cdep_parts[0].substr(0, cdep_parts[0].length - 1);
+			var name = cdep_parts[1];
+			
+			var depHelper = new ComponentHelper({
+				type: type,
+				name: name
+			});
+			var cdepDeps = this.getExplicitJSDepsRecursive(depHelper);
+			rDeps = rDeps.concat(cdepDeps);
+		}
+		
+		return rDeps;
+	},
+
+	/**
 	 * Finds the JS dependencies for a component that are explicity listed in the ace.json file
 	 * @return {Array}
 	 */
-	getExplicitJSDeps: function () {
+	getExplicitJSDeps: function (component) {
 		var deps = [];
 
-		if (this.component.config.dependencies.js) {
-			deps = this.component.config.dependencies.js;
+	 	if (component.config.dependencies && component.config.dependencies.js) {
+			deps = component.config.dependencies.js;
 		}
 
 		return deps;
