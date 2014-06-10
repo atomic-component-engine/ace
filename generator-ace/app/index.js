@@ -408,7 +408,10 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         message: 'Select SASS dependancy to add',
         choices: function(response){
           if(response.dependancyType == "SASS"){
-            sassList = fs.readdirSync("src/global-scss");
+            //sassList = fs.readdirSync("src/global-scss");
+
+            sassList = new inquirer.Separator();
+
           };
           return sassList;
         },
@@ -453,9 +456,9 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
                 console.log(chalk.red("Invalid dependancy type"));
         }
 
-        this.dependancyName = dependancyName;
-        this.baseComponent = response.selectComponentType.toLowerCase() + "s/" + response.componentSelect;
-        this.dependancyType = response.dependancyType
+        self.dependancyName = dependancyName;
+        self.baseComponent = response.selectComponentType.toLowerCase() + "s/" + response.componentSelect;
+        self.dependancyType = response.dependancyType
 
         done();
       });
