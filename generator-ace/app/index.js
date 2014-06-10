@@ -175,17 +175,26 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     ];
 
     // Parse task name to determine course of action
-    if(arg == 'init'){
-      this.aceNeedsInit = true;
-    }else if(arg == 'page'){
-      this.acePage = true;
-    }else if(arg == 'export'){
-      this.aceExport = true;
-    }else if(arg == 'add-dependency'){
-      this.addDep = true;
-    }else if(arg == 'help'){
-      this.aceHelp = true;
+    switch(arg) {
+        case "init":
+          this.aceNeedsInit = true;
+            break;
+        case "page":
+          this.acePage = true;
+            break;
+        case "export":
+          this.aceExport = true;
+            break;
+        case "add-dependency":
+          this.addDep = true;
+            break;
+        case "help":
+          this.aceHelp = true;
+            break;
+        default:
+          this.addCompoenent = true;
     }
+
 
     // Read in ace config if generating page or component
     var aceConfig = "ace_config.json";
@@ -478,16 +487,16 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
                 var dependancyName = "global-scss/" + response.selectDependancySASSDir;
                 break;
             case "JS":
-                var dependancyName = response.selectDependancyJSDir;
+                var dependancyName = "global-js/" + response.selectDependancyJSDir;
                 break;
             default:
                 console.log(chalk.red("Invalid dependancy type"));
         }
 
-        var baseComponent = response.selectComponentType.toLowerCase() + "s/" + response.componentSelect;
-        aceJson.addDependency(baseComponent, response.dependancyType, dependancyName);
+        this.dependancyName = dependancyName;
+        this.baseComponent = response.selectComponentType.toLowerCase() + "s/" + response.componentSelect;
+        this.dependancyType = response.dependancyType
 
-        self.quit = true;
         done();
       });
 
@@ -496,7 +505,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     }else if(this.aceHelp){
       var helpMessage = " \n\
       \n \
-        Welcome to ACE - it looks like you need help: \n \
+        Welcome to ACE: \n \
       \n \
       \n \
         yo ace init           -> This will add the initial boilerplate to your current directory. \n \
@@ -507,7 +516,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       console.log(helpMessage);
       this.quit = true;
       done();
-    }else{
+    }else if(this.addCompoenent){
 
       var prompts = [questions.componentType, questions.componentName]
       this.prompt(prompts, function (props) {
@@ -609,6 +618,10 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
               console.log(chalk.green("Export complete"));
             },3000);
           });
+
+      }else if(this.addDep){
+
+        aceJson.addDependency(self.baseComponent, self.dependancyType, self.dependancyName);
 
       }else{
           this.directory('init_templates/src', 'src');
