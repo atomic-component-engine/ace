@@ -1,0 +1,43 @@
+//-
+	@file Page instance: about 
+	@extends _page_default/_page_default
+
+//- Page dependencies
+include ../../molecules/_content_block/_content_block
+
+
+//- Page template
+extends ../../templates/_page_default/_page_default
+
+//- Page variables to pass to template
+block page_vars
+	- var page = {}
+	- page.id = "about"
+	- page.title = "about"
+	- page.mainScript = "about.js"
+
+
+//- Content block
+block content
+
+	+content_block([
+		{
+			header: "Why do I love UX? <br> Because I love good design",
+			text: "<span>\
+					I am a Liverpool based application, web developer, and UX designer. \
+					I studied here in Liverpool for 4 years at the University of Liverpool, \
+					leaving with a 1st Class degree in eBusiness and a Distinction in MSc \
+					(Social Sciences) eBusiness Systems and Strategy. I currently work for \
+					a digital and creative agency in Macclesfield. I have experience in, \
+					Ember.js, Apache couchDB, Apache Cordova/Phonegap as well as general \
+					Javascript, HTML and CSS. I also have experience in introducing new UX \
+					methodologies and designing solutions for its users.\
+					<br>\
+					<br>\
+					I am passionate about a well designed and thought-out system, and \
+					although a qualified SAP consultant I believe that the enterprise \
+					space is in much need of technological disruption.\
+				</span>"
+		}
+	])
+

@@ -93,6 +93,9 @@ Included in the init boilerplate is a file named `ace.sublime-project`. Opening 
 ---
 
 
+### Licenses 
+This project is open sourced under the GPL v2 licenses. This means that anyone who distributes this code or a derivative work must make the source available under the same terms.
+
 ### Todos 
 * Create an example webpage using this generator. 
 

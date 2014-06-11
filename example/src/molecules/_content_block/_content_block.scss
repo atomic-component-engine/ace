@@ -26,92 +26,98 @@ $large: 99999px;
 // 	//large styles
 // }
 
-.content-section--3-up{
-	.content-block{
-		width: 100%;
-		display: block;
-		margin: 1% 0;
 
-		@include at-min-width($medium) {
-			width: 30%;
-			display: inline-block;
-			margin: 1%;
-		}
-
-		img{
-			width: 100%;
-		}
+%content-section--1-column{
+	width: 100%;
+	display: block;
+	margin: 1% 0;
+	a{
+		color: inherit;
+		font-size: 1.1rem;
 	}
 }
 
-.content-section--2-up{
+.content {
 
-
-	.content-block{
-		width: 100%;
-		display: block;
-		margin: 1% 0;
-
-		img, p{
-			width: 100%;
-			margin: 0%;
-		}
-	}
-
-
-	@include at-min-width($medium) {
+	.content-section--3-up{
 		.content-block{
-			width: 46%;
-			display: inline-block;
-			margin: 1%;
-			img,p{
-				float: left;
+			@extend %content-section--1-column;
+
+			img{
 				width: 100%;
-				margin: 0%;
 			}
-		}
-	}
-
-	@include at-min-width($mid-large) {
-		.content-block{
-			img,p{
-				float: left;
-				width: 45%;
-				margin: 1%;
-			}
-		}
-	}
-
-}
-
-.content-section--1-up{
-	.content-block {
-		p{
-			width: 100%;
-			display: block;
-			margin: 1% 0;
-			float: left;
-
-			@include at-min-width($medium) {
-				width: 60%;
-				display: inline-block;
-				margin: 1%;
-			}
-		}
-
-
-		img{
-			width: 100%;
-			float: left;
 
 			@include at-min-width($medium) {
 				width: 30%;
 				display: inline-block;
 				margin: 1%;
 			}
+
 		}
 	}
 
+	.content-section--2-up{
+		.content-block{
+			@extend %content-section--1-column;
+
+			img,p{
+				width: 100%;
+				margin: 0%;
+			}
+		}
+
+		@include at-min-width($medium) {
+			.content-block{
+				width: 46%;
+				display: inline-block;
+				margin: 1%;
+				img,p{
+					float: left;
+					width: 100%;
+					margin: 0%;
+				}
+			}
+		}
+
+		@include at-min-width($mid-large) {
+			.content-block{
+				img,p{
+					float: left;
+					width: 45%;
+					margin: 1%;
+				}
+			}
+		}
+
+	}
+
+	.content-section--1-up{
+		.content-block {
+			@include cf();
+			p{
+				@extend %content-section--1-column;
+				float: left;
+
+				@include at-min-width($medium) {
+					width: 60%;
+					display: inline-block;
+					margin: 1%;
+				}
+			}
+
+
+			img{
+				width: 100%;
+				float: left;
+
+				@include at-min-width($medium) {
+					width: 30%;
+					display: inline-block;
+					margin: 1%;
+				}
+			}
+		}
+
+	}
+
 }
-
-

@@ -5,8 +5,8 @@
 
 // replace with medium and large
 // element breakpoints
-$medium: 99999px;
-$large: 99999px;
+$medium: 390px;
+$large: 650px;
 
 
 // element color pallet
@@ -25,11 +25,88 @@ $large: 99999px;
 // 	//large styles
 // }
 
-nav ul {
-	@include cf();
-	padding: 0;
-	margin: 0;
-	text-align: center;
-	width: 100%;
-	height: 100%;
+nav {
+	ul {
+		@include cf();
+		padding: 0;
+		margin: 0;
+		text-align: center;
+		width: 100%;
+		min-height: 11rem;
+		height: 100%;
+
+		li{
+			-webkit-transition: opacity 1s;
+			transition: opacity 1s;
+			opacity: 0;
+			display: block;
+			height: 20%;
+			padding: 0.5rem 0;
+			&.menu{
+				opacity: 1;
+				text-align: right;
+				&.menu-toggle--open:after{
+					content: '\25BC';
+					margin-right: 0.7rem;
+				}
+				&.menu-toggle--close:after{
+					content: '\25B2';
+					margin-right: 0.7rem;
+				}
+			}
+			&:nth-child(1) {
+				background: #5CDEFF;
+			}
+			&:nth-child(2) {
+				background: #33D6FF;
+			}
+			&:nth-child(3) {
+				background: #0ACEFF;
+			}
+			&:nth-child(4) {
+				background: #05C6F5;
+			}
+		}
+
+	}
+
+	margin-top: -9.5rem;
+	-webkit-backface-visibility: hidden;
+	-webkit-transition: margin 0.5s;
+	transition: margin 0.5s;
+
+
+	&.show-offcanvas{
+		margin-top: 0rem;
+		li{
+			opacity: 0.8;
+		}
+	}
+
+	@include at-min-width($medium) {
+		margin-top: -9rem;
+
+		ul{
+			background: transparent;
+			min-height: 0rem;
+			text-align: right;
+			padding-right: 3rem;
+
+			li{
+				opacity: 1;
+				background: transparent;
+				display: inline-block;
+				height: 100%;
+				padding: 0;
+				a{
+					top: 35%;
+				}
+				&.menu{
+					display: none;
+				}
+			}
+		}
+	}
+
 }
+

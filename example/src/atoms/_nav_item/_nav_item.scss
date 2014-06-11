@@ -9,6 +9,10 @@ $medium: 99999px;
 $large: 99999px;
 
 
+// colors
+$nav-item-hover-color: #ffffff;
+
+
 // element color pallet
 // e.g $button-tint: #000000
 
@@ -28,12 +32,12 @@ $large: 99999px;
 nav ul {
 	list-style: none;
 	li {
-		display: inline-block;
 		height: 100%;
 		a{
-			color: black;
+			color: inherit;
 			margin: 0.5rem;
 			margin-top: -1rem;
+			text-decoration: none;
 		}
 	}
 }
