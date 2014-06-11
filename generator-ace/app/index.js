@@ -591,7 +591,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
             self.exportedFiles.push('global-js/'+jsDep);
           });
 
-          var output = fs.createWriteStream('export/' + this.compName + '.zip');
+          var output = fs.createWriteStream('export/' + self.exportComponent.name + '.zip');
           var archive = archiver('zip');
 
           archive.on('error', function(err){
