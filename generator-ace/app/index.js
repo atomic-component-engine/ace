@@ -87,8 +87,6 @@ var aceJson = {
 
   addDependency: function(baseComponent, type, name){
 
-    console.log(baseComponent, type, name);
-
     var configFile = "src/" + baseComponent + "/ace.json";
     var config = aceJson.getConfig(configFile);
     var alreadyAdded = false;
@@ -461,9 +459,6 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         self.dependancyName = dependancyName;
         self.baseComponent = response.selectComponentType.toLowerCase() + "s/" + response.componentSelect;
         self.dependancyType = response.dependancyType
-
-        console.log( self.baseComponent );
-
         done();
       });
 
