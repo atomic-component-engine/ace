@@ -23,8 +23,14 @@ $mediumfontweight: 600;
 $heavyfontweight: 700;
 
 $font-family: Arial, "Lucida Grande", sans-serif;
-//$font-family: "Open Sans", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$font-family: "Open Sans", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$font-family-mono: 'PT Mono', "Open Sans", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 
 // Whitespace
 $wsunit: 1.25rem; // nominally 20px
 $wsunit2: 0.6rem; // nominally 10px
+
+html,body{
+	height: 100%;
+	font-family: $font-family;
+}

@@ -2,7 +2,8 @@
  * @file Sets up RequireJS config and bootstraps the website
  */
 
-requirejs.config({
+var commonJS = module && typeof requirejs == 'undefined';
+var config = {
 	
 	'paths': {
 		'base':				'vendor/Base',
@@ -28,34 +29,43 @@ requirejs.config({
 	'name': 'main',
 	'wrap': true
 	
-});
+};
 
 
-requirejs([
-	'vendor/console',
-	'jquery',
-	'elementquery',
-	'html5shiv',
-	'componentList'
-],
-	
-function (consolePolyfill, $, eq, h5s, componentList) {
-	consolePolyfill.run();
-	console.log('[main.js] Website init');
+// Loading via require or node?
+if (!commonJS) {
+	// Require, set up
+	requirejs.config(config);
 
-	// init element query
-	window.elementQuery.init();
+	requirejs([
+		'vendor/console',
+		'vendor/domReady',
+		'jquery',
+		'elementquery',
+		'html5shiv',
+		'componentList'
+	],
+		
+	function (consolePolyfill, domReady, $, eq, h5s, componentList) {
+		consolePolyfill.run();
+		console.log('[main.js] Website init');
 
-	// refresh element query on window resize
-	// NOTE: we use a jQuery plugin for the resize event
-	// because it it far less resource intensive.
-	$.windowResize(window.elementQuery.refresh);
+		// init element query
+		window.elementQuery.init();
 
-	// Get the list of components and 
-	// run their tasks
-	componentList.runComponentTasks();
+		// refresh element query on window resize
+		// NOTE: we use a jQuery plugin for the resize event
+		// because it it far less resource intensive.
+		$.windowResize(window.elementQuery.refresh);
 
+		domReady(function () {
+			// Get the list of components and 
+			// run their tasks
+			componentList.runComponentTasks();
+		});
 
-});
-
-
+	});
+} else {
+	// Node, export config
+	module.exports = config;
+}

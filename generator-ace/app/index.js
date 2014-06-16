@@ -3,10 +3,32 @@ var util = require('util');
 var path = require('path');
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
-var fs = require('fs');
+var inquirer = require("inquirer");
+var wrench = require("wrench");
 
+var fs = require('fs');
+var path = require('path');
+var _ = require('lodash');
+var archiver = require('archiver');
+var deleteFolderRecursive = require('./deleteFolderRecursive');
 
 var getGitInfo = require('./get-git-info');
+
+var DependencyResolver = require('./deps-resolver');
+var ProjectHelper = require('./project-helper');
+var ComponentHelper = require('./component-helper');
+
+
+/**
+ * {String}
+ * The root folder of the project upon which the generator is running
+ */
+var projectRoot = process.cwd();
+
+var projectSrc = projectRoot + '/src/';
+var projectSASS = projectSrc + 'global-scss';
+var projectJS = projectSrc + 'global-js';
+var projectExport = projectRoot + '/export/';
 
 /**
  * {Object}
@@ -42,6 +64,55 @@ var questions = {
     }
 }
 
+var aceJson = {
+
+  create: function(configFile, componentName, componentAuthor){
+    console.log(chalk.red("ace.json doesn't exist... Creating an ace.json file:"));
+    var config = {
+      "name": componentName,
+      "author": componentAuthor,
+       "dependencies": {
+           "components": [],
+           "js": [],
+           "sass": []
+       }
+    };
+    var buf = new Buffer(JSON.stringify(config), 'utf-8');
+    fs.writeSync(fs.openSync(configFile, 'w'), buf, null, buf.length, null);
+  },
+
+  getConfig: function(configFile){
+    var config = JSON.parse(fs.readFileSync(configFile, "utf8"));
+    return config;
+  },
+
+  addDependency: function(baseComponent, type, name){
+
+    var configFile = "src/" + baseComponent + "/ace.json";
+    var config = aceJson.getConfig(configFile);
+    var alreadyAdded = false;
+    var type = type.toLowerCase();
+    var dependencyList = config.dependencies[type];
+
+    for(var i=0;i<dependencyList.length;i++){
+      if(dependencyList[i] == name){
+        alreadyAdded = true;
+      }
+    }
+
+    if(!alreadyAdded){
+      config.dependencies[type].push(name);
+    }else{
+      console.log(chalk.red("You have already added this dependency"));
+    }
+
+    var buf = new Buffer(JSON.stringify(config, null, 4), 'utf-8');
+    fs.writeSync(fs.openSync(configFile, 'w'), buf, null, buf.length, null);
+
+  }
+
+}
+
 /**
  * {yeoman.generators}
  * {ComponentsGenerator}
@@ -56,9 +127,19 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
    * If this isn't a project initialisation, try and read in the ACE config
    */
   init: function (arg) {
+
+    // Set all arguments to false
     this.aceNeedsInit = false;
     this.acePage = false;
     this.quit = false;
+    this.aceExport = false;
+    this.addDep = false;
+    this.aceHelp = false;
+
+    /**
+     * {ProjectHelper}
+     */
+    this.projectHelper = new ProjectHelper();
 
     /**
      * {Array}
@@ -103,11 +184,26 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     ];
 
     // Parse task name to determine course of action
-    if(arg == 'init'){
-      this.aceNeedsInit = true;
-    }else if(arg == 'page'){
-      this.acePage = true;
+    switch(arg) {
+        case "init":
+          this.aceNeedsInit = true;
+            break;
+        case "page":
+          this.acePage = true;
+            break;
+        case "export":
+          this.aceExport = true;
+            break;
+        case "add-dependency":
+          this.addDep = true;
+            break;
+        case "help":
+          this.aceHelp = true;
+            break;
+        default:
+          this.addCompoenent = true;
     }
+
 
     // Read in ace config if generating page or component
     var aceConfig = "ace_config.json";
@@ -134,8 +230,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     // if gitconfig exists
     if (gitConfigStr) {
       this.gitGlobalConfigFile = getGitInfo.parseConfig(gitConfigStr);
-    }
-    else {
+    }else {
       console.log(chalk.red("Git configuration file does not exist, this is used in template headers..."));
     };
 
@@ -204,7 +299,188 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       });
 
     // if you are running the component generator
-    }else{
+    }else if(this.aceExport){
+
+      var self = this;
+      var exportPkg = {};
+      var componentList = [];
+      var jadeDeps = [];
+
+      // Begin the interrogation
+      this.prompt([
+      {
+        type: 'list',
+        name: 'exportSelectType',
+        message: 'What type would you like to export?',
+        choices: questions.componentType.choices
+      },{
+        when: function (response) {
+          return true;
+        },
+        type: 'list',
+        name: 'componentSelect',
+        message: 'Which component do you want to export?',
+        choices: function(response){
+          componentList = fs.readdirSync("src/" + response.exportSelectType.toLowerCase() + "s");
+          return componentList;
+        },
+      },
+      {
+        type: 'confirm',
+        name: 'includeGlobalJSAndSASS',
+        message: 'Your component may depend on non-component JS and SASS files. Would you like to export the global JS and SASS folders too?'
+      }
+      ], function (response) {
+        // Get type and name of component so we can find it
+        self.exportComponent = {
+          type: response.exportSelectType.toLowerCase(),
+          name: response.componentSelect
+        }
+
+        self.exportGlobalFolders = response.includeGlobalJSAndSASS;
+
+        done();
+      });
+
+    }else if(this.addDep){
+
+      var self = this;
+      var componentList = [];
+      var sassList = [];
+      var jsList = [];
+
+      // Begin the interrogation
+      this.prompt([
+      {
+        type: 'list',
+        name: 'selectComponentType',
+        message: 'What type of component do you want to add a dependency to?',
+        choices: questions.componentType.choices
+      },{
+        type: 'list',
+        name: 'componentSelect',
+        message: 'Select component',
+        choices: function(response){
+          componentList = fs.readdirSync("src/" + response.selectComponentType.toLowerCase() + "s");
+          return componentList;
+        },
+      },{
+        type: 'list',
+        name: 'dependancyType',
+        message: 'What type of dependancy do you want to add?',
+        choices: ["Component", "SASS", "JS"]
+      },{
+        when: function (response) {
+          if(response.dependancyType == "Component"){
+            return true;
+          }else{
+            return false;
+          }
+        },
+        type: 'list',
+        name: 'selectDependancyComponentType',
+        message: 'Select dependancy to add',
+        choices: questions.componentType.choices
+      },{
+        when: function (response) {
+          if(response.dependancyType == "Component"){
+            return true;
+          }else{
+            return false;
+          }
+        },
+        type: 'list',
+        name: 'depComponentSelect',
+        message: 'Select component',
+        choices: function(response){
+          if(response.selectDependancyComponentType){
+            componentList = fs.readdirSync("src/" + response.selectDependancyComponentType.toLowerCase() + "s");
+          };
+          return componentList;
+        },
+      },{
+        when: function (response) {
+          if(response.dependancyType == "SASS"){
+            return true;
+          }else{
+            return false;
+          }
+        },
+        type: 'list',
+        name: 'selectDependancySASSDir',
+        message: 'Select SASS dependancy to add',
+        choices: function(response){
+            //sassList = fs.readdirSync("src/global-scss");
+
+            sassList = wrench.readdirSyncRecursive("src/global-scss");
+            sassList.unshift(new inquirer.Separator(chalk.red("-------------------")));
+
+            return sassList;
+
+        },
+      },{
+        when: function (response) {
+          if(response.dependancyType == "JS"){
+            return true;
+          }else{
+            return false;
+          }
+        },
+        type: 'list',
+        name: 'selectDependancyJSDir',
+        message: 'Select JS dependancy to add',
+        choices: function(response){
+            jsList = wrench.readdirSyncRecursive("src/global-js");
+            jsList.unshift(new inquirer.Separator(chalk.red("-------------------")));
+            return jsList;
+        },
+      }
+      ], function (response) {
+        var configFile = "src/" + response.selectComponentType.toLowerCase() + "s/" + response.componentSelect + "/ace.json";
+
+        if (!fs.existsSync(configFile)) {
+          aceJson.create(configFile, response.componentSelect, JSON.parse(self.aceInitFile).email);
+        }
+
+        var config = self.readFileAsString(configFile);
+
+        switch(response.dependancyType) {
+            case "Component":
+                var dependancyName = response.selectDependancyComponentType.toLowerCase() + "s/" + response.depComponentSelect;
+                break;
+            case "SASS":
+                var dependancyName = response.selectDependancySASSDir;
+                break;
+            case "JS":
+                var dependancyName = response.selectDependancyJSDir;
+                break;
+            default:
+                console.log(chalk.red("Invalid dependancy type"));
+        }
+
+        self.dependancyName = dependancyName;
+        self.baseComponent = response.selectComponentType.toLowerCase() + "s/" + response.componentSelect;
+        self.dependancyType = response.dependancyType
+        done();
+      });
+
+
+
+    }else if(this.aceHelp){
+      var helpMessage = " \n\
+      \n \
+        Welcome to ACE: \n \
+      \n \
+      \n \
+        yo ace init           -> This will add the initial boilerplate to your current directory. \n \
+        yo ace                -> This will give you a list of options for creating compoenents. \n \
+        yo ace add-dependency -> This will add a dependency to a component. \n \
+        yo ace export         -> This will zip up your component and its dependencies. \n \n \n "
+
+      console.log(helpMessage);
+      this.quit = true;
+      done();
+    }else if(this.addCompoenent){
 
       var prompts = [questions.componentType, questions.componentName]
       this.prompt(prompts, function (props) {
@@ -260,6 +536,119 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           this.template('_.js', this.dirs.jsModDir);
         }
       // Generating a new project
+      }else if(this.aceExport){
+
+          var self = this;
+
+          /**
+           * {ComponentHelper}
+           */
+          self.componentHelper = new ComponentHelper({
+            type: self.exportComponent.type,
+            name: self.exportComponent.name,
+          });
+          /**
+           * {DependencyResolver}
+           */
+          var depRes = new DependencyResolver(self.projectHelper, self.componentHelper);
+
+          // Get explicit (config-defined) dependencies
+          var explicitDeps = depRes.getExplicitDepsRecursive();
+          console.log('explicitDeps', explicitDeps);
+          self.compDeps = explicitDeps.components;
+          self.jsDeps = explicitDeps.js;
+          self.sassDeps = explicitDeps.sass;
+          console.log('Component deps:', self.compDeps);
+          console.log('Global SASS deps:', self.sassDeps);
+          console.log('Global JS deps:', self.jsDeps);
+          
+          // Build component folder path
+          self.fileToExport = self.exportComponent.type + "s/" + self.exportComponent.name;
+
+          // Copy component to export folder
+          self.directory(projectSrc+self.fileToExport, projectExport+self.fileToExport);
+
+          self.exportedFiles = [];
+          self.exportedFiles.push(self.fileToExport + "/**");
+
+          // Copy dependency components to export folder
+          self.compDeps.forEach(function (component) {
+            self.directory(projectSrc+component, projectExport+component);
+            self.exportedFiles.push(component + "/**");
+          });
+
+          // Copy non-component (global) deopendencies
+          if (self.exportGlobalFolders) {
+            // Copy all
+            self.directory(projectSASS, projectExport+'/global-scss');
+            self.directory(projectJS, projectExport+'/global-js');
+            self.exportedFiles.push('global-scss/**');
+            self.exportedFiles.push('global-js/**');
+          } else {
+            // Copy only explicitly requested
+            self.sassDeps.forEach(function (sassDep) {
+              var stats = fs.statSync(projectSASS + "/" + sassDep)
+              if(stats.isDirectory()){
+                self.directory(projectSASS+'/'+sassDep, projectExport+'global-scss/'+sassDep);
+                self.exportedFiles.push('global-scss/'+sassDep+"/**");
+              }else{
+                self.copy(projectSASS+'/'+sassDep, projectExport+'global-scss/'+sassDep);
+                self.exportedFiles.push('global-scss/'+sassDep+"**");
+              }
+
+            });
+
+            self.jsDeps.forEach(function (jsDep) {
+              self.copy(projectJS+jsDep, projectExport+'global-js/'+jsDep)
+              self.exportedFiles.push('global-js/'+jsDep);
+            });
+          }
+
+          var output = fs.createWriteStream('export/' + self.exportComponent.name + '.zip');
+          var archive = archiver('zip');
+
+          archive.on('error', function(err){
+              throw err;
+          });
+
+          archive.pipe(output);
+
+          console.log("[FILES TO EXPORT]", self.exportedFiles);
+
+          archive.bulk([
+              { expand: true, cwd: 'src', src: self.exportedFiles, dest: 'export'}
+          ]);
+          archive.finalize();
+
+          output.on('finish', function () {
+            setTimeout(function(){
+              for(var i=0;i<self.exportedFiles.length;i++){
+                var exportedFilePath = self.exportedFiles[i].split("/");
+                exportedFilePath.pop();
+                var exportedFilePath = exportedFilePath.join();
+                exportedFilePath = exportedFilePath.replace(",", "/");
+                deleteFolderRecursive("export/" + exportedFilePath);
+              };
+              // Remove empty dirs
+              var emptyDirs = [
+                'global-scss',
+                'global-js',
+                'atoms',
+                'molecules',
+                'organisms',
+              ];
+              emptyDirs.forEach(function(emptyDir) {
+                if (fs.existsSync(projectExport+emptyDir)) fs.rmdirSync(projectExport+emptyDir);
+              });
+
+              console.log(chalk.green("Export complete"));
+            },3000);
+          });
+
+      }else if(this.addDep){
+
+        aceJson.addDependency(this.baseComponent, this.dependancyType, this.dependancyName);
+
       }else{
           this.directory('init_templates/src', 'src');
           this.template('init_templates/_ace_config.tmpl.json', 'ace_config.json');

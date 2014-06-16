@@ -1,0 +1,53 @@
+/**
+ * @file Defines styles for a about module
+ * @author Phil Hauser phil.hsr@gmail.com
+ */
+
+// replace with medium and large
+// element breakpoints
+$medium: 99999px;
+$large: 99999px;
+
+
+// element color pallet
+// e.g $button-tint: #000000
+
+
+//Default style (Small first)
+
+
+// @include at-min-width($medium + 1){
+// 	//medium styles
+// }
+
+
+// @include at-min-width($large + 1){
+// 	//large styles
+// }
+
+.page-about{
+	.content{
+			@include at-min-width(1000px) {
+
+				.content-block{
+					padding-top: 5rem;
+					margin-left: 1%;
+					h3{
+						font-size: 1.7rem;
+						width: 34%;
+					}
+					p{
+						width: 65%;
+						padding-right: 10%;
+						float: right;
+						font-size: 2rem;
+						padding-top: 1.5rem;
+						span{
+							padding-top: 0rem;
+						}
+					}
+				}
+
+			}
+	}
+}

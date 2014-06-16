@@ -2,3 +2,77 @@
  * @file Defines styles for a page_default module
  */
 
+.content-wrapper{
+	overflow: scroll;
+	height: 100%;
+
+	.content{
+		padding: 3rem 0;
+		span,a{
+				font-family: $font-family-mono;
+		}
+
+		@include at-min-width(1px) {
+			.content-block{
+				@extend %content-section--1-column;
+				padding: 2rem 1rem;
+				img,p{
+					width: 98%;
+					padding: 1%;
+					margin: 0;
+				}
+				img{
+					width: 100%;
+					padding: 0;
+				}
+				p{
+					@extend %h2;
+					font-size: 1.5rem;
+					padding-top: 1rem;
+					span{
+						display: block;
+						font-size: 1rem;
+						padding-top: 2rem;
+					}
+				}
+			}
+
+		}
+
+
+		@include at-min-width(480px) {
+
+			.content-block{
+				img{
+					width: 98%;
+					padding: 1%;
+				}
+			}
+
+		}
+
+		@include at-min-width(1000px) {
+
+			.content-block{
+				margin-left: 1%;
+
+				img{
+					width: 60%;
+					float: right;
+				}
+				p{
+					width: 38%;
+					float: left;
+					font-size: 2rem;
+					padding-top: 3rem;
+					span{
+						padding-top: 3rem;
+					}
+				}
+			}
+
+		}
+
+
+	}
+}

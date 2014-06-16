@@ -5,14 +5,19 @@
 //- Dependencies
 
 //- Definition
-mixin content_block(content)
+mixin content_block(content, className)
 
-	// 
+	//-
 		Get the content array and layout images and text, also wrap 
 		the conent in a div with a modifier detailling the amount
-		of children
-	div(class="content-section--#{content.length}-up")
+		of children. This is considered a molecule as it inherits 
+		implied atoms in the form of a <p> tag and <img> tag
+	div(class="content-section--#{content.length}-up #{className}")
 		each val, index in content
 			.content-block
-				img(src=val.img, alt="")
-				p= val.text
+				if val.img
+					img(src=val.img, alt="")
+				else
+					if val.header
+						h3!= val.header
+				p!= val.text

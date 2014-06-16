@@ -26,7 +26,48 @@ module.exports = function(grunt) {
 		buildType = 'dev';
 	}
 	env = buildConfig[buildType];
-	
+
+	///////////////////////////////////////////////////////////////////////////////
+	// ACE Component Task setup
+	///////////////////////////////////////////////////////////////////////////////	
+
+	/**
+	 * {Array}
+	 * List of all files (require modules) representing user's components
+	 */
+	var jsFiles = grunt.file.expand(["src/atoms/**/*.js", "src/molecules/**/*.js", "src/organisms/**/*.js", "src/templates/**/*.js", "src/pages/**/*.js"]);
+	/**
+	 * {Array}
+	 * List of user components, formatted for use as requireJS dependencies
+	 */
+	var componentsList = [];
+	// Loop over files to create componentList
+	for(i=0;i<jsFiles.length;i++){
+		var fileName;
+		// Depending on environment (dev or release) the dependency paths will be different
+		if (buildType == 'dev') {
+			// Dev, strip path and .js extension
+			var slashSeperatedFile = jsFiles[i].split("/");
+			fileName = slashSeperatedFile.pop();
+			fileName = fileName.substring(0, fileName.length-3);
+		} else if (buildType == 'release') {
+			// Release, include corrected path (replace leading src/ with ../) and strip .js extension
+			fileName = '../' + jsFiles[i].substring(4, jsFiles[i].length - 3);
+		}
+		// Add component dependency to list
+		componentsList.push(fileName);
+	}
+
+	// Write component dependency file for require to read in at runtime (dev) or build time (release)
+	if (buildType == 'dev') {
+		grunt.file.write("dev/js/componentList.json", JSON.stringify(componentsList));
+	} else if (buildType == 'release') {
+		grunt.file.write("src/global-js/componentList.json", JSON.stringify(componentsList));
+	}
+
+
+
+
 	///////////////////////////////////////////////////////////////////////////////
 	// DEPENDENCIES & TASK SETUP
 	///////////////////////////////////////////////////////////////////////////////
@@ -52,47 +93,84 @@ module.exports = function(grunt) {
 		}
 	};
 
-	// RequireJS
+	// RequireJS build (release only)
+	/**
+	 * {Array}
+	 * List of requireJS modules to pass in to build as explicit dependencies
+	 */
+	var explicitDependencies;
+	explicitDependencies = componentsList.slice(0); // Clone user components array
+	explicitDependencies.push('vendor/almond'); // Add almond AMD loader
 	gruntConfig.requirejs = {
 		compile: {
 			options: {
+				optimize: "none", 
+				findNestedDependencies: 'true',
+				include: explicitDependencies,
 				mainConfigFile: "src/global-js/main.js",
 				out: env.dest+'/js/<%= pkg.name %>.min.js'
 			}
 		}
 	};
-	// Jade => HTML
-	gruntConfig.jade = {
-		compile: {
-			options: {
-				pretty: true,
-				data: {
-					env: buildType,
-					pkg: {
-						name: '<%= pkg.name %>'
-					},
-					aceConfig: grunt.file.readJSON('ace_config.json'),
-				}
-			},
-			files:  [
-				{
-					expand: true,
-					cwd: 'src/',
-					dest: env.dest,
-					src: ['**/**/*.jade', '!pages/**/*.jade'],
-					ext: '.html'
+
+
+	if(buildType == "dev"){
+
+		// Jade => HTML
+		gruntConfig.jade = {
+			compile: {
+				options: {
+					pretty: true,
+					data: {
+						env: buildType,
+						pkg: {
+							name: '<%= pkg.name %>'
+						},
+						aceConfig: grunt.file.readJSON('ace_config.json'),
+					}
 				},
-				{
-					expand: true,
-					flatten: true,
-					cwd: 'src/pages/',
-					dest: env.dest+"/pages/",
-					src: ['**/*.jade'],
-					ext: '.html'
-				}
-			],
-		}
-	};
+				files: [
+					{
+						expand: true,
+						cwd: 'src/',
+						dest: env.dest,
+						src: ['**/**/*.jade'],
+						ext: '.html'
+					}
+				],
+			}
+		};
+
+	}else{
+
+		// Jade => HTML
+		gruntConfig.jade = {
+			compile: {
+				options: {
+					pretty: true,
+					data: {
+						env: buildType,
+						pkg: {
+							name: '<%= pkg.name %>'
+						},
+						aceConfig: grunt.file.readJSON('ace_config.json'),
+					}
+				},
+				files: [
+					{
+						expand: true,
+						flatten: true,
+						cwd: 'src/',
+						dest: env.dest,
+						src: ['pages/**/*.jade'],
+						ext: '.html'
+					}
+				],
+			}
+		};
+
+	}
+
 
 	// SASS => CSS
 	gruntConfig.compass = {
@@ -141,6 +219,7 @@ module.exports = function(grunt) {
 				{expand: true, flatten: true, cwd: 'src/molecules', src: ['**/*.js'], dest: env.dest+'/js'},
 				{expand: true, flatten: true, cwd: 'src/organisms', src: ['**/*.js'], dest: env.dest+'/js'},
 				{expand: true, flatten: true, cwd: 'src/templates', src: ['**/*.js'], dest: env.dest+'/js'},
+				{expand: true, flatten: true, cwd: 'src/pages', src: ['**/*.js'], dest: env.dest+'/js'},
 				{expand: true, flatten: false, cwd: 'src/global-js', src: ['**/*.js'], dest: env.dest+'/js'}
 			]
 		}
@@ -232,6 +311,6 @@ module.exports = function(grunt) {
 	
 	// Define dummy tasks to allow  CLI to pass environment
 	grunt.registerTask('dev', ['default', 'watch']);
-	grunt.registerTask('release', ['default', 'serve-release']);
+	grunt.registerTask('release', ['default']);
 
 };
