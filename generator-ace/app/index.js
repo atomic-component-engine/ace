@@ -587,8 +587,15 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           } else {
             // Copy only explicitly requested
             self.sassDeps.forEach(function (sassDep) {
-              self.copy(projectSASS+'/'+sassDep, projectExport+'global-scss/'+sassDep)
-              self.exportedFiles.push('global-scss/'+sassDep+"**");
+              var stats = fs.statSync(projectSASS + "/" + sassDep)
+              if(stats.isDirectory()){
+                self.directory(projectSASS+'/'+sassDep, projectExport+'global-scss/'+sassDep);
+                self.exportedFiles.push('global-scss/'+sassDep+"/**");
+              }else{
+                self.copy(projectSASS+'/'+sassDep, projectExport+'global-scss/'+sassDep);
+                self.exportedFiles.push('global-scss/'+sassDep+"**");
+              }
+
             });
 
             self.jsDeps.forEach(function (jsDep) {
@@ -606,14 +613,12 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
           archive.pipe(output);
 
+          console.log("[FILES TO EXPORT]", self.exportedFiles);
+
           archive.bulk([
-              { expand: true, cwd: 'export', src: self.exportedFiles, dest: 'export'}
+              { expand: true, cwd: 'src', src: self.exportedFiles, dest: 'export'}
           ]);
           archive.finalize();
-
-          archive.on('error', function(err){
-              throw err;
-          });
 
           output.on('finish', function () {
             setTimeout(function(){
@@ -637,7 +642,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
               });
 
               console.log(chalk.green("Export complete"));
-            },30000);
+            },3000);
           });
 
       }else if(this.addDep){
