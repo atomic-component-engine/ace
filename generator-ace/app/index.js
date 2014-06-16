@@ -67,7 +67,7 @@ var questions = {
 var aceJson = {
 
   create: function(configFile, componentName, componentAuthor){
-    console.log(chalk.red("dep config doesn't exist... Creating a base config file:"));
+    console.log(chalk.red("ace.json doesn't exist... Creating an ace.json file:"));
     var config = {
       "name": componentName,
       "author": componentAuthor,
@@ -353,21 +353,10 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
       this.prompt([
       {
         type: 'list',
-        name: 'dependancyType',
-        message: 'What type of dependancy do you want to add?',
-        choices: ["Component", "SASS", "JS"]
-      },{
-        when: function (response) {
-          return true;
-        },
-        type: 'list',
         name: 'selectComponentType',
-        message: 'What component do you want to add a dependency to?',
+        message: 'What type of component do you want to add a dependency to?',
         choices: questions.componentType.choices
       },{
-        when: function (response) {
-          return true;
-        },
         type: 'list',
         name: 'componentSelect',
         message: 'Select component',
@@ -375,6 +364,11 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           componentList = fs.readdirSync("src/" + response.selectComponentType.toLowerCase() + "s");
           return componentList;
         },
+      },{
+        type: 'list',
+        name: 'dependancyType',
+        message: 'What type of dependancy do you want to add?',
+        choices: ["Component", "SASS", "JS"]
       },{
         when: function (response) {
           if(response.dependancyType == "Component"){
@@ -455,10 +449,10 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
                 var dependancyName = response.selectDependancyComponentType.toLowerCase() + "s/" + response.depComponentSelect;
                 break;
             case "SASS":
-                var dependancyName = "global-scss/" + response.selectDependancySASSDir;
+                var dependancyName = response.selectDependancySASSDir;
                 break;
             case "JS":
-                var dependancyName = "global-js/" + response.selectDependancyJSDir;
+                var dependancyName = response.selectDependancyJSDir;
                 break;
             default:
                 console.log(chalk.red("Invalid dependancy type"));
@@ -593,8 +587,8 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           } else {
             // Copy only explicitly requested
             self.sassDeps.forEach(function (sassDep) {
-              self.copy(projectSASS+'mixins/'+sassDep, projectExport+'global-scss/mixins/'+sassDep)
-              self.exportedFiles.push('global-scss/mixins/'+sassDep+"**");
+              self.copy(projectSASS+'/'+sassDep, projectExport+'global-scss/'+sassDep)
+              self.exportedFiles.push('global-scss/'+sassDep+"**");
             });
 
             self.jsDeps.forEach(function (jsDep) {
