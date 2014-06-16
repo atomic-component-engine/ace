@@ -27,6 +27,8 @@ module.exports = function(grunt) {
 	}
 	env = buildConfig[buildType];
 
+
+
 	///////////////////////////////////////////////////////////////////////////////
 	// ACE Component Task setup
 	///////////////////////////////////////////////////////////////////////////////	
@@ -67,12 +69,20 @@ module.exports = function(grunt) {
 
 
 
-
 	///////////////////////////////////////////////////////////////////////////////
 	// DEPENDENCIES & TASK SETUP
 	///////////////////////////////////////////////////////////////////////////////
 	var gruntConfig = {
 		pkg: grunt.file.readJSON('package.json'),
+	};
+
+	// Execute shell commands
+	gruntConfig.exec = {
+		dev: {
+			cmd: function() {
+				return 'grunt dev';
+			}
+		}
 	};
 
 	// JS linting
@@ -112,65 +122,38 @@ module.exports = function(grunt) {
 			}
 		}
 	};
-
-
-	if(buildType == "dev"){
-
-		// Jade => HTML
-		gruntConfig.jade = {
-			compile: {
-				options: {
-					pretty: true,
-					data: {
-						env: buildType,
-						pkg: {
-							name: '<%= pkg.name %>'
-						},
-						aceConfig: grunt.file.readJSON('ace_config.json'),
-					}
+	// Jade => HTML
+	gruntConfig.jade = {
+		compile: {
+			options: {
+				pretty: true,
+				data: {
+					env: buildType,
+					pkg: {
+						name: '<%= pkg.name %>'
+					},
+					aceConfig: grunt.file.readJSON('ace_config.json'),
+				}
+			},
+			files:  [
+				{
+					expand: true,
+					cwd: 'src/',
+					dest: 'dev',
+					src: ['**/**/*.jade', '!pages/**/*.jade'],
+					ext: '.html'
 				},
-				files: [
-					{
-						expand: true,
-						cwd: 'src/',
-						dest: env.dest,
-						src: ['**/**/*.jade'],
-						ext: '.html'
-					}
-				],
-			}
-		};
-
-	}else{
-
-		// Jade => HTML
-		gruntConfig.jade = {
-			compile: {
-				options: {
-					pretty: true,
-					data: {
-						env: buildType,
-						pkg: {
-							name: '<%= pkg.name %>'
-						},
-						aceConfig: grunt.file.readJSON('ace_config.json'),
-					}
-				},
-				files: [
-					{
-						expand: true,
-						flatten: true,
-						cwd: 'src/',
-						dest: env.dest,
-						src: ['pages/**/*.jade'],
-						ext: '.html'
-					}
-				],
-			}
-		};
-
-	}
-
+				{
+					expand: true,
+					flatten: true,
+					cwd: 'src/pages/',
+					dest: "dev/pages/",
+					src: ['**/*.jade'],
+					ext: '.html'
+				}
+			],
+		}
+	};
 
 	// SASS => CSS
 	gruntConfig.compass = {
@@ -208,11 +191,6 @@ module.exports = function(grunt) {
 				{expand: true, cwd: 'src/img', src: ['**'], dest: env.dest+'/img', filter: 'isFile'}
 			]
 		},
-		video: {
-			files: [
-				{expand: true, cwd: 'src/video', src: ['**'], dest: env.dest+'/video'}
-			]					
-		},
 		js: {
 			files: [
 				{expand: true, flatten: true, cwd: 'src/atoms', src: ['**/*.js'], dest: env.dest+'/js'},
@@ -222,14 +200,21 @@ module.exports = function(grunt) {
 				{expand: true, flatten: true, cwd: 'src/pages', src: ['**/*.js'], dest: env.dest+'/js'},
 				{expand: true, flatten: false, cwd: 'src/global-js', src: ['**/*.js'], dest: env.dest+'/js'}
 			]
+		},
+		release: {
+			files: [
+				{expand: true, flatten: true, cwd: 'dev', src: ['pages/*.html'], dest: 'release/'},
+				{expand: true, flatten: true, cwd: 'dev', src: ['atoms/**/*.html'], dest: 'release/'},
+				{expand: true, flatten: true, cwd: 'dev', src: ['molecules/**/*.html'], dest: 'release/'},
+				{expand: true, flatten: true, cwd: 'dev', src: ['organisms/**/*.html'], dest: 'release/'},
+				{expand: true, flatten: true, cwd: 'dev', src: ['templates/**/*.html'], dest: 'release/'},
+				{expand: true, flatten: true, cwd: 'dev', src: ['pages/**/*.html'], dest: 'release/'}
+			]
 		}
 	};
 
 	// Task watching
 	gruntConfig.watch = {
-		options: {
-			livereload: true
-		},
 		js: {
 			files: ['src/**/**/*.js'],
 			tasks: ['js'],
@@ -257,24 +242,16 @@ module.exports = function(grunt) {
 			options: {
 				interrupt: true
 			},
-		},
-		video: {
-			files: ['src/video/**'],
-			tasks: ['copy:video'],
-			options: {
-				interrupt: true
-			},
 		}
 	};
 
-	// Servers
+	// Server
 	gruntConfig.connect = {
 		dev: {
 			options: {
 				port: 7000,
 				base: 'dev',
-				keepalive: true,
-				livereload: true
+				keepalive: true
 			}
 		},
 		release: {
@@ -297,20 +274,24 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-remfallback');
+	grunt.loadNpmTasks('grunt-exec');
 	grunt.loadNpmTasks('grunt-contrib-connect');
 
 	// Set up task aliases
 	grunt.registerTask('js', env.jsTasks); // Get JS tasks from environment (e.g. only run concat or uglify in release)
-	grunt.registerTask('default', ['jshint', 'jade', 'js', 'copy:img', 'copy:video', 'compass', 'remfallback']);
+	grunt.registerTask('default', ['jshint', 'jade', 'js', 'copy:img', 'compass', 'remfallback']);
+	grunt.registerTask('default-release', ['jshint', 'jade', 'js', 'copy:img', 'compass', 'remfallback', 'copy:release', 'exec:dev']);
 	
 	grunt.registerTask('sass', ['compass', 'remfallback']);
-
-	// Shorthand environment servers
 	grunt.registerTask('serve-dev', ['connect:dev']);
 	grunt.registerTask('serve-release', ['connect:release']);
 	
 	// Define dummy tasks to allow  CLI to pass environment
 	grunt.registerTask('dev', ['default', 'watch']);
-	grunt.registerTask('release', ['default']);
+	grunt.registerTask('release', ['default-release']);
 
 };
+
+
+
+

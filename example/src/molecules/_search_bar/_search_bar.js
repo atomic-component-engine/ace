@@ -1,6 +1,6 @@
 /**
- * @file Defines behaviours for a about module
- * @author Phil Hauser phil.hsr@gmail.com
+ * @file Defines behaviours for a Search bar module
+ * @author Tom Jenkins tom.jenkins@kp360group.com
  */
 
 define([

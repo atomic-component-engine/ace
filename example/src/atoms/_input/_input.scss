@@ -1,6 +1,6 @@
 /**
- * @file Defines styles for a headings module
- * @author Phil Hauser phil.hsr@gmail.com
+ * @file Defines styles for a Input module
+ * @author Tom Jenkins tom.jenkins@kp360group.com
  */
 
 // replace with medium and large
@@ -24,16 +24,3 @@ $large: 99999px;
 // @include at-min-width($large + 1){
 // 	//large styles
 // }
-
-%headings{
-	font-weight: 100;
-	display: inline-block;
-}
-
-%h1,%h2,%h3,%h4,%h5{
-	@extend %headings;
-}
-
-h1,h2,h3,h4,h5{
-	@extend %headings;
-}

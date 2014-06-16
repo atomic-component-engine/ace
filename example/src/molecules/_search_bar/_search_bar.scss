@@ -1,16 +1,12 @@
 /**
- * @file Defines styles for a nav_item module
- * @author Phil Hauser phil.hsr@gmail.com
+ * @file Defines styles for a Search bar module
+ * @author Tom Jenkins tom.jenkins@kp360group.com
  */
 
 // replace with medium and large
 // element breakpoints
 $medium: 99999px;
 $large: 99999px;
-
-
-// colors
-$nav-item-hover-color: #ffffff;
 
 
 // element color pallet
@@ -28,16 +24,3 @@ $nav-item-hover-color: #ffffff;
 // @include at-min-width($large + 1){
 // 	//large styles
 // }
-
-nav ul {
-	list-style: none;
-	li {
-		height: 100%;
-		a{
-			color: inherit;
-			margin: 0.5rem;
-			margin-top: -1rem;
-			text-decoration: none;
-		}
-	}
-}
