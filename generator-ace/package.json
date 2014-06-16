@@ -24,7 +24,12 @@
   ],
   "dependencies": {
     "yeoman-generator": "~0.16.0",
-    "chalk": "~0.4.0"
+    "chalk": "~0.4.0",
+    "lodash": "^2.4.1",
+    "archiver": "~0.10.0",
+    "inquirer": "~0.5.1",
+    "wrench": "~1.5.8",
+    "archiver": "~0.10.0"
   },
   "devDependencies": {
     "mocha": "*"
