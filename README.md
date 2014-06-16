@@ -1,6 +1,6 @@
 ![logo](https://raw.githubusercontent.com/pjhauser/atomic-component-engine/develop/gifs/ace-molecule-logo.png)
 
-ACE v0.5.0
+ACE v0.5.1
 =======================
 
 ### Dependencies 
