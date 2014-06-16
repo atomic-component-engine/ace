@@ -1,11 +1,11 @@
 //-
-	@file Demo page for the Logo module
+	@file Demo page for the Search bar module
 	@author Tom Jenkins tom.jenkins@kp360group.com
 	@extends page_templates/_factory.jade
-	@requires mixins/Logo/[MODFILE]
+	@requires mixins/Search bar/[MODFILE]
 
 //- Page dependencies
-include _logo
+include _search_bar
 
 //- Page template
 extends ../../templates/_page_default/_page_default
@@ -13,12 +13,12 @@ extends ../../templates/_page_default/_page_default
 //- Page variables to pass to template
 block page_vars
 	- var page = {}
-	- page.id = "logo"
-	- page.title = "logo"
-	- page.mainScript = "logo.js"
+	- page.id = "search_bar"
+	- page.title = "search_bar"
+	- page.mainScript = "search_bar.js"
 
 
 //- Content block
 block content
 
-	+logo()
+	+search_bar()

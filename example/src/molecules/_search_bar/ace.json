@@ -1,0 +1,11 @@
+{
+	"name": "Search bar",
+	"dependencies": {
+		"components": [
+			"atoms/_input"
+		],
+		"js": [
+			"vendor/Base"
+		]
+	}
+}

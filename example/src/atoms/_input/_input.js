@@ -1,6 +1,6 @@
 /**
- * @file Defines behaviours for a headings module
- * @author Phil Hauser phil.hsr@gmail.com
+ * @file Defines behaviours for a Input module
+ * @author Tom Jenkins tom.jenkins@kp360group.com
  */
 
 define([
