@@ -3,6 +3,9 @@ var util = require('util');
 var path = require('path');
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
+var inquirer = require("inquirer");
+var wrench = require("wrench");
+
 var fs = require('fs');
 var _ = require('lodash');
 var archiver = require('archiver');
@@ -84,13 +87,13 @@ var aceJson = {
 
   addDependency: function(baseComponent, type, name){
 
+    console.log(baseComponent, type, name);
+
     var configFile = "src/" + baseComponent + "/ace.json";
     var config = aceJson.getConfig(configFile);
     var alreadyAdded = false;
     var type = type.toLowerCase();
     var dependencyList = config.dependencies[type];
-
-    console.log(baseComponent, type, name);
 
     for(var i=0;i<dependencyList.length;i++){
       if(dependencyList[i] == name){
@@ -407,13 +410,13 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         name: 'selectDependancySASSDir',
         message: 'Select SASS dependancy to add',
         choices: function(response){
-          if(response.dependancyType == "SASS"){
             //sassList = fs.readdirSync("src/global-scss");
 
-            sassList = new inquirer.Separator();
+            sassList = wrench.readdirSyncRecursive("src/global-scss");
+            sassList.unshift(new inquirer.Separator(chalk.red("-------------------")));
 
-          };
-          return sassList;
+            return sassList;
+
         },
       },{
         when: function (response) {
@@ -427,10 +430,9 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         name: 'selectDependancyJSDir',
         message: 'Select JS dependancy to add',
         choices: function(response){
-          if(response.dependancyType == "JS"){
-            jsList = fs.readdirSync("src/global-js");
-          };
-          return jsList;
+            jsList = wrench.readdirSyncRecursive("src/global-js");
+            jsList.unshift(new inquirer.Separator(chalk.red("-------------------")));
+            return jsList;
         },
       }
       ], function (response) {
@@ -459,6 +461,8 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
         self.dependancyName = dependancyName;
         self.baseComponent = response.selectComponentType.toLowerCase() + "s/" + response.componentSelect;
         self.dependancyType = response.dependancyType
+
+        console.log( self.baseComponent );
 
         done();
       });
@@ -637,7 +641,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
       }else if(this.addDep){
 
-        aceJson.addDependency(self.baseComponent, self.dependancyType, self.dependancyName);
+        aceJson.addDependency(this.baseComponent, this.dependancyType, this.dependancyName);
 
       }else{
           this.directory('init_templates/src', 'src');
