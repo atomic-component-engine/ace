@@ -5,8 +5,8 @@
 
 var fs = require('fs');
 var chalk = require('chalk');
-var madge = require('madge');
 var ComponentHelper = require('./component-helper');
+
 
 /**
  * {Constructor}
@@ -20,115 +20,6 @@ var DependencyResolver = function (project, component) {
  * {Prototype}
  */
 DependencyResolver.prototype = {
-
-	/**
-	 * Finds the dependencies for a component by parsing its various source files
-	 * @return {Object}:
-	 * 					- components: {Array} list of component dependencies
-	 * 					- js: {Array} list of js dependencies
-	 * 					- sass: {Array} list of sass dependencies
-	 */ 
-	getImpliedDeps: function () {
-		var compDeps = [];
-		var jsDeps = [];
-		var sassDeps = [];
-
-		var compDeps = compDeps.concat(this.getImpliedComponentDeps());
-		var jsDeps = jsDeps.concat(this.getImpliedJSDeps());
-		var sassDeps = sassDeps.concat(this.getImpliedSASSDeps());
-
-		return {
-			components: compDeps,
-			js: jsDeps,
-			sass: sassDeps
-		};
-	},
-
-	/**
-	 * Finds the component dependencies for a component by regexing its jade mixin file
-	 * @return {Array}
-	 */ 
-	getImpliedComponentDeps: function () {
-		var deps = [];
-		var data = fs.readFileSync(this.component.jadeFile, "utf8");
-		var matchJadeIncludes =  /^[\s]*include\s(.+)\s*$/mg;
-		var match;
-		while(match = matchJadeIncludes.exec(data)){
-			var stripRelativePath = match[1].replace(/\.{1,2}\//g, "");
-			var pathParts = stripRelativePath.split("/");
-			pathParts.pop();
-			deps.push(pathParts.join("/"));
-		};
-
-		return deps;
-	},
-
-	/**
-	 * Finds any non-component js dependencies for the component using madge (http://github.com.pahen.madge)
-	 * @return {Array}
-	 */
-	getImpliedJSDeps: function () {
-
-		// Gather require module dependencies
-		var results = madge(this.component.root, {
-			format: 'amd',
-		});
-		var deps = results.tree[this.component.name];
-
-		// Get filenames for dependencies, using path alias if necessary
-		deps = deps.map(function (dep, i) {
-			var depFile = dep + '.js';
-			if (fs.existsSync(this.project.jsDir + depFile)) {
-				return depFile;
-			} else {
-				return this.project.requireConfig.paths[dep] ? this.project.requireConfig.paths[dep] + '.js' : null;
-			}
-		}.bind(this));
-
-		return deps;
-	},
-
-	/**
-	 * Finds any non-component sass depenencies (e.g. mixins) for the component by regexing its sass module
-	 * [TODO currently only finds mixin dependencies, and assumes they are in the global sass mixins folder. Will not handle e.g. compass includes, or mixins that are placed elsewhere.]
-	 * @return {Array}
-	 */
-	getImpliedSASSDeps: function () {
-		var deps = [];
-		var data = fs.readFileSync(this.component.sassFile, 'utf-8');
-
-		// Load in all global mixin files for later scanning
-		var mixinDir = this.project.sassDir + 'mixins/';
-		var mixinFiles = fs.readdirSync(mixinDir);
-		var mixinData = {};
-		for (var k in mixinFiles) {
-			mixinData[mixinFiles[k]] = fs.readFileSync(mixinDir+mixinFiles[k], 'utf-8');
-		}
-
-		var matchMixins = /^\s*@include\s+([^;]*);?\s*$/mg;
-		var match;
-		var mixinName;
-		var mixinFile;
-		var mixinDefPattern;
-		while (match = matchMixins.exec(data)) {
-			// Get matched mixin name
-			mixinName = match[1];
-			// Define mixin search pattern
-			mixinDefPattern = new RegExp('^\s*@mixin\\s+' + mixinName, ['m']);
-			// Loop over mixin files to find one that contains this mixin
-			for (var file in mixinData) {
-				// Does the file contain the mixin?
-				if (mixinDefPattern.test(mixinData[file])) {
-					mixinFile = file;
-					// Add to dep list
-					deps.push(mixinFile);
-					break;
-				}
-			}
-		}
-
-		return deps;
-	},
 
 	getExplicitDepsRecursive: function (component) {
 		if (typeof component == 'undefined') component = this.component;

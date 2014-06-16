@@ -7,6 +7,7 @@ var inquirer = require("inquirer");
 var wrench = require("wrench");
 
 var fs = require('fs');
+var path = require('path');
 var _ = require('lodash');
 var archiver = require('archiver');
 var deleteFolderRecursive = require('./deleteFolderRecursive');
@@ -25,8 +26,8 @@ var ComponentHelper = require('./component-helper');
 var projectRoot = process.cwd();
 
 var projectSrc = projectRoot + '/src/';
-var projectSASS = projectSrc + 'global-scss/';
-var projectJS = projectSrc + 'global-js/';
+var projectSASS = projectSrc + 'global-scss';
+var projectJS = projectSrc + 'global-js';
 var projectExport = projectRoot + '/export/';
 
 /**
@@ -323,6 +324,11 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           componentList = fs.readdirSync("src/" + response.exportSelectType.toLowerCase() + "s");
           return componentList;
         },
+      },
+      {
+        type: 'confirm',
+        name: 'includeGlobalJSAndSASS',
+        message: 'Your component may depend on non-component JS and SASS files. Would you like to export the global JS and SASS folders too?'
       }
       ], function (response) {
         // Get type and name of component so we can find it
@@ -330,6 +336,8 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           type: response.exportSelectType.toLowerCase(),
           name: response.componentSelect
         }
+
+        self.exportGlobalFolders = response.includeGlobalJSAndSASS;
 
         done();
       });
@@ -550,16 +558,12 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
            */
           var depRes = new DependencyResolver(self.projectHelper, self.componentHelper);
 
-          // Get implied dependencies
-          var impliedDeps = depRes.getImpliedDeps();
           // Get explicit (config-defined) dependencies
           var explicitDeps = depRes.getExplicitDepsRecursive();
-
-          // Merge implied and explicit dependencies
           console.log('explicitDeps', explicitDeps);
-          self.compDeps = _.union([], impliedDeps.components, explicitDeps.components);
-          self.jsDeps = _.union([], impliedDeps.js, explicitDeps.js);
-          self.sassDeps = _.union([], impliedDeps.sass, explicitDeps.sass);
+          self.compDeps = explicitDeps.components;
+          self.jsDeps = explicitDeps.js;
+          self.sassDeps = explicitDeps.sass;
           console.log('Component deps:', self.compDeps);
           console.log('Global SASS deps:', self.sassDeps);
           console.log('Global JS deps:', self.jsDeps);
@@ -579,17 +583,25 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
             self.exportedFiles.push(component + "/**");
           });
 
-          // Copy global SASS dependencies to export folder
-          self.sassDeps.forEach(function (sassDep) {
-            self.copy(projectSASS+'mixins/'+sassDep, projectExport+'global-scss/mixins/'+sassDep)
-            self.exportedFiles.push('global-scss/mixins/'+sassDep+"**");
-          });
+          // Copy non-component (global) deopendencies
+          if (self.exportGlobalFolders) {
+            // Copy all
+            self.directory(projectSASS, projectExport+'/global-scss');
+            self.directory(projectJS, projectExport+'/global-js');
+            self.exportedFiles.push('global-scss/**');
+            self.exportedFiles.push('global-js/**');
+          } else {
+            // Copy only explicitly requested
+            self.sassDeps.forEach(function (sassDep) {
+              self.copy(projectSASS+'mixins/'+sassDep, projectExport+'global-scss/mixins/'+sassDep)
+              self.exportedFiles.push('global-scss/mixins/'+sassDep+"**");
+            });
 
-          // Copy global JS dependencies to export folder
-          self.jsDeps.forEach(function (jsDep) {
-            self.copy(projectJS+jsDep, projectExport+'global-js/'+jsDep)
-            self.exportedFiles.push('global-js/'+jsDep);
-          });
+            self.jsDeps.forEach(function (jsDep) {
+              self.copy(projectJS+jsDep, projectExport+'global-js/'+jsDep)
+              self.exportedFiles.push('global-js/'+jsDep);
+            });
+          }
 
           var output = fs.createWriteStream('export/' + self.exportComponent.name + '.zip');
           var archive = archiver('zip');
@@ -631,7 +643,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
               });
 
               console.log(chalk.green("Export complete"));
-            },3000);
+            },30000);
           });
 
       }else if(this.addDep){
