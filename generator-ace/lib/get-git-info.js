@@ -2,7 +2,7 @@
  * @file Provides a function to parse gitconfig and return various user info
  */
 
-module.exports = {
+var GetGitInfo = {
 
     /**
      * @public
@@ -42,5 +42,14 @@ module.exports = {
         });
 
         return value;
+    },
+
+    getConfig: function () {
+      var home_dir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+      var config_file = home_dir+'/.gitconfig';
+      var gitConfigStr = fs.readFileSync(config_file).toString();
+      return GetGitInfo.parseConfig(gitConfigStr);
     }
 };
+
+module.exports = GetGitInfo;

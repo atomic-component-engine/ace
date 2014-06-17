@@ -10,13 +10,13 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 var archiver = require('archiver');
-var deleteFolderRecursive = require('./deleteFolderRecursive');
+var deleteFolderRecursive = require('../lib/deleteFolderRecursive');
 
-var getGitInfo = require('./get-git-info');
+var getGitInfo = require('../lib/get-git-info');
 
-var DependencyResolver = require('./deps-resolver');
-var ProjectHelper = require('./project-helper');
-var ComponentHelper = require('./component-helper');
+var DependencyResolver = require('../lib/deps-resolver');
+var ProjectHelper = require('../lib/project-helper');
+var ComponentHelper = require('../lib/component-helper');
 
 
 /**
