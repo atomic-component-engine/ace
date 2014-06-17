@@ -2,6 +2,8 @@
  * @file Provides a function to parse gitconfig and return various user info
  */
 
+var fs = require('fs');
+
 var GetGitInfo = {
 
     /**

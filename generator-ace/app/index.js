@@ -116,7 +116,7 @@ var aceJson = {
 /**
  * {yeoman.generators}
  * {ComponentsGenerator}
- * The main yeoman generator - handles project initialisation and component generation
+ * Hndles project initialisation
  */
 var ComponentsGenerator = yeoman.generators.Base.extend({
 

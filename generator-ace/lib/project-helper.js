@@ -13,7 +13,7 @@ var ProjectHelper = function (options) {
 	this.srcDir = this.root + '/src';
 	this.jsDir = this.root + '/src/global-js';
 	this.sassDir = this.root + '/src/global-scss';
-	this.exporDir = this.root + '/src/global-scss';
+	this.exportDir = this.root + '/export';
 
 	var rConfig = this.jsDir + '/main.js';
 	this.requireConfig = fs.exists(rConfig) ? require(rConfig) : {};

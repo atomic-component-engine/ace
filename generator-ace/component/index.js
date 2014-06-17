@@ -51,7 +51,7 @@ var ComponentHelper = require('../lib/component-helper');
 /**
  * {yeoman.generators}
  * {ComponentsGenerator}
- * The main yeoman generator - handles project initialisation and component generation
+ * Handles component generation
  */
  var ComponentsGenerator = yeoman.generators.Base.extend({
 
