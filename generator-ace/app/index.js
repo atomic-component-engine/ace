@@ -18,18 +18,6 @@ var DependencyResolver = require('./deps-resolver');
 var ProjectHelper = require('./project-helper');
 var ComponentHelper = require('./component-helper');
 
-
-/**
- * {String}
- * The root folder of the project upon which the generator is running
- */
-var projectRoot = process.cwd();
-
-var projectSrc = projectRoot + '/src/';
-var projectSASS = projectSrc + 'global-scss';
-var projectJS = projectSrc + 'global-js';
-var projectExport = projectRoot + '/export/';
-
 /**
  * {Object}
  * Contains common questions used by the component generator
@@ -139,7 +127,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
     /**
      * {ProjectHelper}
      */
-    this.projectHelper = new ProjectHelper();
+    this.project = new ProjectHelper();
 
     /**
      * {Array}
@@ -550,7 +538,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           /**
            * {DependencyResolver}
            */
-          var depRes = new DependencyResolver(self.projectHelper, self.componentHelper);
+          var depRes = new DependencyResolver(self.project, self.componentHelper);
 
           // Get explicit (config-defined) dependencies
           var explicitDeps = depRes.getExplicitDepsRecursive();
@@ -566,40 +554,40 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
           self.fileToExport = self.exportComponent.type + "s/" + self.exportComponent.name;
 
           // Copy component to export folder
-          self.directory(projectSrc+self.fileToExport, projectExport+self.fileToExport);
+          self.directory(self.project.srcDir+self.fileToExport, self.project.exportDir+self.fileToExport);
 
           self.exportedFiles = [];
           self.exportedFiles.push(self.fileToExport + "/**");
 
           // Copy dependency components to export folder
           self.compDeps.forEach(function (component) {
-            self.directory(projectSrc+component, projectExport+component);
+            self.directory(self.project.srcDir+component, self.project.exportDir+component);
             self.exportedFiles.push(component + "/**");
           });
 
           // Copy non-component (global) deopendencies
           if (self.exportGlobalFolders) {
             // Copy all
-            self.directory(projectSASS, projectExport+'/global-scss');
-            self.directory(projectJS, projectExport+'/global-js');
+            self.directory(self.project.sassDir, self.project.exportDir+'/global-scss');
+            self.directory(self.project.jsDir, self.project.exportDir+'/global-js');
             self.exportedFiles.push('global-scss/**');
             self.exportedFiles.push('global-js/**');
           } else {
             // Copy only explicitly requested
             self.sassDeps.forEach(function (sassDep) {
-              var stats = fs.statSync(projectSASS + "/" + sassDep)
+              var stats = fs.statSync(self.project.sassDir + '/' + sassDep)
               if(stats.isDirectory()){
-                self.directory(projectSASS+'/'+sassDep, projectExport+'global-scss/'+sassDep);
-                self.exportedFiles.push('global-scss/'+sassDep+"/**");
+                self.directory(self.project.sassDir+'/'+sassDep, self.project.exportDir+'global-scss/'+sassDep);
+                self.exportedFiles.push('global-scss/'+sassDep+'/**');
               }else{
-                self.copy(projectSASS+'/'+sassDep, projectExport+'global-scss/'+sassDep);
-                self.exportedFiles.push('global-scss/'+sassDep+"**");
+                self.copy(self.project.sassDir+'/'+sassDep, self.project.exportDir+'global-scss/'+sassDep);
+                self.exportedFiles.push('global-scss/'+sassDep+'**');
               }
 
             });
 
             self.jsDeps.forEach(function (jsDep) {
-              self.copy(projectJS+jsDep, projectExport+'global-js/'+jsDep)
+              self.copy(self.project.jsDir+'/'+jsDep, self.project.exportDir+'/global-js/'+jsDep)
               self.exportedFiles.push('global-js/'+jsDep);
             });
           }
@@ -638,7 +626,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
                 'organisms',
               ];
               emptyDirs.forEach(function(emptyDir) {
-                if (fs.existsSync(projectExport+emptyDir)) fs.rmdirSync(projectExport+emptyDir);
+                if (fs.existsSync(self.project.exportDir+emptyDir)) fs.rmdirSync(self.project.exportDir+emptyDir);
               });
 
               console.log(chalk.green("Export complete"));
