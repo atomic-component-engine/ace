@@ -93,6 +93,13 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
 		this.aceNeedsInit = (typeof arg == 'undefined' || !arg.length || arg == 'init');
 
+
+		if(fs.existsSync("ace_config.json")){
+			this.aceNeedsInit = false;
+			this.invoke("ace:component");
+		}
+
+
 	},
 
 	/**
