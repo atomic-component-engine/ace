@@ -29,7 +29,11 @@ var questions = require('../lib/common-questions');
 	 * Parses task name to set various flags
 	 * If this isn't a project initialisation, try and read in the ACE config
 	 */
-	 init: function (arg) {
+	init: function (componentType, componentName) {
+
+		// Process CLI args if given
+		if (typeof componentType != 'undefined') this.componentType = componentType;
+		if (typeof componentName != 'undefined') this.componentName = componentName;
 
 		// Set all arguments to false
 		this.aceNeedsInit = false;
@@ -76,21 +80,33 @@ var questions = require('../lib/common-questions');
 	},
 
 	/**
+	 * Converts a component name to an acceptable ID
+	 * @param {string}
+	 * @return {string}
+	 */
+	nameToID: function (name) {
+		return name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+	},
+
+	/**
 	 * Presents user with prompts for the requested task
 	 */
 	askFor: function () {
-	 	var done = this.async();
-	 	
-		var prompts = [
-			questions.componentType,
-			questions.componentName
-		];
-		this.prompt(prompts, function (props) {
-			this.componentType = props.componentType;
-			this.componentName = props.componentName;
-			this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-			done();
-		}.bind(this));
+
+		// Ask the questions (if user hasn't supplied answers via CLI already)
+		if (!this.componentType) {
+			var done = this.async();
+			
+			var prompts = [
+				questions.componentType,
+				questions.componentName
+			];
+			this.prompt(prompts, function (props) {
+				this.componentType = props.componentType;
+				this.componentName = props.componentName;
+				done();
+			}.bind(this));
+		}
 	},
 
 	/**
@@ -98,7 +114,17 @@ var questions = require('../lib/common-questions');
 	 */
 	app: function () {
 
-	 	this.dirs = {
+		/**
+		 * {string}
+		 * Component name converted to suitable ID
+		 */
+		this.id = this.nameToID(this.componentName);
+
+		/**
+		 * {object}
+		 * Target dirs for Jade, SASS and JS files
+		 */
+		this.dirs = {
 			// this is where we define our jade and jade demo paths
 			jadeModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.jade',
 			jadePageModDir: "src/" + this.componentType + 's/_' + this.id + '/' + this.id + '.jade',
