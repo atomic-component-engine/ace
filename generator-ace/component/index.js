@@ -80,15 +80,6 @@ var questions = require('../lib/common-questions');
 	},
 
 	/**
-	 * Converts a component name to an acceptable ID
-	 * @param {string}
-	 * @return {string}
-	 */
-	nameToID: function (name) {
-		return name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-	},
-
-	/**
 	 * Presents user with prompts for the requested task
 	 */
 	askFor: function () {
@@ -118,7 +109,7 @@ var questions = require('../lib/common-questions');
 		 * {string}
 		 * Component name converted to suitable ID
 		 */
-		this.id = this.nameToID(this.componentName);
+		this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 
 		/**
 		 * {object}
