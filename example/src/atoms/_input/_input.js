@@ -1,5 +1,5 @@
 /**
- * @file Defines behaviours for a Logo module
+ * @file Defines behaviours for a Input module
  * @author Tom Jenkins tom.jenkins@kp360group.com
  */
 

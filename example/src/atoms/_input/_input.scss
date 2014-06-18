@@ -1,5 +1,5 @@
 /**
- * @file Defines styles for a Header module
+ * @file Defines styles for a Input module
  * @author Tom Jenkins tom.jenkins@kp360group.com
  */
 
@@ -7,10 +7,6 @@
 // element breakpoints
 $medium: 99999px;
 $large: 99999px;
-
-.header {
-	@include cf;
-}
 
 
 // element color pallet

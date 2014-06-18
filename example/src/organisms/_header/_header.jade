@@ -1,15 +1,12 @@
 //-
-	@file Defines a header mixin
-	@author Phil Hauser phil.hsr@gmail.com
+	@file Defines a Header mixin
+	@author Tom Jenkins tom.jenkins@kp360group.com
 
 //- Dependencies
 include ../../atoms/_logo/_logo
-include ../../molecules/_nav_items/_nav_items
-
 
 //- Definition
 mixin header()
-	header(data-html2canvas-ignore)
-		+nav_items()
-		+logo()
-	.blurheader
+
+	h1
+		| Sample mixin content for the Header module

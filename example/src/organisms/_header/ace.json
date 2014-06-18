@@ -1,0 +1,9 @@
+{
+	"name": "Basic header",
+	"dependencies": {
+		"components": [
+			"atoms/_logo",
+			"molecules/_search_bar"
+		]
+	}
+}

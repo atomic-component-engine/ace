@@ -1,6 +1,6 @@
 /**
- * @file Defines styles for a logo module
- * @author Phil Hauser phil.hsr@gmail.com
+ * @file Defines styles for a Logo module
+ * @author Tom Jenkins tom.jenkins@kp360group.com
  */
 
 // replace with medium and large
@@ -24,13 +24,3 @@ $large: 99999px;
 // @include at-min-width($large + 1){
 // 	//large styles
 // }
-
-.logo p{
-		font-size: $font-size-xlarge;
-		font-weight: 100;
-		text-align: left;
-		a{
-			text-decoration: none;
-			color: inherit;
-		}
-}

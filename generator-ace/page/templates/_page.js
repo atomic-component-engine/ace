@@ -1,6 +1,6 @@
 /**
- * @file Defines behaviours for a Logo module
- * @author Tom Jenkins tom.jenkins@kp360group.com
+ * @file Defines behaviours for a <%= componentName %> module
+ * @author <%= name %> <%= email %>
  */
 
 define([
