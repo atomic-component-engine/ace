@@ -31,15 +31,15 @@
         <p><img src="https://raw.githubusercontent.com/pjhauser/atomic-component-engine/develop/gifs/ace-molecule-logo.png" alt="logo"></p>
 
 <h1>
-<a name="ace-v027" class="anchor" href="#ace-v027"><span class="octicon octicon-link"></span></a>ACE v0.2.7</h1>
+<a name="ace-v055---mini-bootstrap-for-every-project" class="anchor" href="#ace-v055---mini-bootstrap-for-every-project"><span class="octicon octicon-link"></span></a>ACE v0.5.5 - <em>Mini bootstrap for every project</em>
+</h1>
 
 <h3>
 <a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h3>
 
-<ol>
-<li>Node.js</li>
-<li>npm</li>
-</ol><hr><ul>
+<p><a href="http://nodejs.org/download/">Node.js</a></p>
+
+<hr><ul>
 <li>
 <p><a href="#quick">Quick Start</a></p>
 
@@ -69,25 +69,23 @@
 <li>Run <code>npm install -g</code>
 </li>
 <li>cd into the working directory of your project</li>
-<li>Run <code>yo ace init</code> and follow the instructions</li>
+<li>Run <code>yo ace</code> and follow the instructions</li>
 </ol><h4>
 <a name="ace-init" class="anchor" href="#ace-init"><span class="octicon octicon-link"></span></a>ace Init</h4>
 
 <p><img src="https://raw.githubusercontent.com/pjhauser/atomic-component-engine/master/gifs/init.gif" alt="init generator"></p>
 
-<p>This task initialises the directory with the main boilerplate. You will be asked 5 questions:</p>
+<p>This task initialises the directory with the main boilerplate. You will be asked 4 questions:</p>
 
 <ol>
 <li>Do you want to init this directory with ACE (Y/n)</li>
 <li>Sweet! What identifier should we use for your app? (e.g. my-atomic-website) <em>This is the name of your project in the package.json file</em>
 </li>
-<li>What is the base URL of the directory? <em>This is for the script and css paths of the template</em>
-</li>
-<li>Are you using Git? <em>This will add the base gitignore</em>
+<li>Are you using Git? <em>This will add a base gitignore</em>
 </li>
 <li>Do you want your name and email to be placed in the header of all of the compoenents you create? <em>This is useful in teams and ace will read these details from your gitconfig if present</em>
 </li>
-</ol><p>Now your directory has the base boilerplate you'll want to start creating components. </p>
+</ol><p>Now your directory has the ACE boilerplate you'll want to start creating components. </p>
 
 <h4>
 <a name="component-generation" class="anchor" href="#component-generation"><span class="octicon octicon-link"></span></a>Component generation</h4>
@@ -95,17 +93,19 @@
 <p>You can use the same yeoman generator to create components. Just type:</p>
 
 <ol>
-<li>yo ace</li>
+<li>
+<code>yo ace</code> <em>ACE knows if the project is an ACE project and decides to run either init or the component generator</em>
+</li>
 <li>Select component type</li>
 <li>Name component</li>
 </ol><p>The generator will then create a component in the following folder structure:</p>
 
 <pre><code>| --&gt; /atoms
-      |--&gt; /atom_name
-           | --&gt; atom_name.jade
-           | --&gt; atom_name.js
-           | --&gt; atom_name.sass
-           | --&gt; demo_atom_name.jade
+      |--&gt; /_atom_name
+           | --&gt; _atom_name.jade
+           | --&gt; _atom_name.js
+           | --&gt; _atom_name.sass
+           | --&gt; _demo_atom_name.jade
 </code></pre>
 
 <h4>
@@ -114,10 +114,40 @@
 <p>Pages are a little different to components, ideally these should have minimal CSS and JS, as this should all be performed on the sub-page component level. </p>
 
 <ol>
-<li>yo ace page</li>
+<li><code>yo ace:page</code></li>
 <li>Name component / page</li>
-<li>Select template type</li>
+<li>Select template type <em>ACE will give you a choice of templates that your page will inherit, this is read from your templates dir</em>
+</li>
 </ol><hr><h3>
+<a name="depenency-management-and-exporting" class="anchor" href="#depenency-management-and-exporting"><span class="octicon octicon-link"></span></a>Depenency Management and Exporting</h3>
+
+<h4>
+<a name="ace-add-depenency" class="anchor" href="#ace-add-depenency"><span class="octicon octicon-link"></span></a>ACE Add-depenency</h4>
+
+<p>If your component has a dependency you can add it to the ace.json file with the following:</p>
+
+<ol>
+<li>Type <code>yo ace:add-dependency</code>
+</li>
+<li>Select a component to add a dependency to</li>
+<li>Select a dependency type to add to that component</li>
+<li>Select a depedency to add</li>
+</ol><p><em>This will add the dependency to ace.json which is used for exporting, you will currently still need to add the dependency to your component in code.</em></p>
+
+<h4>
+<a name="ace-export" class="anchor" href="#ace-export"><span class="octicon octicon-link"></span></a>ACE Export</h4>
+
+<p>ACE lets you export compoenents to move them between projects, this means that you can create your own library of ACE components to speed up prototyping and development.</p>
+
+<p>To export with ACE you:</p>
+
+<ol>
+<li>Type <code>yo ace:export</code>
+</li>
+<li>Select a component to export</li>
+</ol><p>You'll now find an export directory in the root of your project with the ace component and its dependencies packaged up in a zip.</p>
+
+<hr><h3>
 <a name="sublime-text-project" class="anchor" href="#sublime-text-project"><span class="octicon octicon-link"></span></a>Sublime Text Project</h3>
 
 <p>Included in the init boilerplate is a file named <code>ace.sublime-project</code>. Opening this file will launch sublime text with a custom file structure and some other small settings. File structure:</p>
@@ -131,11 +161,16 @@
 </code></pre>
 
 <hr><h3>
-<a name="todos" class="anchor" href="#todos"><span class="octicon octicon-link"></span></a>Todos</h3>
+<a name="wiki" class="anchor" href="#wiki"><span class="octicon octicon-link"></span></a>Wiki</h3>
 
-<ul>
-<li>Create an example webpage using this generator. </li>
-</ul><h3>
+<p>Check the wiki for more details about ACE</p>
+
+<h3>
+<a name="licenses" class="anchor" href="#licenses"><span class="octicon octicon-link"></span></a>Licenses</h3>
+
+<p>This project is open sourced under the GPL v2 licenses. This means that anyone who distributes this code or a derivative work must make the source available under the same terms.</p>
+
+<h3>
 <a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h3>
 
 <p>We welcome pull requests. This project uses <a href="https://github.com/nvie">nvie</a>'s super helpful <a href="https://github.com/nvie/gitflow">gitflow</a> branching model; as such please branch your features from <code>develop</code></p>
