@@ -48,59 +48,67 @@ var PageGenerator = yeoman.generators.Base.extend({
 		this.gitConfig = GetGitInfo.getConfig();
 
 		// Load required project variables to be used in templates
-		this.name = this.project.config.name;
-		this.email = this.project.config.email;
-		this.identifiedComponents = this.project.config.identifiedComponents;
+		if (this.project.config) {
+			this.name = this.project.config.name;
+			this.email = this.project.config.email;
+			this.identifiedComponents = this.project.config.identifiedComponents;
+		} else {
+			console.log(chalk.red('ACE config not found, try running "yo ace init" first'));
+			this.quit = true;
+		}
 	},
 
 	/**
 	 * Presents user with prompts for the requested task
 	 */
 	askFor: function () {
-		var done = this.async();
+		if (!this.quit) {
+			var done = this.async();
 
-		// Grab template files
-		var templates = fs.readdirSync("src/templates/");
-		// Begin the interrogation
-		this.prompt([questions.componentName, {
-			when: function (response) {
-				return response.componentName;
-			},
-			type: 'list',
-			name: 'templateSelect',
-			message: 'Which template do you want to use?',
-			choices: templates,
-		}], function (response) {
-			this.componentType = "page";
-			this.componentName = response.componentName;
-			this.templateSelect = response.templateSelect;
-			this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-			done();
-		}.bind(this));
-
+			// Grab template files
+			var templates = fs.readdirSync("src/templates/");
+			// Begin the interrogation
+			this.prompt([questions.componentName, {
+				when: function (response) {
+					return response.componentName;
+				},
+				type: 'list',
+				name: 'templateSelect',
+				message: 'Which template do you want to use?',
+				choices: templates,
+			}], function (response) {
+				this.componentType = "page";
+				this.componentName = response.componentName;
+				this.templateSelect = response.templateSelect;
+				this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+				done();
+			}.bind(this));
+		}
 	},
 
 	/**
 	 * Takes the user-entered data from askFor and runs the templating, either for project, component, template or page generation
 	 */
 	app: function () {
-		this.dirs = {
-			// this is where we define our jade and jade demo paths
-			jadeModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.jade',
-			jadePageModDir: "src/" + this.componentType + 's/_' + this.id + '/' + this.id + '.jade',
-			jadeDemoDir:  "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.jade',
+		if (!this.quit) {
+			this.dirs = {
+				// this is where we define our jade and jade demo paths
+				jadeModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.jade',
+				jadePageModDir: "src/" + this.componentType + 's/_' + this.id + '/' + this.id + '.jade',
+				jadeDemoDir:  "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.jade',
 
-			// this is where we define our js path
-			jsModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.js',
+				// this is where we define our js path
+				jsModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.js',
 
-			// this is where we define our sass and sass demo paths
-			sassDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.scss',
-			sassDemoDir: "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.scss'
-		};
+				// this is where we define our sass and sass demo paths
+				sassDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.scss',
+				sassDemoDir: "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.scss'
+			};
 
-		this.template('_page.jade', this.dirs.jadeModDir);
-		this.template('_page.js', this.dirs.jsModDir);
-		this.template('_page.scss', this.dirs.sassDir);
+			this.template('_page.jade', this.dirs.jadeModDir);
+			this.template('_page.js', this.dirs.jsModDir);
+			this.template('_page.scss', this.dirs.sassDir);
+		}
 	}
 });
 
