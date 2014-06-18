@@ -21,8 +21,8 @@ define([
 	* to the component task module:
 	*
 	* componentTasks.registerTask({
-	*	taskSelector: 'selector',
-	*	task: componentTaskMethod()
+	*	selector: 'selector',
+	*	task: componentTaskMethod
 	* });
 	*/
 	
