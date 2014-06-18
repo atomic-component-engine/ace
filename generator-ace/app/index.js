@@ -53,7 +53,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 			{
 				when: function (response) {
 					if(!response.confirmInit) {
-						this.quit = true;
+						process.exit();
 					}
 					return response.confirmInit;
 				},
@@ -148,8 +148,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 				yo ace export         -> This will zip up your component and its dependencies. \n \n \n "
 
 			console.log(helpMessage);
-			this.quit = true;
-			done();
+			process.exit();
 		}
 
 	},
