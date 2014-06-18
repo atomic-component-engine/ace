@@ -1,6 +1,6 @@
 ![logo](https://raw.githubusercontent.com/pjhauser/atomic-component-engine/develop/gifs/ace-molecule-logo.png)
 
-ACE v0.5.1
+ACE v0.5.5 - *Mini bootstrap for every project*
 =======================
 
 ### Dependencies 
@@ -32,30 +32,29 @@ This system has 2 main elements. The boilerplate, which consists of a Grunt base
 3. `cd` into the `generator-ace` directory
 4. Run `npm install -g`
 5. cd into the working directory of your project
-6. Run `yo ace init` and follow the instructions
+6. Run `yo ace` and follow the instructions
 
 
 #### ace Init
 
 ![init generator](https://raw.githubusercontent.com/pjhauser/atomic-component-engine/master/gifs/init.gif)
 
-This task initialises the directory with the main boilerplate. You will be asked 5 questions:
+This task initialises the directory with the main boilerplate. You will be asked 4 questions:
 
 1. Do you want to init this directory with ACE (Y/n)
 2. Sweet! What identifier should we use for your app? (e.g. my-atomic-website) *This is the name of your project in the package.json file*
-3. What is the base URL of the directory? *This is for the script and css paths of the template*
-4. Are you using Git? *This will add the base gitignore*
-5. Do you want your name and email to be placed in the header of all of the compoenents you create? *This is useful in teams and ace will read these details from your gitconfig if present*
+3. Are you using Git? *This will add a base gitignore*
+4. Do you want your name and email to be placed in the header of all of the compoenents you create? *This is useful in teams and ace will read these details from your gitconfig if present*
 
 
-Now your directory has the base boilerplate you'll want to start creating components. 
+Now your directory has the ACE boilerplate you'll want to start creating components. 
 
 
 #### Component generation
 
 You can use the same yeoman generator to create components. Just type:
 
-1. yo ace
+1. `yo ace` *ACE knows if the project is an ACE project and decides to run either init or the component generator*
 2. Select component type
 3. Name component
 
@@ -73,9 +72,29 @@ The generator will then create a component in the following folder structure:
 
 Pages are a little different to components, ideally these should have minimal CSS and JS, as this should all be performed on the sub-page component level. 
 
-1. yo ace page
+1. `yo ace:page`
 2. Name component / page
 3. Select template type *ACE will give you a choice of templates that your page will inherit, this is read from your templates dir*
+
+---
+
+### ACE Add-depenency
+
+If your component has a dependency you can add it to the ace.json file with the following:
+
+
+---
+
+### ACE Export
+ACE lets you export compoenents to move them between projects, this means that you can create your own library of ACE components to speed up prototyping and development.
+
+To export with ACE you:
+
+1. Type `yo ace:export`
+2. Select a component to export
+
+You'll now find an export directory in the root of your project with the ace component and its dependencies packaged up in a zip.
+
 
 ---
 
@@ -89,15 +108,15 @@ Included in the init boilerplate is a file named `ace.sublime-project`. Opening 
 	| --> /04. Templates
 	| --> /05. Pages
 
-
 ---
 
+### Wiki
+Check the wiki for more details about ACE
 
 ### Licenses 
 This project is open sourced under the GPL v2 licenses. This means that anyone who distributes this code or a derivative work must make the source available under the same terms.
 
-### Todos 
-* Create an example webpage using this generator. 
-
 ### Contributing
 We welcome pull requests. This project uses [nvie](https://github.com/nvie)'s super helpful [gitflow](https://github.com/nvie/gitflow) branching model; as such please branch your features from ```develop```
+
+
