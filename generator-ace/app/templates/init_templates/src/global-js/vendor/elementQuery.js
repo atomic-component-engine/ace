@@ -38,7 +38,8 @@
 
             if (value) {
                 // Compile the sizzle selector
-                if (sizzle.compile) {
+                var isPsuedoElement = selector.indexOf(':before') != -1 || selector.indexOf(':after') != -1;
+                if (sizzle.compile && !isPsuedoElement) {
                     sizzle.compile(selector);
                 }
 
