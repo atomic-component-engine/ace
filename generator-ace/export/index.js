@@ -53,6 +53,7 @@ var ExportGenerator = yeoman.generators.Base.extend({
 	 */
 	askFor: function () {
 		var done = this.async();
+		var self = this;
 
 		var exportPkg = {};
 		var componentList = [];
@@ -73,8 +74,15 @@ var ExportGenerator = yeoman.generators.Base.extend({
 				name: 'componentSelect',
 				message: 'Which component do you want to export?',
 				choices: function(response){
-					componentList = fs.readdirSync("src/" + response.exportSelectType.toLowerCase() + "s");
-					return componentList;
+
+					try{
+						componentList = fs.readdirSync("src/" + response.exportSelectType.toLowerCase() + "s");
+						return componentList;
+					}catch(err){
+						console.log(chalk.red("you don't seem to have any components of that type :("));
+						process.exit();
+					}
+
 				},
 			},
 			{
