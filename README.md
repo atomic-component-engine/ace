@@ -78,14 +78,21 @@ Pages are a little different to components, ideally these should have minimal CS
 
 ---
 
-### ACE Add-depenency
+### Depenency Management and Exporting
+
+
+#### ACE Add-depenency
 
 If your component has a dependency you can add it to the ace.json file with the following:
 
+1. Type `yo ace:add-dependency`
+2. Select a component to add a dependency to
+3. Select a dependency type to add to that component
+4. Select a depedency to add
 
----
+*This will add the dependency to ace.json which is used for exporting, you will currently still need to add the dependency to your component in code.*
 
-### ACE Export
+#### ACE Export
 ACE lets you export compoenents to move them between projects, this means that you can create your own library of ACE components to speed up prototyping and development.
 
 To export with ACE you:
