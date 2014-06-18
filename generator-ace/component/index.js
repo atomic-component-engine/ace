@@ -13,40 +13,8 @@ var getGitInfo = require('../lib/get-git-info');
 var DependencyResolver = require('../lib/deps-resolver');
 var ProjectHelper = require('../lib/project-helper');
 var ComponentHelper = require('../lib/component-helper');
+var questions = require('../lib/common-questions');
 
-/**
- * {Object}
- * Contains common questions used by the component generator
- */
- var questions = {
- 	componentType: {
- 		type: 'list',
- 		name: 'componentType',
- 		message: 'What type would you like to generate?',
- 		choices: [
- 		'Atom',
- 		'Molecule',
- 		'Organism',
- 		'Template'
- 		],
- 		filter: function( val ) { return val.toLowerCase(); }
- 	},
- 	componentName: {
- 		type: 'item',
- 		name: 'componentName',
- 		message: 'What would you like to call the component?'
- 	},
- 	userName: {
- 		type: 'item',
- 		name: 'userName',
- 		message: 'What is your name?'
- 	},
- 	userEmail: {
- 		type: 'item',
- 		name: 'userEmail',
- 		message: 'What is your email address?'
- 	}
- }
 
 /**
  * {yeoman.generators}
