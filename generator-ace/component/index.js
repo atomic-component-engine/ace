@@ -31,8 +31,6 @@ var questions = require('../lib/common-questions');
 	 */
 	init: function (componentType, componentName) {
 
-		console.log(componentType, componentName);
-
 		// Process CLI args if given
 		if (typeof componentType != 'undefined') this.componentType = componentType;
 		if (typeof componentName != 'undefined') this.componentName = componentName;
