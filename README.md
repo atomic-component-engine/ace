@@ -67,6 +67,9 @@ The generator will then create a component in the following folder structure:
 			   | --> _atom_name.sass
 			   | --> _demo_atom_name.jade
 
+You can also use a shorthand like:
+
+`yo ace atom header`
 
 #### Page generation
 

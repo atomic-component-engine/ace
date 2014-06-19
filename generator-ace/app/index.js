@@ -31,7 +31,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 	 * Parses task name to set various flags
 	 * If this isn't a project initialisation, try and read in the ACE config
 	 */
-	init: function (arg) {
+	init: function (arg, arg2) {
 
 		/**
 		 * {ProjectHelper}
@@ -82,21 +82,20 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
 		var home_dir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
 		var config_file = home_dir+'/.gitconfig';
-		var gitConfigStr = this.readFileAsString(config_file);
 
 		// if gitconfig exists
-		if (gitConfigStr) {
+		if (fs.existsSync(config_file)) {
+			var gitConfigStr = this.readFileAsString(config_file);
 			this.gitGlobalConfigFile = getGitInfo.parseConfig(gitConfigStr);
-		}else {
+		}else{
 			console.log(chalk.red("Git configuration file does not exist, this is used in template headers..."));
-		};
+		}
 
 		this.aceNeedsInit = (typeof arg == 'undefined' || !arg.length || arg == 'init');
 
-
 		if(fs.existsSync("ace_config.json")){
 			this.aceNeedsInit = false;
-			this.invoke("ace:component");
+			this.invoke("ace:component", {args: [arg, arg2]});
 		}
 
 
