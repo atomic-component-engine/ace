@@ -59,6 +59,7 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 	 * Presents user with prompts for the requested task
 	 */
 	askFor: function () {
+		var self = this;
 		var done = this.async();
 
 		var componentList = [];
@@ -71,7 +72,7 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 			type: 'list',
 			name: 'selectComponentType',
 			message: 'What type of component do you want to add a dependency to?',
-			choices: componentTypes
+			choices: this.project.getComponentTypesWithCounts()
 		},{
 			type: 'list',
 			name: 'componentSelect',
@@ -96,7 +97,7 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 			type: 'list',
 			name: 'selectDependancyComponentType',
 			message: 'Select dependancy to add',
-			choices: componentTypes
+			choices: this.project.getComponentTypesWithCounts()
 		},{
 			when: function (response) {
 				if(response.dependancyType == "Component"){
@@ -153,7 +154,6 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 		}
 		], function (response) {
 			var configFile = "src/" + response.selectComponentType.toLowerCase() + "s/" + response.componentSelect + "/ace.json";
-
 
 			this.component = new ComponentHelper({
 				type: response.selectComponentType.toLowerCase(),
