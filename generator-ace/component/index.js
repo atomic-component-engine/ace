@@ -31,9 +31,23 @@ var questions = require('../lib/common-questions');
 	 */
 	init: function (componentType, componentName) {
 
+		// Convert CLI args to array
+		var args = [];
+		for (var k in arguments) {
+ 			args.push(arguments[k]);
+		}
+
 		// Process CLI args if given
 		if (typeof componentType != 'undefined') this.componentType = componentType;
 		if (typeof componentName != 'undefined') this.componentName = componentName;
+		if (args.indexOf('nosass') > 1) this.createSASS = false;
+		if (args.indexOf('nojs') > 1) this.createJS = false;
+
+		/**
+		 * {Boolean}
+		 * Whether or not to show user prompts
+		 */
+		this.interactive = (!this.componentType || !this.componentName);
 
 		/**
 		 * {ProjectHelper}
@@ -74,7 +88,7 @@ var questions = require('../lib/common-questions');
 	askFor: function () {
 
 		// Ask the questions (if user hasn't supplied answers via CLI already)
-		if (!this.componentType || !this.componentName) {
+		if (this.interactive) {
 			var done = this.async();
 			
 			var prompts = [
@@ -107,7 +121,10 @@ var questions = require('../lib/common-questions');
 		}
 	},
 
-	setupDirs: function () {
+	/**
+	 * Analyses user's response to the various prompts and sets up any variables or content
+	 */
+	setup: function () {
 
 		// Check we have all necessary data
 		if(!this.componentType) {
@@ -142,6 +159,19 @@ var questions = require('../lib/common-questions');
 			componentSASSFile: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.scss',
 			componentSASSDemoFile: "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.scss'
 		};
+
+		/**
+		 * {Boolean}
+		 * Whether or not to generate a SASS module for the component
+		 */
+		if (typeof this.createSASS == 'undefined') this.createSASS = !this.interactive || this.componentAssets.indexOf('sass') != -1;
+
+		/**
+		 * {Boolean}
+		 * Whether or not to generate a JavaScript module for the component
+		 */
+		if (typeof this.createJS == 'undefined') this.createJS = !this.interactive || this.componentAssets.indexOf('js') != -1;
+
 	},
 
 	/**
@@ -164,7 +194,7 @@ var questions = require('../lib/common-questions');
 	 * Generates SASS files (if requested) from the user's responses
 	 */
 	generateSASS: function () {
-		if (this.componentAssets.indexOf('sass') != -1) {
+		if (this.createSASS) {
 			if(this.componentType == 'template') {
 				// Generating a page template
 				this.template('_.scss', this.paths.componentSASSFile);
@@ -180,7 +210,7 @@ var questions = require('../lib/common-questions');
 	 * Generates JS files (if requested) from the user's responses
 	 */
 	generateJS: function () {
-		if (this.componentAssets.indexOf('js') != -1) {
+		if (this.createJS) {
 			if(this.componentType == 'template') {
 				// Generating a page template
 				this.template('_.js', this.paths.componentJSFile);
