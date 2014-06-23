@@ -182,7 +182,8 @@ var ExportGenerator = yeoman.generators.Base.extend({
 			}.bind(this));
 
 			this.jsDeps.forEach(function (jsDep) {
-				this.copy(this.project.jsDir+jsDep, this.project.exportDir+'/global-js/'+jsDep)
+				if (jsDep.indexOf('.js') != jsDep.length - 4) jsDep = jsDep + '.js';
+				this.copy(this.project.jsDir+'/'+jsDep, this.project.exportDir+'/global-js/'+jsDep)
 				this.exportedFiles.push('global-js/'+jsDep);
 			}.bind(this));
 		}
