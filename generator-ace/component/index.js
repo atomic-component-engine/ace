@@ -161,7 +161,7 @@ var questions = require('../lib/common-questions');
 	},
 
 	/**
-	 * Generates SASS files (if requested) from the users responses
+	 * Generates SASS files (if requested) from the user's responses
 	 */
 	generateSASS: function () {
 		if (this.componentAssets.indexOf('sass') != -1) {
@@ -177,7 +177,7 @@ var questions = require('../lib/common-questions');
 	},
 
 	/**
-	 * Generates JS files (if requested) from the users responses
+	 * Generates JS files (if requested) from the user's responses
 	 */
 	generateJS: function () {
 		if (this.componentAssets.indexOf('js') != -1) {
