@@ -20,7 +20,7 @@ var ProjectHelper = function (options) {
 	this.requireConfig = fs.exists(rConfig) ? require(rConfig) : {};
 
 	// Get ACE config
-	this.loadConfig()
+	this.loadConfig();
 	
 }
 
