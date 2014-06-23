@@ -35,14 +35,6 @@ var questions = require('../lib/common-questions');
 		if (typeof componentType != 'undefined') this.componentType = componentType;
 		if (typeof componentName != 'undefined') this.componentName = componentName;
 
-		// Set all arguments to false
-		this.aceNeedsInit = false;
-		this.acePage = false;
-		this.quit = false;
-		this.aceExport = false;
-		this.addDep = false;
-		this.aceHelp = false;
-
 		/**
 		 * {ProjectHelper}
 		 */
@@ -52,7 +44,7 @@ var questions = require('../lib/common-questions');
 		var aceConfig = "ace_config.json";
 		this.aceInitFile = false;
 
-		if(!this.aceNeedsInit) {
+		if(!this.project.inited) {
 			try {
 				this.aceInitFile = this.readFileAsString(aceConfig);
 				this.aceInitFileJSON = JSON.parse(this.aceInitFile);
@@ -61,19 +53,16 @@ var questions = require('../lib/common-questions');
 				this.name = this.aceInitFileJSON.name;
 				this.email = this.aceInitFileJSON.email;
 			} catch (e) {
-				console.log(chalk.red('ace_config.json not found. '), chalk.green('Running yo ace init...'));
-				this.aceNeedsInit = true;
+				console.log(chalk.red('ace_config.json not found. Try running yo ace:init first.'));
 			}
 		}
 
-		var home_dir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-		var config_file = home_dir+'/.gitconfig';
-		var gitConfigStr = this.readFileAsString(config_file);
-
-		// if gitconfig exists
-		if (gitConfigStr) {
-			this.gitGlobalConfigFile = getGitInfo.parseConfig(gitConfigStr);
-		}else {
+		// Get git config
+		var gitConfig = getGitInfo.getConfig();
+		if (gitConfig) {
+			this.name = gitConfig.user.name;
+			this.email = gitConfig.user.email;
+		} else {
 			console.log(chalk.red("Git configuration file does not exist, this is used in template headers..."));
 		};
 
@@ -90,20 +79,46 @@ var questions = require('../lib/common-questions');
 			
 			var prompts = [
 				questions.componentType,
-				questions.componentName
+				questions.componentName,
+				{
+					type: 'checkbox',
+					name: 'componentAssets',
+					message: 'Which assets would you like to generate for the component?',
+					choices: [
+						{
+							name: 'Javascript module',
+							value: 'js',
+							checked: false
+						},
+						{
+							name: 'SASS module',
+							value: 'sass',
+							checked: true
+						}
+					]
+				},
 			];
 			this.prompt(prompts, function (props) {
 				this.componentType = props.componentType;
 				this.componentName = props.componentName;
+				this.componentAssets = props.componentAssets;
 				done();
 			}.bind(this));
 		}
 	},
 
-	/**
-	 * Takes the user-entered data from askFor and runs the templating, either for project, component, template or page generation
-	 */
-	app: function () {
+	setupDirs: function () {
+
+		// Check we have all necessary data
+		if(!this.componentType) {
+			console.log(chalk.red('No component type selected. This shouldn\'t be possible and suggests a problem with the generator. You might want to try re-installing it.'));
+			process.exit(1)
+		}
+
+		if(!this.componentName) {
+			console.log(chalk.red('No component name entered. This shouldn\'t be possible and suggests a problem with the generator. You might want to try re-installing it.'));
+			process.exit(1)
+		}
 
 		/**
 		 * {string}
@@ -115,37 +130,67 @@ var questions = require('../lib/common-questions');
 		 * {object}
 		 * Target dirs for Jade, SASS and JS files
 		 */
-		this.dirs = {
+		this.paths = {
 			// this is where we define our jade and jade demo paths
-			jadeModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.jade',
-			jadePageModDir: "src/" + this.componentType + 's/_' + this.id + '/' + this.id + '.jade',
-			jadeDemoDir:  "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.jade',
+			componentJadeFile: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.jade',
+			componentJadeDemoFile:  "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.jade',
 
 			// this is where we define our js path
-			jsModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.js',
+			componentJSFile: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.js',
 
 			// this is where we define our sass and sass demo paths
-			sassDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.scss',
-			sassDemoDir: "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.scss'
+			componentSASSFile: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.scss',
+			componentSASSDemoFile: "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.scss'
 		};
+	},
 
-		// Generating a template or component
-		if(this.componentType) {
+	/**
+	 * Generates Jade files from the user's responses
+	 */
+	generateJade: function () {		
+		
+		if(this.componentType == 'template') {
 			// Generating a page template
-			if(this.componentType == 'template') {
-				this.template('_template.jade', this.dirs.jadeModDir);
-				this.template('_.js', this.dirs.jsModDir);
-				this.template('_.scss', this.dirs.sassDir);
-			}else{
-				this.template('_.jade', this.dirs.jadeModDir);
-				this.template('_demo.jade', this.dirs.jadeDemoDir);
-				this.template('_.scss', this.dirs.sassDir);
-				this.template('_demo.scss', this.dirs.sassDemoDir);
-				this.template('_.js', this.dirs.jsModDir);
-			}
+			this.template('_template.jade', this.paths.componentJadeFile);
+		} else {
+			// Generating a component template
+			this.template('_.jade', this.paths.componentJadeFile);
+			this.template('_demo.jade', this.paths.componentJadeDemoFile);
 		}
 
-	}
+	},
+
+	/**
+	 * Generates SASS files (if requested) from the users responses
+	 */
+	generateSASS: function () {
+		if (this.componentAssets.indexOf('sass') != -1) {
+			if(this.componentType == 'template') {
+				// Generating a page template
+				this.template('_.scss', this.paths.componentSASSFile);
+			} else {
+				// Generating a component template
+				this.template('_.scss', this.paths.componentSASSFile);
+				this.template('_demo.scss', this.paths.componentSASSDemoFile);
+			}
+		}
+	},
+
+	/**
+	 * Generates JS files (if requested) from the users responses
+	 */
+	generateJS: function () {
+		if (this.componentAssets.indexOf('js') != -1) {
+			if(this.componentType == 'template') {
+				// Generating a page template
+				this.template('_.js', this.paths.componentJSFile);
+			} else {
+				// Generating a component template
+				this.template('_.js', this.paths.componentJSFile);
+			}
+		}
+	},
+
 });
 
 module.exports = ComponentsGenerator;
