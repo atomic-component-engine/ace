@@ -52,7 +52,19 @@ var questions = require('../lib/common-questions');
 		/**
 		 * {ProjectHelper}
 		 */
-		 this.project = new ProjectHelper();
+		this.project = new ProjectHelper();
+
+		/**
+		 * {Object}
+		 * Defines templates for component file paths
+		 */
+		this.pathTemplates = {
+			componentJadeFile: 'src/<%= type %>s/_<%= id %>/_<%= id %>.jade',
+			componentJadeDemoFile:  'src/<%= type %>s/_<%= id %>/_demo_<%= id %>.jade',
+			componentJSFile: 'src/<%= type %>s/_<%= id %>/_<%= id %>.js',
+			componentSASSFile: 'src/<%= type %>s/_<%= id %>/_<%= id %>.scss',
+			componentSASSDemoFile: 'src/<%= type %>s/_<%= id %>/_demo_<%= id %>.scss'
+		};
 
 		// Read in ace config if generating page or component
 		var aceConfig = "ace_config.json";
@@ -141,24 +153,19 @@ var questions = require('../lib/common-questions');
 		 * {string}
 		 * Component name converted to suitable ID
 		 */
-		this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+		this.componentId = this.id = this.componentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 
 		/**
 		 * {object}
 		 * Target dirs for Jade, SASS and JS files
 		 */
-		this.paths = {
-			// this is where we define our jade and jade demo paths
-			componentJadeFile: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.jade',
-			componentJadeDemoFile:  "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.jade',
-
-			// this is where we define our js path
-			componentJSFile: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.js',
-
-			// this is where we define our sass and sass demo paths
-			componentSASSFile: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.scss',
-			componentSASSDemoFile: "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.scss'
-		};
+		this.paths = _.object(_.map(this.pathTemplates, function (pathTpl, pathKey) {
+			var path = _.template(pathTpl, {
+				type: this.componentType,
+				id: this.componentId
+			});
+			return [pathKey, path];
+		}.bind(this)));
 
 		/**
 		 * {Boolean}
