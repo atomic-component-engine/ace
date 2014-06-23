@@ -71,7 +71,7 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 		{
 			type: 'list',
 			name: 'selectComponentType',
-			message: 'What type of component do you want to add a dependency to?',
+			message: 'To what type of component do you want to add a dependency?',
 			choices: this.project.getComponentTypeCountsList()
 		},{
 			type: 'list',
