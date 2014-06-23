@@ -40,6 +40,13 @@ var ExportGenerator = yeoman.generators.Base.extend({
 		 */
 		this.project = new ProjectHelper();
 
+		if(!this.project.inited) {
+			console.log(chalk.red('ACE config file (ace_config.json) not found.'), chalk.green('Running ACE init...'));
+			this.invoke('ace:init');
+			this.async();
+			return;
+		}
+
 		/**
 		 * {Object}
 		 * User's git config

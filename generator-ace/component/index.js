@@ -71,16 +71,10 @@ var questions = require('../lib/common-questions');
 		this.aceInitFile = false;
 
 		if(!this.project.inited) {
-			try {
-				this.aceInitFile = this.readFileAsString(aceConfig);
-				this.aceInitFileJSON = JSON.parse(this.aceInitFile);
-				this.isInit = true;
-				this.identifiedComponents = this.aceInitFileJSON.identifiedComponents;
-				this.name = this.aceInitFileJSON.name;
-				this.email = this.aceInitFileJSON.email;
-			} catch (e) {
-				console.log(chalk.red('ace_config.json not found. Try running yo ace:init first.'));
-			}
+			console.log(chalk.red('ACE config file (ace_config.json) not found.'), chalk.green('Running ACE init...'));
+			this.invoke('ace:init');
+			this.async();
+			return;
 		}
 
 		// Get git config

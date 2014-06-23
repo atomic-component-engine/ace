@@ -91,7 +91,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
 		this.aceNeedsInit = (typeof arg == 'undefined' || !arg.length || arg == 'init');
 
-		if(fs.existsSync("ace_config.json")){
+		if(fs.existsSync("ace_config.json")) {
 			this.aceNeedsInit = false;
 			this.invoke("ace:component", {args: [arg, arg2]});
 		}
@@ -170,7 +170,7 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 			this.copy('init_templates/Gruntfile.js', 'Gruntfile.js');
 			this.copy('init_templates/README.md', 'README.md');
 			if(this.isGit) {
-					this.copy('init_templates/gitignore', '.gitignore');
+				this.copy('init_templates/gitignore', '.gitignore');
 			}
 		}
 

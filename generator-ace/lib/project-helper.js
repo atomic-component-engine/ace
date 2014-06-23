@@ -34,6 +34,8 @@ ProjectHelper.prototype = {
 				this.config = JSON.parse(config);
 				this.inited = true;
 			}
+		} else {
+			this.inited = false;
 		}
 	}
 
