@@ -90,6 +90,7 @@ ProjectHelper.prototype = {
 	 */
 	getComponentTypeCountsList: function () {
 		var typeCounts = this.getComponentTypeCounts();
+		console.log(typeCounts)
 		var choices = [];
 		for (var type in typeCounts) {
 			var count = typeCounts[type];

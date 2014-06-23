@@ -80,16 +80,9 @@ var ExportGenerator = yeoman.generators.Base.extend({
 				type: 'list',
 				name: 'componentSelect',
 				message: 'Which component do you want to export?',
-				choices: function(response){
-
-					try{
-						componentList = fs.readdirSync("src/" + response.exportSelectType.toLowerCase() + "s");
-						return componentList;
-					}catch(err){
-						console.log(chalk.red("you don't seem to have any components of that type :("));
-						process.exit();
-					}
-
+				choices: function(response) {
+					componentList = self.project.getComponents(response.exportSelectType+'s');
+					return componentList;
 				},
 			},
 			{

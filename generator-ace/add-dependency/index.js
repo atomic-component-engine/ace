@@ -77,8 +77,8 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 			type: 'list',
 			name: 'componentSelect',
 			message: 'Select component',
-			choices: function(response){
-				componentList = fs.readdirSync("src/" + response.selectComponentType.toLowerCase() + "s");
+			choices: function(response) {
+				componentList = self.project.getComponents(response.selectComponentType+'s');
 				return componentList;
 			},
 		},{
@@ -111,7 +111,7 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 			message: 'Select component',
 			choices: function(response){
 				if(response.selectDependancyComponentType){
-					componentList = fs.readdirSync("src/" + response.selectDependancyComponentType.toLowerCase() + "s");
+					componentList = self.project.getComponents(response.selectDependancyComponentType+'s');
 				};
 				return componentList;
 			},
