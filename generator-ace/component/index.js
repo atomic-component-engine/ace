@@ -74,7 +74,7 @@ var questions = require('../lib/common-questions');
 	askFor: function () {
 
 		// Ask the questions (if user hasn't supplied answers via CLI already)
-		if (!this.componentType) {
+		if (!this.componentType || !this.componentName) {
 			var done = this.async();
 			
 			var prompts = [
