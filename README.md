@@ -69,7 +69,15 @@ The generator will then create a component in the following folder structure:
 
 You can also use a shorthand like:
 
-`yo ace atom header`
+`yo ace atom button`
+
+and if you don't need SASS or Javascript for the component, the shorthand supports that too:
+
+'yo ace atom button nosass'
+'yo ace atom button nojs'
+'yo ace atom button nosass nojs'
+
+(the order of the arguments after the component type and name isn't important).
 
 #### Page generation
 
