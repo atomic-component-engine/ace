@@ -72,7 +72,7 @@ var ExportGenerator = yeoman.generators.Base.extend({
 				type: 'list',
 				name: 'exportSelectType',
 				message: 'What type would you like to export?',
-				choices: this.project.getComponentTypesWithCounts()
+				choices: this.project.getComponentTypeCountsList()
 			},{
 				when: function (response) {
 					return true;

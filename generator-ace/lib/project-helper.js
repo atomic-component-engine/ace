@@ -4,6 +4,8 @@
  */
 
 var fs = require('fs');
+var chalk = require('chalk');
+var inquirer = require('inquirer');
 
 /**
  * {Constructor}
@@ -65,25 +67,45 @@ ProjectHelper.prototype = {
 		if (type == 'all' || type == 'templates') {
 			components.templates = fs.existsSync(this.templateDir) ? fs.readdirSync(this.templateDir) : [];
 		}
-console.log(components)
 		return (type == 'all') ? components : components[type]
 	},
 
 	/**
-	 * Returns an inquirer-ready list of component types with number of components in brackets
-	 * @return {Array}
+	 * Returns an object with component counts for each component type
+	 * @return {Object}
 	 */
-	getComponentTypesWithCounts: function () {
+	getComponentTypeCounts: function () {
 		var componentList = this.getComponents();
-		var componentTypesWithCounts = [];
+		var componentTypeCounts = {};
 		for (var type in componentList) {
-			componentTypesWithCounts.push({
-				name: type[0].toUpperCase()+type.substr(1) + ' ('+componentList[type].length + ')',
-				value: type.substr(0, type.length - 1)
-			});
+			componentTypeCounts[type] = componentList[type].length;
 		}
 
-		return componentTypesWithCounts;
+		return componentTypeCounts;
+	},
+
+	/**
+	 * Returns an InquirerJS-ready list of component type choices with counts
+	 * @return {Array}
+	 */
+	getComponentTypeCountsList: function () {
+		var typeCounts = this.getComponentTypeCounts();
+		var choices = [];
+		for (var type in typeCounts) {
+			var count = typeCounts[type];
+			var label = type[0].toUpperCase()+type.substr(1) + ' (' + count + ')';
+			var choice;
+			if (count) {
+				choice = {
+					name: label,
+					value: type.substr(0, type.length - 1)
+				}
+			} else {
+				choice = new inquirer.Separator(chalk.grey(label));
+			}
+			choices.push(choice);
+		}
+		return choices;
 	}
 
 }
