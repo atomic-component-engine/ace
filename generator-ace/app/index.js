@@ -18,6 +18,8 @@ var DependencyResolver = require('../lib/deps-resolver');
 var ProjectHelper = require('../lib/project-helper');
 var ComponentHelper = require('../lib/component-helper');
 
+var questions = require('../lib/common-questions')
+
 /**
  * {yeoman.generators}
  * {ComponentsGenerator}
@@ -80,14 +82,10 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 			}
 		];
 
-		var home_dir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-		var config_file = home_dir+'/.gitconfig';
+		this.gitConfig = getGitInfo.getConfig();
 
 		// if gitconfig exists
-		if (fs.existsSync(config_file)) {
-			var gitConfigStr = this.readFileAsString(config_file);
-			this.gitGlobalConfigFile = getGitInfo.parseConfig(gitConfigStr);
-		}else{
+		if (!this.gitConfig) {
 			console.log(chalk.red("Git configuration file does not exist, this is used in template headers..."));
 		}
 
@@ -122,9 +120,9 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 
 				if(self.nameInHeader) {
 					// if the config exists and the user wants to add name and email to components
-					if(self.gitGlobalConfigFile) {
-						self.name = self.gitGlobalConfigFile['user'].name;
-						self.email = self.gitGlobalConfigFile['user'].email;
+					if(self.gitConfig) {
+						self.name = self.gitConfig['user'].name;
+						self.email = self.gitConfig['user'].email;
 					// if the config doesn't exists and the user wants to add name and email to components
 					}else{
 						var prompts = [questions.userName, questions.userPassword]
