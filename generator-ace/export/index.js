@@ -155,9 +155,6 @@ var ExportGenerator = yeoman.generators.Base.extend({
 		this.compDeps = explicitDeps.components;
 		this.jsDeps = explicitDeps.js;
 		this.sassDeps = explicitDeps.sass;
-		console.log('Component deps:', this.compDeps);
-		console.log('Global SASS deps:', this.sassDeps);
-		console.log('Global JS deps:', this.jsDeps);
 	},
 
 	/**
@@ -219,15 +216,18 @@ var ExportGenerator = yeoman.generators.Base.extend({
 		var archive = archiver('zip');
 
 		archive.on('error', function(err){
-				throw err;
+			throw err;
 		});
 
 		archive.pipe(this.archiveStream);
 
-		console.log("[FILES TO EXPORT]", this.exportedFiles);
-
 		archive.bulk([
-				{ expand: true, cwd: 'src', src: this.exportedFiles, dest: 'export'}
+			{
+				expand: true,
+				cwd: 'src',
+				src: this.exportedFiles,
+				dest: 'export'
+			}
 		]);
 		archive.finalize();
 	},
