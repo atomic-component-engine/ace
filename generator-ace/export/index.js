@@ -205,7 +205,6 @@ var ExportGenerator = yeoman.generators.Base.extend({
 		archive.finalize();
 
 		output.on('close', function () {
-			// setTimeout(function() {
 				for(var i=0;i<this.exportedFiles.length;i++){
 					var exportedFilePath = this.exportedFiles[i].split("/");
 					exportedFilePath.pop();
@@ -226,7 +225,6 @@ var ExportGenerator = yeoman.generators.Base.extend({
 				}.bind(this));
 
 				console.log(chalk.green("Export complete"));
-			// }.bind(this),3000);
 		}.bind(this));
 	}
 });
