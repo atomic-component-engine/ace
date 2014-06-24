@@ -49,6 +49,18 @@ var ExportGenerator = yeoman.generators.Base.extend({
 
 		/**
 		 * {Object}
+		 * Defines templates for component file paths
+		 */
+		this.pathTemplates = {
+			componentJadeFile: 'src/<%= type %>s/_<%= id %>/_<%= id %>.jade',
+			componentJadeDemoFile:  'src/<%= type %>s/_<%= id %>/_demo_<%= id %>.jade',
+			componentJSFile: 'src/<%= type %>s/_<%= id %>/_<%= id %>.js',
+			componentSASSFile: 'src/<%= type %>s/_<%= id %>/_<%= id %>.scss',
+			componentSASSDemoFile: 'src/<%= type %>s/_<%= id %>/_demo_<%= id %>.scss'
+		};
+
+		/**
+		 * {Object}
 		 * User's git config
 		 */
 		this.gitConfig = GetGitInfo.getConfig();
@@ -105,24 +117,26 @@ var ExportGenerator = yeoman.generators.Base.extend({
 	},
 
 	/**
-	 * Takes the user-entered data from askFor and runs the templating, either for project, component, template or page generation
+	 * Builds file paths for the component
 	 */
-	app: function () {
+	buildDirs: function () {
+		/**
+		 * {object}
+		 * Target dirs for Jade, SASS and JS files
+		 */
+		this.paths = _.object(_.map(this.pathTemplates, function (pathTpl, pathKey) {
+			var path = _.template(pathTpl, {
+				type: this.exportComponent.type,
+				id: this.exportComponent.name
+			});
+			return [pathKey, path];
+		}.bind(this)));
+	},
 
-		this.dirs = {
-			// this is where we define our jade and jade demo paths
-			jadeModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.jade',
-			jadePageModDir: "src/" + this.componentType + 's/_' + this.id + '/' + this.id + '.jade',
-			jadeDemoDir:  "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.jade',
-
-			// this is where we define our js path
-			jsModDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.js',
-
-			// this is where we define our sass and sass demo paths
-			sassDir: "src/" + this.componentType + 's/_' + this.id + '/_' + this.id + '.scss',
-			sassDemoDir: "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.scss'
-		};
-
+	/**
+	 * Finds dependencies for the selected component
+	 */
+	getDeps: function () {
 		/**
 		 * {ComponentHelper}
 		 */
@@ -144,8 +158,14 @@ var ExportGenerator = yeoman.generators.Base.extend({
 		console.log('Component deps:', this.compDeps);
 		console.log('Global SASS deps:', this.sassDeps);
 		console.log('Global JS deps:', this.jsDeps);
-		
-		// Build component folder path
+	},
+
+	/**
+	 * Copies the files of the component and its dependencies to the export folder
+	 */
+	export: function () {		
+
+		/// Build component folder path
 		this.fileToExport = this.exportComponent.type + "s/" + this.exportComponent.name;
 
 		// Copy component to export folder
@@ -160,7 +180,7 @@ var ExportGenerator = yeoman.generators.Base.extend({
 			this.exportedFiles.push(component + "/**");
 		}.bind(this));
 
-		// Copy non-component (global) deopendencies
+		// Copy non-component (global) dependencies
 		if (this.exportGlobalFolders) {
 			// Copy all
 			this.directory(this.project.sassDir, this.project.exportDir+'/global-scss');
@@ -187,15 +207,22 @@ var ExportGenerator = yeoman.generators.Base.extend({
 				this.exportedFiles.push('global-js/'+jsDep);
 			}.bind(this));
 		}
+	},
 
-		var output = fs.createWriteStream('export/' + this.exportComponent.name + '.zip');
+	/**
+	 * Zips up the exported files
+	 */
+	archive: function () {
+
+		// Create 
+		this.archiveStream = fs.createWriteStream(this.project.exportDir + '/' + this.exportComponent.name + '.zip');
 		var archive = archiver('zip');
 
 		archive.on('error', function(err){
 				throw err;
 		});
 
-		archive.pipe(output);
+		archive.pipe(this.archiveStream);
 
 		console.log("[FILES TO EXPORT]", this.exportedFiles);
 
@@ -203,31 +230,35 @@ var ExportGenerator = yeoman.generators.Base.extend({
 				{ expand: true, cwd: 'src', src: this.exportedFiles, dest: 'export'}
 		]);
 		archive.finalize();
+	},
 
-		output.on('close', function () {
-				for(var i=0;i<this.exportedFiles.length;i++){
-					var exportedFilePath = this.exportedFiles[i].split("/");
-					exportedFilePath.pop();
-					var exportedFilePath = exportedFilePath.join();
-					exportedFilePath = exportedFilePath.replace(",", "/");
-					deleteFolderRecursive("export/" + exportedFilePath);
-				};
-				// Remove empty dirs
-				var emptyDirs = [
-					'global-scss',
-					'global-js',
-					'atoms',
-					'molecules',
-					'organisms',
-				];
-				emptyDirs.forEach(function(emptyDir) {
-					if (fs.existsSync(this.project.exportDir+emptyDir)) fs.rmdirSync(this.project.exportDir+'/'+emptyDir);
-				}.bind(this));
+	/**
+	 * Removes exported files once they've been archived
+	 */
+	cleanup: function () {
+		this.archiveStream.on('close', function () {
+			for(var i = 0; i < this.exportedFiles.length; i++) {
+				var exportedFilePath = this.exportedFiles[i].split("/");
+				exportedFilePath.pop();
+				exportedFilePath = exportedFilePath.join();
+				exportedFilePath = exportedFilePath.replace(",", "/");
+				deleteFolderRecursive("export/" + exportedFilePath);
+			};
+			// Remove empty dirs
+			var emptyDirs = [
+				'global-scss',
+				'global-js',
+				'atoms',
+				'molecules',
+				'organisms',
+			];
+			emptyDirs.forEach(function(emptyDir) {
+				if (fs.existsSync(this.project.exportDir+emptyDir)) fs.rmdirSync(this.project.exportDir+'/'+emptyDir);
+			}.bind(this));
 
-				console.log(chalk.green("Export complete"));
+			console.log(chalk.green("Export complete"));
 		}.bind(this));
 	}
 });
 
 module.exports = ExportGenerator;
-
