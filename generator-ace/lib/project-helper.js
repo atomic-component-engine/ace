@@ -22,45 +22,16 @@ var ProjectHelper = function (options) {
 	this.organismDir = this.srcDir + '/organisms';
 	this.templateDir = this.srcDir + '/templates';
 
-	if (!fs.existsSync(this.srcDir)) {
-		fs.mkdirSync(this.srcDir);
-		console.log(chalk.green('Created', this.srcDir.replace(this.root+'/', '')))
-	}
-	if (!fs.existsSync(this.atomDir)) {
-		fs.mkdirSync(this.atomDir);
-		console.log(chalk.green('Created', this.atomDir.replace(this.root+'/', '')))
-	}
-	if (!fs.existsSync(this.moleculeDir)) {
-		fs.mkdirSync(this.moleculeDir);
-		console.log(chalk.green('Created', this.moleculeDir.replace(this.root+'/', '')))
-	}
-	if (!fs.existsSync(this.organismDir)) {
-		fs.mkdirSync(this.organismDir);
-		console.log(chalk.green('Created', this.organismDir.replace(this.root+'/', '')))
-	}
-	if (!fs.existsSync(this.templateDir)) {
-		fs.mkdirSync(this.templateDir);
-		console.log(chalk.green('Created', this.templateDir.replace(this.root+'/', '')))
-	}
-	if (!fs.existsSync(this.jsDir)) {
-		fs.mkdirSync(this.jsDir);
-		console.log(chalk.green('Created', this.jsDir.replace(this.root+'/', '')))
-	}
-	if (!fs.existsSync(this.sassDir)) {
-		fs.mkdirSync(this.sassDir);
-		console.log(chalk.green('Created', this.sassDir.replace(this.root+'/', '')))
-	}
-	if (!fs.existsSync(this.exportDir)) {
-		fs.mkdirSync(this.exportDir);
-		console.log(chalk.green('Created', this.exportDir.replace(this.root+'/', '')))
-	}
-
 	// Get requireJS config file
 	var rConfig = this.jsDir + '/main.js';
 	this.requireConfig = fs.exists(rConfig) ? require(rConfig) : {};
 
 	// Get ACE config
 	this.loadConfig();
+
+	if (this.inited) {
+		this.ensureDirs();
+	}
 	
 }
 
@@ -139,6 +110,44 @@ ProjectHelper.prototype = {
 			choices.push(choice);
 		}
 		return choices;
+	},
+
+	/**
+	 * Creates any missing folders
+	 */
+	ensureDirs: function () {
+		if (!fs.existsSync(this.srcDir)) {
+			fs.mkdirSync(this.srcDir);
+			console.log(chalk.green('create'), this.srcDir.replace(this.root+'/', ''))
+		}
+		if (!fs.existsSync(this.atomDir)) {
+			fs.mkdirSync(this.atomDir);
+			console.log(chalk.green('create'), this.atomDir.replace(this.root+'/', ''))
+		}
+		if (!fs.existsSync(this.moleculeDir)) {
+			fs.mkdirSync(this.moleculeDir);
+			console.log(chalk.green('create'), this.moleculeDir.replace(this.root+'/', ''))
+		}
+		if (!fs.existsSync(this.organismDir)) {
+			fs.mkdirSync(this.organismDir);
+			console.log(chalk.green('create'), this.organismDir.replace(this.root+'/', ''))
+		}
+		if (!fs.existsSync(this.templateDir)) {
+			fs.mkdirSync(this.templateDir);
+			console.log(chalk.green('create'), this.templateDir.replace(this.root+'/', ''))
+		}
+		if (!fs.existsSync(this.jsDir)) {
+			fs.mkdirSync(this.jsDir);
+			console.log(chalk.green('create'), this.jsDir.replace(this.root+'/', ''))
+		}
+		if (!fs.existsSync(this.sassDir)) {
+			fs.mkdirSync(this.sassDir);
+			console.log(chalk.green('create'), this.sassDir.replace(this.root+'/', ''))
+		}
+		if (!fs.existsSync(this.exportDir)) {
+			fs.mkdirSync(this.exportDir);
+			console.log(chalk.green('create'), this.exportDir.replace(this.root+'/', ''))
+		}
 	}
 
 }
