@@ -88,11 +88,7 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 			choices: ["Component", "SASS", "JS"]
 		},{
 			when: function (response) {
-				if(response.dependancyType == "Component"){
-					return true;
-				}else{
-					return false;
-				}
+				return response.dependancyType == "Component";
 			},
 			type: 'list',
 			name: 'selectDependancyComponentType',
@@ -100,11 +96,7 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 			choices: this.project.getComponentTypeCountsList()
 		},{
 			when: function (response) {
-				if(response.dependancyType == "Component"){
-					return true;
-				}else{
-					return false;
-				}
+				return response.dependancyType == "Component";
 			},
 			type: 'list',
 			name: 'depComponentSelect',
@@ -117,39 +109,29 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 			},
 		},{
 			when: function (response) {
-				if(response.dependancyType == "SASS"){
-					return true;
-				}else{
-					return false;
-				}
+				return response.dependancyType == "SASS";
 			},
 			type: 'list',
 			name: 'selectDependancySASSDir',
 			message: 'Select SASS dependancy to add',
 			choices: function(response){
-					//sassList = fs.readdirSync("src/global-scss");
+				sassList = wrench.readdirSyncRecursive("src/global-scss");
+				sassList.unshift(new inquirer.Separator(chalk.red("-------------------")));
 
-					sassList = wrench.readdirSyncRecursive("src/global-scss");
-					sassList.unshift(new inquirer.Separator(chalk.red("-------------------")));
-
-					return sassList;
+				return sassList;
 
 			},
 		},{
 			when: function (response) {
-				if(response.dependancyType == "JS"){
-					return true;
-				}else{
-					return false;
-				}
+				return response.dependancyType == "JS";
 			},
 			type: 'list',
 			name: 'selectDependancyJSDir',
 			message: 'Select JS dependancy to add',
 			choices: function(response){
-					jsList = wrench.readdirSyncRecursive("src/global-js");
-					jsList.unshift(new inquirer.Separator(chalk.red("-------------------")));
-					return jsList;
+				jsList = wrench.readdirSyncRecursive("src/global-js");
+				jsList.unshift(new inquirer.Separator(chalk.red("-------------------")));
+				return jsList;
 			},
 		}
 		], function (response) {
@@ -167,17 +149,17 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 			var config = this.readFileAsString(configFile);
 
 			switch(response.dependancyType) {
-					case "Component":
-							var dependancyName = response.selectDependancyComponentType.toLowerCase() + "s/" + response.depComponentSelect;
-							break;
-					case "SASS":
-							var dependancyName = response.selectDependancySASSDir;
-							break;
-					case "JS":
-							var dependancyName = response.selectDependancyJSDir;
-							break;
-					default:
-							console.log(chalk.red("Invalid dependancy type"));
+				case "Component":
+					var dependancyName = response.selectDependancyComponentType.toLowerCase() + "s/" + response.depComponentSelect;
+					break;
+				case "SASS":
+					var dependancyName = response.selectDependancySASSDir;
+					break;
+				case "JS":
+					var dependancyName = response.selectDependancyJSDir;
+					break;
+				default:
+					console.log(chalk.red("Invalid dependancy type"));
 			}
 
 			this.baseComponentType = response.selectComponentType.toLowerCase();
@@ -198,9 +180,7 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 	 * Takes the user-entered data from askFor and runs the templating, either for project, component, template or page generation
 	 */
 	app: function () {
-
 		this.component.addDependency(this.dependancyType, this.dependancyName);
-		
 	}
 });
 
