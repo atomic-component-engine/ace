@@ -36,6 +36,12 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 	init: function (arg, arg2) {
 
 		/**
+		 * {Bool}
+		 * Whether or not to display usage message
+		 */
+		this.aceHelp = arg == 'help';
+
+		/**
 		 * {ProjectHelper}
 		 */
 		this.projectHelper = new ProjectHelper();
@@ -141,17 +147,9 @@ var ComponentsGenerator = yeoman.generators.Base.extend({
 				done();
 			});
 		} else if(this.aceHelp) {
-			var helpMessage = " \n\
-			\n \
-				Welcome to ACE: \n \
-			\n \
-			\n \
-				yo ace init           -> This will add the initial boilerplate to your current directory. \n \
-				yo ace                -> This will give you a list of options for creating components. \n \
-				yo ace add-dependency -> This will add a dependency to a component. \n \
-				yo ace export         -> This will zip up your component and its dependencies. \n \n \n "
+			var showHelp = require('./help');
+			showHelp();
 
-			console.log(helpMessage);
 			process.exit();
 		}
 
