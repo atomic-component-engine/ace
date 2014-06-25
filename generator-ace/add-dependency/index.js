@@ -83,37 +83,37 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 			},
 		},{
 			type: 'list',
-			name: 'dependancyType',
-			message: 'What type of dependancy do you want to add?',
+			name: 'dependencyType',
+			message: 'What type of dependency do you want to add?',
 			choices: ["Component", "SASS", "JS"]
 		},{
 			when: function (response) {
-				return response.dependancyType == "Component";
+				return response.dependencyType == "Component";
 			},
 			type: 'list',
-			name: 'selectDependancyComponentType',
-			message: 'Select dependancy to add',
+			name: 'selectDependencyComponentType',
+			message: 'Select dependency to add',
 			choices: this.project.getComponentTypeCountsList()
 		},{
 			when: function (response) {
-				return response.dependancyType == "Component";
+				return response.dependencyType == "Component";
 			},
 			type: 'list',
 			name: 'depComponentSelect',
 			message: 'Select component',
 			choices: function(response){
-				if(response.selectDependancyComponentType){
-					componentList = self.project.getComponents(response.selectDependancyComponentType+'s');
+				if(response.selectDependencyComponentType){
+					componentList = self.project.getComponents(response.selectDependencyComponentType+'s');
 				};
 				return componentList;
 			},
 		},{
 			when: function (response) {
-				return response.dependancyType == "SASS";
+				return response.dependencyType == "SASS";
 			},
 			type: 'list',
-			name: 'selectDependancySASSDir',
-			message: 'Select SASS dependancy to add',
+			name: 'selectDependencySASSDir',
+			message: 'Select SASS dependency to add',
 			choices: function(response){
 				sassList = wrench.readdirSyncRecursive("src/global-scss");
 				sassList.unshift(new inquirer.Separator(chalk.red("-------------------")));
@@ -123,11 +123,11 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 			},
 		},{
 			when: function (response) {
-				return response.dependancyType == "JS";
+				return response.dependencyType == "JS";
 			},
 			type: 'list',
-			name: 'selectDependancyJSDir',
-			message: 'Select JS dependancy to add',
+			name: 'selectDependencyJSDir',
+			message: 'Select JS dependency to add',
 			choices: function(response){
 				jsList = wrench.readdirSyncRecursive("src/global-js");
 				jsList.unshift(new inquirer.Separator(chalk.red("-------------------")));
@@ -148,28 +148,28 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 
 			var config = this.readFileAsString(configFile);
 
-			switch(response.dependancyType) {
+			switch(response.dependencyType) {
 				case "Component":
-					var dependancyName = response.selectDependancyComponentType.toLowerCase() + "s/" + response.depComponentSelect;
+					var dependencyName = response.selectDependencyComponentType.toLowerCase() + "s/" + response.depComponentSelect;
 					break;
 				case "SASS":
-					var dependancyName = response.selectDependancySASSDir;
+					var dependencyName = response.selectDependencySASSDir;
 					break;
 				case "JS":
-					var dependancyName = response.selectDependancyJSDir;
+					var dependencyName = response.selectDependencyJSDir;
 					break;
 				default:
-					console.log(chalk.red("Invalid dependancy type"));
+					console.log(chalk.red("Invalid dependency type"));
 			}
 
 			this.baseComponentType = response.selectComponentType.toLowerCase();
 			this.baseComponentName = response.componentSelect;
 			this.baseComponent = this.baseComponentType + "s/" + this.baseComponentName;
-			this.dependancyName = dependancyName;
-			if (response.dependancyType  == 'Component') {
-				this.dependancyType = response.selectDependancyComponentType.toLowerCase();
+			this.dependencyName = dependencyName;
+			if (response.dependencyType  == 'Component') {
+				this.dependencyType = response.selectDependencyComponentType.toLowerCase();
 			} else {
-				this.dependancyType = response.dependancyType.toLowerCase();
+				this.dependencyType = response.dependencyType.toLowerCase();
 			}
 			done();
 		}.bind(this));
@@ -180,7 +180,7 @@ var AddDependencyGenerator = yeoman.generators.Base.extend({
 	 * Takes the user-entered data from askFor and runs the templating, either for project, component, template or page generation
 	 */
 	app: function () {
-		this.component.addDependency(this.dependancyType, this.dependancyName);
+		this.component.addDependency(this.dependencyType, this.dependencyName);
 	}
 });
 
