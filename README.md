@@ -45,7 +45,7 @@ This task initialises the directory with the main boilerplate. You will be asked
 1. Do you want to init this directory with ACE (Y/n)
 2. Sweet! What identifier should we use for your app? (e.g. my-atomic-website) *This is the name of your project in the package.json file*
 3. Are you using Git? *This will add a base gitignore*
-4. Do you want your name and email to be placed in the header of all of the compoenents you create? *This is useful in teams and ace will read these details from your gitconfig if present*
+4. Do you want your name and email to be placed in the header of all of the components you create? *This is useful in teams and ace will read these details from your gitconfig if present*
 
 
 Now your directory has the ACE boilerplate you'll want to start creating components. 
@@ -90,22 +90,22 @@ Pages are a little different to components, ideally these should have minimal CS
 
 ---
 
-### Depenency Management and Exporting
+### Dependency Management and Exporting
 
 
-#### ACE Add-depenency
+#### ACE Add-dependency
 
-If your component has a dependency you can add it to the ace.json file with the following:
+If your component requires another component, or a particular SASS or JavaScript file, to function you can add it to the ace.json file with the following:
 
 1. Type `yo ace:add-dependency`
-2. Select a component to add a dependency to
-3. Select a dependency type to add to that component
-4. Select a depedency to add
+2. Select the component to which you wish to add a dependency
+3. Select a the dependency's type (component, SASS, JS)
+4. Select the dependency
 
-*This will add the dependency to ace.json which is used for exporting, you will currently still need to add the dependency to your component in code.*
+*This will add the dependency to the component's ace.json file. This is used at [export time](#ace-export) to determine what files to bundle with the exported component. For development, you currently still need to add the dependency to your component in code.*
 
 #### ACE Export
-ACE lets you export compoenents to move them between projects, this means that you can create your own library of ACE components to speed up prototyping and development.
+ACE lets you export components to move them between projects, this means that you can create your own library of ACE components to speed up prototyping and development.
 
 To export with ACE you:
 
