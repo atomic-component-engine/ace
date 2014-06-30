@@ -104,7 +104,6 @@ module.exports = function(grunt) {
 	gruntConfig.requirejs = {
 		compile: {
 			options: {
-				optimize: "none", 
 				findNestedDependencies: 'true',
 				include: explicitDependencies,
 				mainConfigFile: "src/global-js/main.js",
