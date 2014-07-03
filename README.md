@@ -1,6 +1,6 @@
 ![logo](https://raw.githubusercontent.com/pjhauser/atomic-component-engine/develop/gifs/ace-molecule-logo.png)
 
-ACE v0.5.6 - *Mini bootstrap for every project*
+ACE v0.5.7 - *Mini bootstrap for every project*
 =======================
 
 ### Dependencies 

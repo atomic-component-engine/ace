@@ -105,9 +105,9 @@ var PageGenerator = yeoman.generators.Base.extend({
 				sassDemoDir: "src/" + this.componentType + 's/_' + this.id + '/_demo_' + this.id + '.scss'
 			};
 
-			this.template('_page.jade', this.dirs.jadeModDir);
-			this.template('_page.js', this.dirs.jsModDir);
-			this.template('_page.scss', this.dirs.sassDir);
+			this.template('page.jade', this.dirs.jadeModDir);
+			this.template('page.js', this.dirs.jsModDir);
+			this.template('page.scss', this.dirs.sassDir);
 		}
 	}
 });
