@@ -62,6 +62,9 @@ module.exports = function(grunt) {
 	if (buildType == 'dev') {
 		grunt.file.write("dev/js/componentList.json", JSON.stringify(componentsList));
 	} else if (buildType == 'release') {
+		// hack to add main to component list for release
+		componentsList.push("main");
+
 		grunt.file.write("src/global-js/componentList.json", JSON.stringify(componentsList));
 	}
 

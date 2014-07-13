@@ -2,7 +2,7 @@
  * @file Sets up RequireJS config and bootstraps the website
  */
 
-var commonJS = module && typeof requirejs == 'undefined';
+var commonJS = typeof requirejs == 'undefined';
 var config = {
 	
 	'paths': {
