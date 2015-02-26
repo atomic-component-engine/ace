@@ -78,10 +78,10 @@ Pages are a little different to components, ideally these should have minimal CS
 
 ---
 
-### Depenency Management and Exporting
+### Dependency Management and Exporting
 
 
-#### ACE Add-depenency
+#### ACE Add-dependency
 
 If your component has a dependency you can add it to the ace.json file with the following:
 
